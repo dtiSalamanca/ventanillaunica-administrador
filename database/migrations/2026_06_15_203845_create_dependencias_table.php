@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dependencias', function (Blueprint $table) {
+        Schema::create('cat_dependencias', function (Blueprint $table) {
             $table->id('id_dependencia');
             $table->string('nombre');
             $table->boolean('activo')->default(true);
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dependencias');
+        Schema::dropIfExists('cat_dependencias');
     }
 };
