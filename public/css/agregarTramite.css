@@ -1,0 +1,1853 @@
+/* Estilos del modal rediseñado - Scoped al modal de Trámite de panteón */
+#agregarTramitePanteon .modal-content {
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+#agregarTramitePanteon .modal-header {
+    background: #2f2b29;
+    color: white;
+    border-bottom: none;
+    padding: 2rem 2.5rem;
+}
+
+#agregarTramitePanteon .modal-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+#agregarTramitePanteon .modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+#agregarTramitePanteon .modal-subtitle {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+#agregarTramitePanteon .modal-body {
+    padding: 2.5rem;
+    background: #f8f9fa;
+}
+
+#agregarTramitePanteon .form-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+#agregarTramitePanteon .section-title {
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+#agregarTramitePanteon .form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+#agregarTramitePanteon .form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+#agregarTramitePanteon .input-wrapper {
+    position: relative;
+}
+
+#agregarTramitePanteon .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    z-index: 2;
+}
+
+#agregarTramitePanteon .form-control,
+#agregarTramitePanteon .form-select {
+    padding-left: 40px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+}
+
+/* Estilos específicos para textarea */
+#agregarTramitePanteon textarea.form-control {
+    padding-left: 40px;
+    padding-top: 12px;
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+#agregarTramitePanteon textarea.form-control + .input-icon {
+    top: 16px;
+    transform: none;
+}
+
+#agregarTramitePanteon .form-control:focus,
+#agregarTramitePanteon .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(61, 0, 104, 0.1);
+}
+
+#agregarTramitePanteon .form-control.is-valid {
+    border-color: #10b981;
+}
+
+#agregarTramitePanteon .form-control.is-invalid {
+    border-color: #ef4444;
+}
+
+#agregarTramitePanteon .validation-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+}
+
+#agregarTramitePanteon .validation-icon.valid {
+    color: #10b981;
+}
+
+#agregarTramitePanteon .validation-icon.invalid {
+    color: #ef4444;
+}
+
+/* Vista previa */
+#agregarTramitePanteon .preview-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    height: fit-content;
+}
+
+#agregarTramitePanteon .tramite-preview {
+    text-align: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+}
+
+#agregarTramitePanteon .tramite-avatar {
+    width: 80px !important;
+    height: 80px !important;
+    background: linear-gradient(
+        135deg,
+        var(--primary) 0%,
+        #5a2b7b 100%
+    ) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 1rem !important;
+    color: white !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 4px 12px rgba(61, 0, 104, 0.3) !important;
+    transition: all 0.3s ease !important;
+    animation: avatarUpdate 0.3s ease !important;
+}
+
+#agregarTramitePanteon .tramite-avatar:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 16px rgba(61, 0, 104, 0.4) !important;
+}
+
+#agregarTramitePanteon .tramite-avatar i {
+    font-size: 2.2rem !important;
+    opacity: 0.9 !important;
+}
+
+@keyframes avatarUpdate {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Vista previa específica del Paso 1 */
+#agregarTramitePanteon #step1-preview .tramite-preview {
+    border: none;
+    margin-bottom: 0.75rem;
+}
+
+#agregarTramitePanteon #step1-preview .tramite-avatar {
+    width: 72px !important;
+    height: 72px !important;
+    font-size: 1.4rem !important;
+}
+
+#agregarTramitePanteon #step1-preview .permissions-list li {
+    padding: 0.15rem 0;
+}
+
+#agregarTramitePanteon #step1-preview .detail-item {
+    padding: 0.35rem 0;
+}
+
+#agregarTramitePanteon .tramite-name {
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 0.25rem !important;
+}
+
+#agregarTramitePanteon .tramite-tarifa {
+    color: #6b7280 !important;
+    font-size: 0.875rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+#agregarTramitePanteon .preview-details {
+    margin-bottom: 1.5rem;
+}
+
+#agregarTramitePanteon .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+#agregarTramitePanteon .detail-item:last-child {
+    border-bottom: none;
+}
+
+#agregarTramitePanteon .detail-label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+#agregarTramitePanteon .detail-value {
+    font-weight: 600;
+    color: #111827;
+}
+
+#agregarTramitePanteon .status-active {
+    color: #10b981;
+}
+
+#agregarTramitePanteon .role-info h6 {
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+#agregarTramitePanteon .permissions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#agregarTramitePanteon .permissions-list li {
+    padding: 0.25rem 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+    position: relative;
+    padding-left: 1.25rem;
+}
+
+#agregarTramitePanteon .permissions-list li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #10b981;
+    font-weight: bold;
+}
+
+#agregarTramitePanteon .modal-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e5e7eb;
+    padding: 2rem 2.5rem;
+}
+
+#agregarTramitePanteon .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+#agregarTramitePanteon .btn-primary {
+    background: var(--primary);
+    border: none;
+}
+
+#agregarTramitePanteon .btn-primary:hover {
+    background: #5a2b7b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(61, 0, 104, 0.3);
+}
+
+#agregarTramitePanteon .btn-outline-secondary {
+    border: 2px solid #d1d5db;
+    color: #6b7280;
+}
+
+#agregarTramitePanteon .btn-outline-secondary:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+    color: #374151;
+}
+
+/* Wizard */
+#agregarTramitePanteon .wizard-step {
+    /* Cada paso ocupa el ancho completo */
+    width: 100%;
+}
+
+#agregarTramitePanteon .gaceta-progress {
+    width: 100%;
+    height: 8px;
+    background: #eeeaf2;
+    position: relative;
+}
+
+#agregarTramitePanteon .gaceta-progress-bar {
+    height: 100%;
+    background: #bd0b0b;
+    transition: width 0.25s ease;
+}
+
+/* Dropzone */
+#agregarTramitePanteon .dropzone-area {
+    border: 2px dashed #c7b8d9;
+    background: #faf7fc;
+    border-radius: 12px;
+    padding: 1.75rem;
+    text-align: center;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+#agregarTramitePanteon .dropzone-area.is-dragover {
+    background: #f1eafd;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(61, 0, 104, 0.1);
+}
+
+#agregarTramitePanteon .dz-icon {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+#agregarTramitePanteon .dz-title {
+    font-weight: 600;
+    margin: 0.25rem 0;
+}
+
+#agregarTramitePanteon .dz-subtitle,
+#agregarTramitePanteon .dz-help {
+    color: #6b7280;
+    margin: 0.25rem 0;
+}
+
+/* Lista de archivos */
+#agregarTramitePanteon .file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#agregarTramitePanteon .file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    background: #fff;
+}
+
+#agregarTramitePanteon .file-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+#agregarTramitePanteon .file-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #f3f0f8;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#agregarTramitePanteon .file-name {
+    font-weight: 600;
+}
+
+#agregarTramitePanteon .file-size {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Input de nombre personalizado y acciones */
+#agregarTramitePanteon .file-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#agregarTramitePanteon .file-name-input {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+    min-width: 200px;
+    max-width: 320px;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+#agregarTramitePanteon .file-name-input::placeholder {
+    color: #9ca3af;
+}
+
+#agregarTramitePanteon .file-name-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(61, 0, 104, 0.1);
+}
+
+@media (max-width: 576px) {
+    #agregarTramitePanteon .file-name-input {
+        min-width: 140px;
+        max-width: 220px;
+    }
+}
+
+#agregarTramitePanteon .required-badge {
+    color: #ef4444;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1;
+    user-select: none;
+}
+
+/* Resumen */
+#agregarTramitePanteon .summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+#agregarTramitePanteon .summary-item:last-child {
+    border-bottom: none;
+}
+
+#agregarTramitePanteon .summary-label {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+#agregarTramitePanteon .summary-value {
+    font-weight: 600;
+}
+
+#agregarTramitePanteon .summary-docs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+#agregarTramitePanteon .summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+    border-top: 2px solid #f1f5f9;
+}
+
+#agregarTramitePanteon .summary-amount {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    #agregarTramitePanteon .modal-dialog {
+        max-width: 95%;
+        margin: 1rem auto;
+    }
+}
+
+@media (max-width: 768px) {
+    #agregarTramitePanteon .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+
+    #agregarTramitePanteon .modal-body {
+        padding: 1.5rem;
+    }
+
+    #agregarTramitePanteon .modal-header,
+    #agregarTramitePanteon .modal-footer {
+        padding: 1.5rem;
+    }
+
+    #agregarTramitePanteon .form-section,
+    #agregarTramitePanteon .preview-section {
+        padding: 1.5rem;
+    }
+
+    #agregarTramitePanteon .preview-section {
+        margin-top: 1rem;
+    }
+
+    #agregarTramitePanteon .form-group {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Animaciones */
+#agregarTramitePanteon.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+}
+
+#agregarTramitePanteon.modal.show .modal-dialog {
+    transform: none;
+}
+
+/* Estados de validación */
+#agregarTramitePanteon .form-control.is-valid + .validation-icon::after {
+    content: "✓";
+    color: #10b981;
+}
+
+#agregarTramitePanteon .form-control.is-invalid + .validation-icon::after {
+    content: "✗";
+    color: #ef4444;
+}
+
+/* Estilos para el checkbox de traspaso */
+#agregarTramitePanteon .form-check {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1rem;
+}
+
+#agregarTramitePanteon .form-check-input {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-top: 0.1rem;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+}
+
+#agregarTramitePanteon .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+#agregarTramitePanteon .form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(61, 0, 104, 0.1);
+}
+
+#agregarTramitePanteon .form-check-input:disabled {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#agregarTramitePanteon .form-check-input:disabled + .form-check-label {
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+#agregarTramitePanteon .form-check-label {
+    font-weight: 600;
+    color: #374151;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+#agregarTramitePanteon .form-check-label i {
+    color: var(--primary);
+}
+
+/* Estilos personalizados para Select2 */
+#agregarTramitePanteon .select2-container {
+    width: 100% !important;
+}
+
+#agregarTramitePanteon .select2-container--default .select2-selection--single {
+    height: 38px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding-left: 40px;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(61, 0, 104, 0.1);
+    outline: none;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
+    line-height: 34px;
+    padding-left: 0;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__placeholder {
+    color: #9ca3af;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    height: 36px;
+    right: 8px;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b {
+    border-color: #6b7280 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    height: 0;
+    left: 50%;
+    margin-left: -4px;
+    margin-top: -2px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+}
+
+#agregarTramitePanteon .select2-dropdown {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 9999;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-search--dropdown
+    .select2-search__field {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-search--dropdown
+    .select2-search__field:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(61, 0, 104, 0.1);
+    outline: none;
+}
+
+#agregarTramitePanteon .select2-container--default .select2-results__option {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-results__option:last-child {
+    border-bottom: none;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--primary);
+    color: white;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-results__option[aria-selected="true"] {
+    background-color: #f3f0f8;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-results__option--highlighted[aria-selected="true"] {
+    background-color: var(--primary);
+    color: white;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-results__option--loading {
+    color: #6b7280;
+    font-style: italic;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-results__option--no-results {
+    color: #6b7280;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Ajustar el icono del input cuando Select2 está activo */
+#agregarTramitePanteon .select2-container + .input-icon {
+    z-index: 10;
+}
+
+/* Estilos para el estado de validación */
+#agregarTramitePanteon
+    .select2-container--default.select2-container--error
+    .select2-selection--single {
+    border-color: #ef4444;
+}
+
+#agregarTramitePanteon
+    .select2-container--default.select2-container--valid
+    .select2-selection--single {
+    border-color: #10b981;
+}
+
+/* ============================================
+       ESTILOS PARA MÚLTIPLES TRÁMITES
+       ============================================ */
+
+/* Tarjetas de trámites agregados */
+#agregarTramitePanteon .tramite-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+#agregarTramitePanteon .tramite-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(61, 0, 104, 0.1);
+}
+
+#agregarTramitePanteon .tramite-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+#agregarTramitePanteon .tramite-number {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, var(--primary) 0%, #5a2b7b 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+#agregarTramitePanteon .tramite-info {
+    flex: 1;
+    min-width: 0;
+}
+
+#agregarTramitePanteon .tramite-title {
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+    font-size: 0.95rem;
+}
+
+#agregarTramitePanteon .tramite-details {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#agregarTramitePanteon .tramite-observaciones {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#agregarTramitePanteon .tramite-tarifa {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+#agregarTramitePanteon .tramite-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+#agregarTramitePanteon .tramite-card-footer {
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#agregarTramitePanteon .total-parcial {
+    font-size: 1rem;
+    color: #374151;
+}
+
+#agregarTramitePanteon .total-parcial strong {
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+/* Badge de modo edición */
+#agregarTramitePanteon #badge-modo-edicion {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    font-weight: 600;
+}
+
+/* Accordion de documentos por trámite */
+#agregarTramitePanteon .accordion-item {
+    border: 2px solid #e5e7eb;
+    border-radius: 10px !important;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+#agregarTramitePanteon .accordion-item:last-child {
+    margin-bottom: 0;
+}
+
+#agregarTramitePanteon .accordion-header {
+    margin-bottom: 0;
+}
+
+#agregarTramitePanteon .accordion-button {
+    background: #f8f9fa;
+    color: #111827;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+    border: none;
+    font-size: 0.95rem;
+}
+
+#agregarTramitePanteon .accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, var(--primary) 0%, #5a2b7b 100%);
+    color: white;
+    box-shadow: none;
+}
+
+#agregarTramitePanteon .accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--primary);
+}
+
+#agregarTramitePanteon .accordion-button::after {
+    filter: brightness(0);
+}
+
+#agregarTramitePanteon .accordion-button:not(.collapsed)::after {
+    filter: brightness(0) invert(1);
+}
+
+#agregarTramitePanteon .accordion-body {
+    padding: 1.5rem;
+}
+
+#agregarTramitePanteon .accordion-tramite-info {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+#agregarTramitePanteon .docs-status-badge {
+    margin-left: auto;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+}
+
+/* Dropzone dentro del accordion */
+#agregarTramitePanteon .accordion-body .dropzone-area {
+    border: 2px dashed #c7b8d9;
+    background: #faf7fc;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+#agregarTramitePanteon .accordion-body .dropzone-area:hover {
+    background: #f1eafd;
+    border-color: var(--primary);
+}
+
+#agregarTramitePanteon .accordion-body .dropzone-area.is-dragover {
+    background: #e9d5ff;
+    border-color: var(--primary);
+    border-style: solid;
+}
+
+/* Resumen global de trámites */
+#agregarTramitePanteon .summary-tramite-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#agregarTramitePanteon .summary-tramite-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+#agregarTramitePanteon .summary-tramite-number {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary) 0%, #5a2b7b 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+#agregarTramitePanteon .summary-tramite-title-section {
+    flex: 1;
+}
+
+#agregarTramitePanteon .summary-tramite-title-section h6 {
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+}
+
+#agregarTramitePanteon .summary-tramite-title-section .text-muted {
+    font-size: 0.85rem;
+}
+
+#agregarTramitePanteon .summary-tramite-tarifa-lg {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+#agregarTramitePanteon .summary-tramite-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+#agregarTramitePanteon .summary-field {
+    display: flex;
+    flex-direction: column;
+}
+
+#agregarTramitePanteon .summary-field-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+#agregarTramitePanteon .summary-field-value {
+    font-size: 0.9rem;
+    color: #111827;
+    font-weight: 500;
+}
+
+#agregarTramitePanteon .summary-docs-list {
+    margin-top: 0.5rem;
+}
+
+#agregarTramitePanteon .summary-doc-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+#agregarTramitePanteon .summary-doc-item i {
+    color: var(--primary);
+}
+
+#agregarTramitePanteon .summary-total-global {
+    background: linear-gradient(135deg, var(--primary) 0%, #5a2b7b 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(61, 0, 104, 0.3);
+}
+
+#agregarTramitePanteon .summary-total-global h5 {
+    font-weight: 700;
+    margin: 0;
+}
+
+#agregarTramitePanteon .summary-amount-global {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #agregarTramitePanteon .tramite-card-header {
+        flex-wrap: wrap;
+    }
+
+    #agregarTramitePanteon .tramite-tarifa {
+        order: -1;
+        width: 100%;
+        text-align: right;
+        margin-bottom: 0.5rem;
+    }
+
+    #agregarTramitePanteon .summary-tramite-header {
+        flex-direction: column;
+    }
+
+    #agregarTramitePanteon .summary-tramite-tarifa-lg {
+        width: 100%;
+        text-align: right;
+    }
+}
+
+/* ============================================
+       ESTILOS PARA CAMPOS DE TITULAR
+       ============================================ */
+
+/* Ocultar campos inicialmente */
+#select-titular-group,
+#titular-nombre-manual-group,
+#titular-telefono-manual-group,
+#titular-domicilio-manual-group,
+#evidencia-notitular-group {
+    display: none;
+}
+
+/* Estilos para el grupo de radio buttons de titular */
+#estitular-group {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.5rem;
+    border: 2px solid #e5e7eb;
+    /* margin-bottom: 1rem; */
+}
+#representante-titular-wrapper {
+    background: #f9fafb;
+    border: 1px dashed #d5dbdb;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.35rem;
+}
+#representante-titular-wrapper .form-check-label {
+    font-weight: 600;
+    color: #374151;
+}
+#representante-titular-wrapper .form-check-input {
+    margin-top: 0.15rem;
+}
+#representante-titular-wrapper small {
+    font-size: 0.72rem;
+}
+#div-finado-tramite .mb-0 {
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    margin-bottom: 37px !important;
+    padding: 0.5rem !important;
+}
+#p-label-finado {
+    margin-top: 5px;
+}
+#estitular-group p {
+    margin-bottom: 0;
+}
+
+#estitular-group input[type="radio"],
+#div-finado-tramite input[type="radio"],
+#div-restocremado-group input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    margin-left: 12px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+#estitular-group label,
+#div-finado-tramite label {
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+    margin-bottom: 0;
+    margin-right: 8px;
+    user-select: none;
+}
+
+#estitular-group input[type="radio"]:checked + label {
+    color: var(--primary);
+}
+
+/* Animación suave para mostrar/ocultar campos */
+.form-group {
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+}
+
+/* Estilos para el input de archivo */
+#notitular_evidencia_general,
+#identificacion_titular_destino {
+    padding: 0.5rem;
+}
+
+#notitular_evidencia_general::file-selector-button,
+#identificacion_titular_destino::file-selector-button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-right: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#notitular_evidencia_general::file-selector-button:hover,
+#identificacion_titular_destino::file-selector-button:hover {
+    background: #5a2b7b;
+}
+
+/* Estilos para el select de titular */
+#titular_general {
+    transition: all 0.3s ease;
+}
+
+#titular_general:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Efecto de carga en el select */
+#titular_general.loading,
+#select_tramite.loading,
+#unidad_valor.loading {
+    background-image: linear-gradient(
+        90deg,
+        transparent,
+        rgba(61, 0, 104, 0.1),
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Estilos para campos deshabilitados/precargados */
+#agregarTramitePanteon .form-control:disabled,
+#agregarTramitePanteon .form-control:read-only,
+#agregarTramitePanteon .form-select:disabled {
+    background-color: #f3f4f6 !important;
+    cursor: not-allowed;
+    opacity: 0.8;
+    border-color: #d1d5db;
+}
+
+#agregarTramitePanteon .form-control.bg-light {
+    background-color: #f8f9fa !important;
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Icono de candado para campos bloqueados */
+#agregarTramitePanteon .form-control:disabled + .input-icon,
+#agregarTramitePanteon .form-control:read-only + .input-icon,
+#agregarTramitePanteon .form-select:disabled + .input-icon {
+    color: #9ca3af;
+}
+
+/* Select2 deshabilitado */
+#agregarTramitePanteon .select2-container--disabled .select2-selection {
+    background-color: #f3f4f6 !important;
+    cursor: not-allowed !important;
+    opacity: 0.8;
+    border-color: #d1d5db !important;
+}
+
+#agregarTramitePanteon .select2-container--disabled .select2-selection__arrow {
+    display: none;
+}
+
+/* Mensaje informativo para campos precargados */
+.campo-precargado-info {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.campo-precargado-info i {
+    color: var(--primary);
+}
+
+/* ============================================
+       ESTILOS PERSONALIZADOS PARA SELECT2
+       ============================================ */
+
+/* Contenedor principal de Select2 */
+#agregarTramitePanteon .select2-container {
+    z-index: 9999;
+}
+
+/* Campo de selección de Select2 */
+#agregarTramitePanteon .select2-container--default .select2-selection--single {
+    height: 42px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding-left: 40px;
+    background-color: transparent !important;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single:focus,
+#agregarTramitePanteon
+    .select2-container--default.select2-container--open
+    .select2-selection--single {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(61, 0, 104, 0.1);
+    outline: none;
+}
+
+/* Texto seleccionado */
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
+    line-height: 38px;
+    padding-left: 0;
+    color: #374151;
+    font-size: 0.8rem;
+}
+
+/* Placeholder */
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__placeholder {
+    color: #9ca3af;
+}
+
+/* Flecha del select */
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    height: 38px;
+    right: 8px;
+    top: 2px;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b {
+    border-color: #6b7280 transparent transparent transparent;
+    border-style: solid;
+    border-width: 6px 5px 0 5px;
+    height: 0;
+    left: 50%;
+    margin-left: -5px;
+    margin-top: -3px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+}
+
+/* Cuando está abierto */
+#agregarTramitePanteon
+    .select2-container--default.select2-container--open
+    .select2-selection--single
+    .select2-selection__arrow
+    b {
+    border-color: transparent transparent var(--primary) transparent;
+    border-width: 0 5px 6px 5px;
+}
+
+/* Botón para limpiar */
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__clear {
+    color: #9ca3af;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#agregarTramitePanteon
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__clear:hover {
+    color: #ef4444;
+}
+
+/* Dropdown de opciones */
+.select2-dropdown {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 10000 !important;
+}
+
+/* Campo de búsqueda */
+.select2-search--dropdown .select2-search__field {
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.select2-search--dropdown .select2-search__field:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(61, 0, 104, 0.1);
+    outline: none;
+}
+
+/* Opciones en la lista */
+.select2-results__option {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    color: #374151;
+    transition: all 0.2s;
+}
+
+/* Opción hover */
+.select2-results__option--highlighted[aria-selected] {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+}
+
+/* Opción seleccionada */
+.select2-results__option[aria-selected="true"] {
+    background-color: #f3f0f8;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Cuando hover sobre seleccionado */
+.select2-results__option--highlighted[aria-selected="true"] {
+    background-color: #e5e7eb !important;
+    color: var(--primary) !important;
+}
+
+/* Sin resultados */
+.select2-results__option--no-results {
+    color: #6b7280;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Opciones personalizadas de titular */
+.select2-titular-option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.select2-titular-option .titular-nombre {
+    font-weight: 600;
+    color: #111827;
+    font-size: 0.875rem;
+}
+
+.select2-titular-option .titular-info {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+/* Estado de carga en Select2 */
+#agregarTramitePanteon
+    .select2-container--default.select2-container--disabled
+    .select2-selection--single {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Ajustar posición del icono cuando hay Select2 */
+#select-titular-group .input-wrapper {
+    position: relative;
+}
+
+/* Icono del select2 (agregado dinámicamente) */
+#select-titular-group .input-wrapper .select2-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    z-index: 100;
+    pointer-events: none;
+    font-size: 1rem;
+}
+
+/* Icono original (respaldo) */
+#select-titular-group .input-wrapper .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    z-index: 100;
+    pointer-events: none;
+    font-size: 1rem;
+}
+
+/* Asegurar que el Select2 no cubra el icono */
+#select-titular-group .input-wrapper .select2-container {
+    position: relative;
+    z-index: 2;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+#select-titular-group .input-wrapper .select2-container .select2-selection {
+    position: relative;
+    background: transparent !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #agregarTramitePanteon
+        .select2-container--default
+        .select2-selection--single {
+        height: 38px;
+    }
+
+    #agregarTramitePanteon
+        .select2-container--default
+        .select2-selection--single
+        .select2-selection__rendered {
+        line-height: 34px;
+    }
+
+    .select2-titular-option .titular-nombre {
+        font-size: 0.8rem;
+    }
+}
+
+/* ==========================
+   Select2 personalizado: Gavetas
+   ========================== */
+#agregarTramitePanteon .select2-gaveta-option {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#agregarTramitePanteon .select2-gaveta-option .gaveta-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#agregarTramitePanteon .select2-gaveta-option .gaveta-title {
+    font-weight: 700;
+    color: #111827;
+    font-size: 0.92rem;
+}
+
+#agregarTramitePanteon .select2-gaveta-option .gaveta-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+#agregarTramitePanteon .select2-gaveta-option .badge {
+    background: #eef2ff;
+    color: #3730a3;
+    border-radius: 9999px;
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+#agregarTramitePanteon .select2-gaveta-option .badge-panteon {
+    background: #ecfeff;
+    color: #155e75;
+}
+
+#agregarTramitePanteon .select2-gaveta-option .badge-pasillo {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+/* Icono inyectado para el Select2 de gavetas */
+#div-select-gaveta-tramite .input-wrapper .select2-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    z-index: 100;
+    pointer-events: none;
+    font-size: 1rem;
+}
+#div-restocremado-group {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.7rem;
+    border: 2px solid #e5e7eb;
+    /* margin-bottom: 1rem; */
+}
+/* div-select-finado // en_gaveta */
+
+/* ========================== 
+   Estilos para Select de Finados Sin Titular
+   ========================== */
+#select-finado-sin-titular-group {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #fef3e6 0%, #fff8f0 100%);
+    border-radius: 10px;
+    border: 1px solid #f0d9c5;
+}
+
+#select-finado-sin-titular-group .form-label {
+    color: #1e5c50;
+    font-weight: 600;
+}
+
+#select-finado-sin-titular-group .input-wrapper {
+    position: relative;
+}
+
+#select-finado-sin-titular-group .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #601028;
+    z-index: 100;
+    pointer-events: none;
+}
+
+#select-finado-sin-titular-group .p-note {
+    color: #601028;
+    background: rgba(96, 16, 40, 0.08);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid #601028;
+}
+
+/* Estilos para las opciones del Select2 de Finados Sin Titular */
+#agregarTramitePanteon .select2-finado-option {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+#agregarTramitePanteon .select2-finado-option .finado-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#agregarTramitePanteon .select2-finado-option .finado-nombre {
+    font-weight: 600;
+    color: #111827;
+    font-size: 0.92rem;
+}
+
+#agregarTramitePanteon .select2-finado-option .finado-info {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+#agregarTramitePanteon .select2-finado-option .badge {
+    background: #eef2ff;
+    color: #3730a3;
+    border-radius: 9999px;
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+#agregarTramitePanteon .select2-finado-option .badge-panteon {
+    background: #e6f3f1;
+    color: #1e5c50;
+}
+
+#agregarTramitePanteon .select2-finado-option .badge-gaveta {
+    background: #f6e8ec;
+    color: #601028;
+}
+
+#agregarTramitePanteon .select2-finado-option .badge-pasillo {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+#agregarTramitePanteon .select2-finado-option .badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* ========================== 
+   Panel informativo de opciones
+   ========================== */
+.info-solicitante-panel {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.info-solicitante-header {
+    background: linear-gradient(135deg, #1e5c50 0%, #2a7a6a 100%);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-solicitante-header i {
+    font-size: 1rem;
+}
+
+.info-solicitante-body {
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.info-item:hover {
+    border-color: #1e5c50;
+    box-shadow: 0 2px 4px rgba(30, 92, 80, 0.1);
+}
+
+.info-badge {
+    flex-shrink: 0;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    min-width: 100px;
+    text-align: center;
+}
+
+.info-badge-titular {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.info-badge-publico {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.info-badge-sin-titular {
+    background: #fce7f3;
+    color: #9d174d;
+    border: 1px solid #fbcfe8;
+}
+
+.info-desc {
+    font-size: 0.8rem;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+#btn-info-solicitante {
+    transition: transform 0.2s ease;
+}
+
+#btn-info-solicitante:hover {
+    transform: scale(1.2);
+}
+
+#btn-info-solicitante .fa-question-circle {
+    font-size: 1.1rem;
+    color: #1e5c50 !important;
+}
+
+@media (max-width: 768px) {
+    .info-item {
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .info-badge {
+        min-width: auto;
+        align-self: flex-start;
+    }
+}
+
+/* Select2 container dentro del grupo de finados sin titular */
+#select-finado-sin-titular-group .select2-container {
+    width: 100% !important;
+}
+
+#select-finado-sin-titular-group
+    .select2-container--default
+    .select2-selection--single {
+    height: 44px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding-left: 40px;
+    background: #fff;
+}
+
+#select-finado-sin-titular-group
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
+    line-height: 44px;
+    padding-left: 0;
+    color: #374151;
+}
+
+#select-finado-sin-titular-group
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    height: 42px;
+}
+
+/* Estado de carga */
+#select-finado-sin-titular-group .select2-container.loading .select2-selection {
+    background: #f9fafb
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="%23601028" stroke-width="2" fill="none" stroke-dasharray="31.4" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="1s" values="0 12 12;360 12 12" repeatCount="indefinite"/></circle></svg>')
+        no-repeat right 40px center;
+}

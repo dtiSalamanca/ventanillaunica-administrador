@@ -28,6 +28,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'active_directory' => [
+        'url' => env('AD_AUTH_URL', 'http://172.17.5.112:8080/api-ad-auth/index.php/login'),
+        'aplicativo' => env('AD_APLICATIVO', '24'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
