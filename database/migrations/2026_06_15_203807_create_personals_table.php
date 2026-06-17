@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_personales', function (Blueprint $table) {
+        Schema::create('cat_personales', function (Blueprint $table) {
             $table->id('id_personal');
             $table->unsignedInteger('fk_ciudadano');
             $table->string('nombre_documento');
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_personales');
+        Schema::dropIfExists('cat_personales');
     }
 };

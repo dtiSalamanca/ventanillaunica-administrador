@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_predios', function (Blueprint $table) {
+        Schema::create('cat_predios', function (Blueprint $table) {
             $table->id('id_predio');
             $table->string('clave_catastral');
+            $table->integer('propietario')->default(1)->comment('1 si es propietario, 0 no es propietario');
+            $table->integer('renta')->default(1)->comment('1 si es rentado, 0 no es rentado');
             $table->unsignedInteger('fk_ciudadano');
             $table->timestamps();
         });
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_predios');
+        Schema::dropIfExists('cat_predios');
     }
 };

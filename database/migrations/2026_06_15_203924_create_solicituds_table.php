@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('fecha_resolucion')->nullable()->default('2000-01-01');
             $table->string('observaciones')->nullable();
             $table->date('validez')->nullable()->default('2000-01-01');
+            $table->string('folio_caja')->nullable();
             $table->timestamps();
         });
     }

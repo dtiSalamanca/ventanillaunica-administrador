@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Predio extends Model
 {
     //
-    protected $table = 'tbl_predios';
+    protected $table = 'cat_predios';
     protected $primaryKey = 'id_predio';
 }

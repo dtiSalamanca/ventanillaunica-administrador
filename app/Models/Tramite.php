@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Tramite extends Model
 {
     //
-    protected $table = 'tbl_tramites';
+    protected $table = 'cat_tramites';
     protected $primaryKey = 'id_tramite';
 }

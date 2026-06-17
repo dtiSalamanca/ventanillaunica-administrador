@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_tramites', function (Blueprint $table) {
+        Schema::create('cat_tramites', function (Blueprint $table) {
             $table->id('id_tramite');
             $table->string('nombre');
             $table->boolean('activo')->default(true);
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_tramites');
+        Schema::dropIfExists('cat_tramites');
     }
 };

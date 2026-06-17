@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Extra extends Model
 {
     //
-    protected $table = 'tbl_extras';
+    protected $table = 'cat_extras';
     protected $primaryKey = 'id_extra';
 }
