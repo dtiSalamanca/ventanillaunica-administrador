@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('fk_ciudadano');
             $table->unsignedInteger('fk_tramite');
             $table->string('estatus')->default('En proceso');
-            $table->date('fecha_solicitud')->nullable()->default(DB::raw('CURRENT_DATE'));
+            $table->date('fecha_solicitud')->nullable()->useCurrent();
             $table->date('fecha_resolucion')->nullable()->default('2000-01-01');
             $table->string('observaciones')->nullable();
             $table->date('validez')->nullable()->default('2000-01-01');
