@@ -161,8 +161,8 @@
         window.dependenciasRoutes = {
             activas: "{{ route('getDependenciasActivas') }}",
             inactivas: "{{ route('getDependenciasInactivas') }}",
-{{--             editar: "{{ route('editarDependencia', ['dependencia' => '__ID__']) }}",
-            deshabilitar: "{{ route('deshabilitarDependencia', ['dependencia' => '__ID__']) }}",
+            editar: "{{ route('editarDependencia', ['dependencia' => '__ID__']) }}",
+{{--             deshabilitar: "{{ route('deshabilitarDependencia', ['dependencia' => '__ID__']) }}",
             habilitar: "{{ route('habilitarDependencia', ['dependencia' => '__ID__']) }}", --}}
         };
     </script>
