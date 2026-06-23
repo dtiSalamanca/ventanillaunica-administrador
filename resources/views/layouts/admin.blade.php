@@ -160,8 +160,8 @@
                             <i class="fas fa-list-check me-2"></i>Catálogos
                         </div>
 
-                        <a class="nav-link active {{ request()->routeIs('home') ? 'active-current' : '' }}"
-                            href="{{ route('home') }}">
+                        <a class="nav-link active {{ request()->routeIs('indexDependencias') ? 'active-current' : '' }}"
+                            href="{{ route('indexDependencias') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-house"></i></div>
                             Dependencias
                         </a>

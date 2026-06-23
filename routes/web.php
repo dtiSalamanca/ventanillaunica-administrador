@@ -15,5 +15,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware('auth')->controller(DependenciasController::class)->group(function () {
     Route::get('/dependencias', 'indexDependencias')->name('indexDependencias');
-
+    Route::get('/dependencias/agregar', 'agregarDependencia')->name('agregarDependencia');
+    Route::get('/dependencias/activas', 'getDependenciasActivas')->name('getDependenciasActivas');
+    Route::get('/dependencias/inactivas', 'getDependenciasInactivas')->name('getDependenciasInactivas');
 });
