@@ -166,6 +166,12 @@
                             Dependencias
                         </a>
 
+                        <a class="nav-link active {{ request()->routeIs('indexDependencias') ? 'active-current' : '' }}"
+                            href="{{ route('indexDependencias') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-house"></i></div>
+                            Trámites
+                        </a>
+
                     </div>
                 </div>
             </nav>
