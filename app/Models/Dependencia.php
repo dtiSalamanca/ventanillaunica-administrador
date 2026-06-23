@@ -9,4 +9,5 @@ class Dependencia extends Model
     //
     protected $table = 'cat_dependencias';
     protected $primaryKey = 'id_dependencia';
+
 }

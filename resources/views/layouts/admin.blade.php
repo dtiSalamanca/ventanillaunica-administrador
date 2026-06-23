@@ -156,6 +156,16 @@
                             Inicio
                         </a>
 
+                        <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-list-check me-2"></i>Catálogos
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('home') ? 'active-current' : '' }}"
+                            href="{{ route('home') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-house"></i></div>
+                            Dependencias
+                        </a>
+
                     </div>
                 </div>
             </nav>
