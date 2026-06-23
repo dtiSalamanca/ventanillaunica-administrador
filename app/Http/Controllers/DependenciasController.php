@@ -79,4 +79,18 @@ class DependenciasController extends Controller
 
         return redirect()->route('indexDependencias')->with('success', 'Dependencia actualizada correctamente.');
     }
+
+    public function deshabilitarDependencia(Dependencia $dependencia): JsonResponse
+    {
+        $dependencia->update(['activo' => false]);
+
+        return response()->json(['message' => 'Dependencia deshabilitada correctamente.']);
+    }
+
+    public function habilitarDependencia(Dependencia $dependencia): JsonResponse
+    {
+        $dependencia->update(['activo' => true]);
+
+        return response()->json(['message' => 'Dependencia habilitada correctamente.']);
+    }
 }

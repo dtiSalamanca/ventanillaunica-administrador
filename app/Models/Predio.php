@@ -8,5 +8,6 @@ class Predio extends Model
 {
     //
     protected $table = 'tbl_predios';
+
     protected $primaryKey = 'id_predio';
 }

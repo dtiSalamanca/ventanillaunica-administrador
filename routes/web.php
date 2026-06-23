@@ -21,4 +21,6 @@ Route::middleware('auth')->controller(DependenciasController::class)->group(func
     Route::get('/dependencias/inactivas', 'getDependenciasInactivas')->name('getDependenciasInactivas');
     Route::get('/dependencias/editar/{dependencia}', 'editarDependencia')->name('editarDependencia');
     Route::post('/dependencias/editar/{dependencia}', 'actualizarDependencia')->name('actualizarDependencia');
+    Route::post('/dependencias/deshabilitar/{dependencia}', 'deshabilitarDependencia')->name('deshabilitarDependencia');
+    Route::post('/dependencias/habilitar/{dependencia}', 'habilitarDependencia')->name('habilitarDependencia');
 });

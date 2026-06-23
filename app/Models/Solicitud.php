@@ -8,5 +8,6 @@ class Solicitud extends Model
 {
     //
     protected $table = 'tbl_solicitudes';
+
     protected $primaryKey = 'id_solicitud';
 }
