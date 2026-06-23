@@ -8,5 +8,18 @@ class Dependencia extends Model
 {
     //
     protected $table = 'cat_dependencias';
+
     protected $primaryKey = 'id_dependencia';
+
+    protected $fillable = [
+        'nombre',
+        'activo',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'activo' => 'boolean',
+        ];
+    }
 }

@@ -8,5 +8,6 @@ class Tramite extends Model
 {
     //
     protected $table = 'tbl_tramites';
+
     protected $primaryKey = 'id_tramite';
 }

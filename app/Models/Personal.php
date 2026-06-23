@@ -8,5 +8,6 @@ class Personal extends Model
 {
     //
     protected $table = 'tbl_personales';
+
     protected $primaryKey = 'id_personal';
 }

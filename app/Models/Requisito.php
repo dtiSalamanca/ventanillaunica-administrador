@@ -8,5 +8,6 @@ class Requisito extends Model
 {
     //
     protected $table = 'tbl_requisitos';
+
     protected $primaryKey = 'id_requisito';
 }

@@ -8,5 +8,6 @@ class Extra extends Model
 {
     //
     protected $table = 'tbl_extras';
+
     protected $primaryKey = 'id_extra';
 }
