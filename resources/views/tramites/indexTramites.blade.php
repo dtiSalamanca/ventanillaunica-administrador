@@ -94,6 +94,10 @@
                                     id="btn-editar-tramite-activos" disabled>
                                     <i class="fas fa-pen-to-square"></i> Modificar trámite
                                 </button>
+                                <button type="button" class="action-bar-btn btn-review-top"
+                                    id="btn-revisar-requisitos" disabled>
+                                    <i class="fas fa-list-check"></i> Revisar requisitos
+                                </button>
                                 <button type="button" class="action-bar-btn btn-delete-top"
                                     id="btn-deshabilitar-tramite" disabled>
                                     <i class="fas fa-ban"></i> Deshabilitar
