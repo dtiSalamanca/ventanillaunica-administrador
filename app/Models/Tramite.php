@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tramite extends Model
 {
@@ -23,8 +23,8 @@ class Tramite extends Model
         return $this->belongsTo(Dependencia::class, 'fk_dependencia', 'id_dependencia');
     }
 
-    public function requisitos(): HasMany
+    public function requisitos(): BelongsToMany
     {
-        return $this->hasMany(Requisito::class, 'fk_tramite', 'id_tramite');
+        return $this->belongsToMany(Requisito::class, 'tbl_requisitos_tramites', 'fk_tramite', 'fk_requisito', 'id_tramite', 'id_requisito');
     }
 }

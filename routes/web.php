@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RequisitosController;
 use App\Http\Controllers\TramitesController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -37,10 +38,18 @@ Route::middleware('auth')->controller(TramitesController::class)->group(function
     Route::post('/tramites/deshabilitar/{tramite}', 'deshabilitarTramite')->name('deshabilitarTramite');
     Route::post('/tramites/habilitar/{tramite}', 'habilitarTramite')->name('habilitarTramite');
     Route::get('/tramites/requisitos/{tramite}', 'revisarRequisitos')->name('revisarRequisitos');
-    Route::get('/tramites/requisitos/{tramite}/activos', 'getRequisitosActivos')->name('getRequisitosActivos');
-    Route::get('/tramites/requisitos/{tramite}/inactivos', 'getRequisitosInactivos')->name('getRequisitosInactivos');
-    Route::post('/tramites/requisitos/{tramite}/agregar', 'registrarRequisito')->name('registrarRequisito');
-    Route::post('/tramites/requisitos/{tramite}/editar/{requisito}', 'actualizarRequisito')->name('actualizarRequisito');
-    Route::post('/tramites/requisitos/{tramite}/deshabilitar/{requisito}', 'deshabilitarRequisito')->name('deshabilitarRequisito');
-    Route::post('/tramites/requisitos/{tramite}/habilitar/{requisito}', 'habilitarRequisito')->name('habilitarRequisito');
+    Route::get('/tramites/requisitos/{tramite}/asignados', 'getRequisitosAsignados')->name('getRequisitosAsignados');
+    Route::get('/tramites/requisitos/{tramite}/catalogo', 'getCatalogoDisponible')->name('getCatalogoDisponible');
+    Route::post('/tramites/requisitos/{tramite}/asignar', 'asignarRequisitos')->name('asignarRequisitos');
+    Route::post('/tramites/requisitos/{tramite}/quitar/{requisito}', 'quitarRequisito')->name('quitarRequisito');
+});
+
+Route::middleware('auth')->controller(RequisitosController::class)->group(function () {
+    Route::get('/requisitos', 'indexRequisitos')->name('indexRequisitos');
+    Route::get('/requisitos/agregar', 'agregarRequisito')->name('agregarRequisito');
+    Route::post('/requisitos/agregar', 'registrarRequisito')->name('registrarRequisito');
+    Route::get('/requisitos/activos', 'getRequisitosActivos')->name('getRequisitosActivos');
+    Route::get('/requisitos/inactivos', 'getRequisitosInactivos')->name('getRequisitosInactivos');
+    Route::post('/requisitos/deshabilitar/{requisito}', 'deshabilitarRequisito')->name('deshabilitarRequisito');
+    Route::post('/requisitos/habilitar/{requisito}', 'habilitarRequisito')->name('habilitarRequisito');
 });

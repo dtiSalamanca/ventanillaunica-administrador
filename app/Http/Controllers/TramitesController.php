@@ -7,7 +7,6 @@ use App\Models\Tramite;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class TramitesController extends Controller
@@ -109,85 +108,58 @@ class TramitesController extends Controller
         return view('requisitos.revisarRequisitos', compact('tramite'));
     }
 
-    public function getRequisitosActivos(Tramite $tramite): JsonResponse
+    public function getRequisitosAsignados(Tramite $tramite): JsonResponse
     {
         $requisitos = $tramite->requisitos()
-            ->where('activo', true)
-            ->select('id_requisito', 'nombre')
-            ->orderBy('nombre')
+            ->select('cat_requisitos.id_requisito', 'cat_requisitos.nombre', 'cat_requisitos.activo')
+            ->orderBy('cat_requisitos.nombre')
             ->get();
 
         return response()->json($requisitos);
     }
 
-    public function getRequisitosInactivos(Tramite $tramite): JsonResponse
+    public function getCatalogoDisponible(Tramite $tramite): JsonResponse
     {
-        $requisitos = $tramite->requisitos()
-            ->where('activo', false)
-            ->select('id_requisito', 'nombre')
+        $asignados = $tramite->requisitos()->pluck('cat_requisitos.id_requisito');
+
+        $disponibles = Requisito::where('activo', true)
+            ->whereNotIn('id_requisito', $asignados)
             ->orderBy('nombre')
-            ->get();
+            ->get(['id_requisito', 'nombre']);
 
-        return response()->json($requisitos);
+        return response()->json($disponibles);
     }
 
-    public function registrarRequisito(Request $request, Tramite $tramite): JsonResponse
+    public function asignarRequisitos(Request $request, Tramite $tramite): JsonResponse
     {
         $validated = $request->validate([
-            'nombre' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('tbl_requisitos', 'nombre')->where('fk_tramite', $tramite->id_tramite),
-            ],
+            'requisitos' => 'required|array|min:1',
+            'requisitos.*' => 'exists:cat_requisitos,id_requisito',
         ], [
-            'nombre.required' => 'El nombre del requisito es obligatorio.',
-            'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
-            'nombre.unique' => 'Ya existe un requisito con ese nombre en este trámite.',
+            'requisitos.required' => 'Debe seleccionar al menos un requisito.',
+            'requisitos.min' => 'Debe seleccionar al menos un requisito.',
+            'requisitos.*.exists' => 'Uno o más requisitos seleccionados no son válidos.',
         ]);
 
-        $requisito = Requisito::create([
-            'nombre' => $validated['nombre'],
-            'activo' => true,
-            'fk_tramite' => $tramite->id_tramite,
-        ]);
+        $yaAsignados = $tramite->requisitos()->pluck('cat_requisitos.id_requisito')->toArray();
+        $nuevos = array_diff($validated['requisitos'], $yaAsignados);
 
-        return response()->json(['message' => 'Requisito registrado correctamente.', 'requisito' => $requisito], 201);
+        if (empty($nuevos)) {
+            return response()->json(['message' => 'Los requisitos seleccionados ya están asignados a este trámite.'], 422);
+        }
+
+        $tramite->requisitos()->attach($nuevos);
+
+        $count = count($nuevos);
+        $message = $count === 1 ? 'Requisito asignado correctamente.' : "{$count} requisitos asignados correctamente.";
+
+        return response()->json(['message' => $message], 201);
     }
 
-    public function actualizarRequisito(Request $request, Tramite $tramite, Requisito $requisito): JsonResponse
+    public function quitarRequisito(Tramite $tramite, Requisito $requisito): JsonResponse
     {
-        $validated = $request->validate([
-            'nombre' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('tbl_requisitos', 'nombre')
-                    ->where('fk_tramite', $tramite->id_tramite)
-                    ->ignore($requisito->id_requisito, 'id_requisito'),
-            ],
-        ], [
-            'nombre.required' => 'El nombre del requisito es obligatorio.',
-            'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
-            'nombre.unique' => 'Ya existe un requisito con ese nombre en este trámite.',
-        ]);
+        $tramite->requisitos()->detach($requisito->id_requisito);
 
-        $requisito->update(['nombre' => $validated['nombre']]);
-
-        return response()->json(['message' => 'Requisito actualizado correctamente.']);
-    }
-
-    public function deshabilitarRequisito(Tramite $tramite, Requisito $requisito): JsonResponse
-    {
-        $requisito->update(['activo' => false]);
-
-        return response()->json(['message' => 'Requisito deshabilitado correctamente.']);
-    }
-
-    public function habilitarRequisito(Tramite $tramite, Requisito $requisito): JsonResponse
-    {
-        $requisito->update(['activo' => true]);
-
-        return response()->json(['message' => 'Requisito habilitado correctamente.']);
+        return response()->json(['message' => 'Requisito quitado del trámite correctamente.']);
     }
 }
