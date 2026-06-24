@@ -5,8 +5,8 @@ $(document).ready(function () {
         },
     });
 
-    const tablaActivos = $("#tabla-dependencias-activas");
-    const tablaInactivos = $("#tabla-dependencias-inactivas");
+    const tablaActivos = $("#tabla-requisitos-activos");
+    const tablaInactivos = $("#tabla-requisitos-inactivos");
 
     if (!tablaActivos.length || !tablaInactivos.length) {
         return;
@@ -18,7 +18,7 @@ $(document).ready(function () {
         autoWidth: false,
         order: [[1, "asc"]],
         ajax: {
-            url: window.dependenciasRoutes.activas,
+            url: window.requisitosRoutes.activas,
             type: "GET",
             dataType: "json",
             dataSrc: "",
@@ -27,7 +27,7 @@ $(document).ready(function () {
             processing: "Procesando...",
             lengthMenu: "Mostrar _MENU_ registros",
             zeroRecords: "No se encontraron resultados",
-            emptyTable: "Ninguna dependencia disponible en esta tabla",
+            emptyTable: "Ningún requisito disponible en esta tabla",
             info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
             infoEmpty:
                 "Mostrando registros del 0 al 0 de un total de 0 registros",
@@ -50,15 +50,15 @@ $(document).ready(function () {
                 searchable: false,
                 render: function (data, type, row) {
                     return (
-                        '<input type="checkbox" class="dependencia-checkbox-activas" value="' +
-                        row.id_dependencia +
+                        '<input type="checkbox" class="requisito-checkbox-activos" value="' +
+                        row.id_requisito +
                         '" data-id="' +
-                        row.id_dependencia +
+                        row.id_requisito +
                         '">'
                     );
                 },
             },
-            { data: "nombre", className: "w-dependencia" },
+            { data: "nombre", className: "w-requisito" },
         ],
     });
 
@@ -68,7 +68,7 @@ $(document).ready(function () {
         autoWidth: false,
         order: [[1, "asc"]],
         ajax: {
-            url: window.dependenciasRoutes.inactivas,
+            url: window.requisitosRoutes.inactivas,
             type: "GET",
             dataType: "json",
             dataSrc: "",
@@ -77,7 +77,7 @@ $(document).ready(function () {
             processing: "Procesando...",
             lengthMenu: "Mostrar _MENU_ registros",
             zeroRecords: "No se encontraron resultados",
-            emptyTable: "Ninguna dependencia inactiva disponible",
+            emptyTable: "Ningún requisito inactivo disponible",
             info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
             infoEmpty:
                 "Mostrando registros del 0 al 0 de un total de 0 registros",
@@ -100,15 +100,15 @@ $(document).ready(function () {
                 searchable: false,
                 render: function (data, type, row) {
                     return (
-                        '<input type="checkbox" class="dependencia-checkbox-inactivas" value="' +
-                        row.id_dependencia +
+                        '<input type="checkbox" class="requisito-checkbox-inactivos" value="' +
+                        row.id_requisito +
                         '" data-id="' +
-                        row.id_dependencia +
+                        row.id_requisito +
                         '">'
                     );
                 },
             },
-            { data: "nombre", className: "w-dependencia" },
+            { data: "nombre", className: "w-requisito" },
         ],
     });
 
@@ -122,21 +122,21 @@ $(document).ready(function () {
 
     // ── Activos actions ──
     function updateActionButtonsActivos() {
-        var count = getSelectedIds(".dependencia-checkbox-activas").length;
-        $("#btn-editar-dependencia-activos").prop("disabled", count !== 1);
-        $("#btn-deshabilitar-dependencia").prop("disabled", count === 0);
+        var count = getSelectedIds(".requisito-checkbox-activos").length;
+        $("#btn-editar-requisito-activos").prop("disabled", count !== 1);
+        $("#btn-deshabilitar-requisito").prop("disabled", count === 0);
     }
 
-    $(document).on("change", ".dependencia-checkbox-activas", function () {
+    $(document).on("change", ".requisito-checkbox-activos", function () {
         if ($(this).prop("checked")) {
-            $(".dependencia-checkbox-activas").not(this).prop("checked", false);
+            $(".requisito-checkbox-activos").not(this).prop("checked", false);
         }
         updateActionButtonsActivos();
     });
 
     $(document).on(
         "click",
-        "#tabla-dependencias-activas tbody tr",
+        "#tabla-requisitos-activos tbody tr",
         function (event) {
             var target = $(event.target);
             if (
@@ -152,13 +152,13 @@ $(document).ready(function () {
             }
 
             var checkbox = selectedRow
-                .find(".dependencia-checkbox-activas")
+                .find(".requisito-checkbox-activos")
                 .first();
             if (!checkbox.length) {
                 return;
             }
 
-            $(".dependencia-checkbox-activas").not(checkbox).prop("checked", false);
+            $(".requisito-checkbox-activos").not(checkbox).prop("checked", false);
             checkbox.prop("checked", true);
             updateActionButtonsActivos();
         },
@@ -168,23 +168,23 @@ $(document).ready(function () {
         updateActionButtonsActivos();
     });
 
-    $("#btn-editar-dependencia-activos").on("click", function () {
-        var ids = getSelectedIds(".dependencia-checkbox-activas");
+    $("#btn-editar-requisito-activos").on("click", function () {
+        var ids = getSelectedIds(".requisito-checkbox-activos");
         if (ids.length === 1) {
-            var url = window.dependenciasRoutes.editar.replace("__ID__", ids[0]);
+            var url = window.requisitosRoutes.editar.replace("__ID__", ids[0]);
             window.location.href = url;
         }
     });
 
-    $("#btn-deshabilitar-dependencia").on("click", function () {
-        var ids = getSelectedIds(".dependencia-checkbox-activas");
+    $("#btn-deshabilitar-requisito").on("click", function () {
+        var ids = getSelectedIds(".requisito-checkbox-activos");
         if (ids.length === 0) {
             return;
         }
 
         Swal.fire({
             title: "¿Está seguro?",
-            text: "La dependencia seleccionada será deshabilitada.",
+            text: "El requisito seleccionado será deshabilitado.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -196,7 +196,7 @@ $(document).ready(function () {
                 return;
             }
 
-            var url = window.dependenciasRoutes.deshabilitar.replace(
+            var url = window.requisitosRoutes.deshabilitar.replace(
                 "__ID__",
                 ids[0],
             );
@@ -229,7 +229,7 @@ $(document).ready(function () {
                     Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: "Ocurrió un error al deshabilitar la dependencia.",
+                        text: "Ocurrió un error al deshabilitar el requisito.",
                     });
                 });
         });
@@ -239,20 +239,20 @@ $(document).ready(function () {
 
     // ── Inactivos actions ──
     function updateActionButtonsInactivos() {
-        var count = getSelectedIds(".dependencia-checkbox-inactivas").length;
-        $("#btn-habilitar-dependencia").prop("disabled", count === 0);
+        var count = getSelectedIds(".requisito-checkbox-inactivos").length;
+        $("#btn-habilitar-requisito").prop("disabled", count === 0);
     }
 
-    $(document).on("change", ".dependencia-checkbox-inactivas", function () {
+    $(document).on("change", ".requisito-checkbox-inactivos", function () {
         if ($(this).prop("checked")) {
-            $(".dependencia-checkbox-inactivas").not(this).prop("checked", false);
+            $(".requisito-checkbox-inactivos").not(this).prop("checked", false);
         }
         updateActionButtonsInactivos();
     });
 
     $(document).on(
         "click",
-        "#tabla-dependencias-inactivas tbody tr",
+        "#tabla-requisitos-inactivos tbody tr",
         function (event) {
             var target = $(event.target);
             if (
@@ -268,13 +268,13 @@ $(document).ready(function () {
             }
 
             var checkbox = selectedRow
-                .find(".dependencia-checkbox-inactivas")
+                .find(".requisito-checkbox-inactivos")
                 .first();
             if (!checkbox.length) {
                 return;
             }
 
-            $(".dependencia-checkbox-inactivas")
+            $(".requisito-checkbox-inactivos")
                 .not(checkbox)
                 .prop("checked", false);
             checkbox.prop("checked", true);
@@ -286,15 +286,15 @@ $(document).ready(function () {
         updateActionButtonsInactivos();
     });
 
-    $("#btn-habilitar-dependencia").on("click", function () {
-        var ids = getSelectedIds(".dependencia-checkbox-inactivas");
+    $("#btn-habilitar-requisito").on("click", function () {
+        var ids = getSelectedIds(".requisito-checkbox-inactivos");
         if (ids.length === 0) {
             return;
         }
 
         Swal.fire({
             title: "¿Está seguro?",
-            text: "La dependencia seleccionada será habilitada nuevamente.",
+            text: "El requisito seleccionado será habilitado nuevamente.",
             icon: "info",
             showCancelButton: true,
             confirmButtonColor: "#10b981",
@@ -306,7 +306,7 @@ $(document).ready(function () {
                 return;
             }
 
-            var url = window.dependenciasRoutes.habilitar.replace(
+            var url = window.requisitosRoutes.habilitar.replace(
                 "__ID__",
                 ids[0],
             );
@@ -339,7 +339,7 @@ $(document).ready(function () {
                     Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: "Ocurrió un error al habilitar la dependencia.",
+                        text: "Ocurrió un error al habilitar el requisito.",
                     });
                 });
         });
