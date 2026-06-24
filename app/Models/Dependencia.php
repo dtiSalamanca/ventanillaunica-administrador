@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Dependencia extends Model
 {
-    //
     protected $table = 'cat_dependencias';
 
     protected $primaryKey = 'id_dependencia';
@@ -21,5 +21,10 @@ class Dependencia extends Model
         return [
             'activo' => 'boolean',
         ];
+    }
+
+    public function tramites(): HasMany
+    {
+        return $this->hasMany(Tramite::class, 'fk_dependencia', 'id_dependencia');
     }
 }
