@@ -310,6 +310,15 @@ body {
     color: #fff;
 }
 
+.action-bar-btn.btn-review-top {
+    color: #0ea5e9;
+}
+
+.action-bar-btn.btn-review-top:hover:not(:disabled) {
+    background: #0ea5e9;
+    color: #fff;
+}
+
 /* ── Checkbox column ── */
 .w-checkbox {
     width: 1px;

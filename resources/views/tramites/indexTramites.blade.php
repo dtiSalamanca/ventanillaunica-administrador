@@ -170,6 +170,7 @@
             editar: "{{ route('editarTramite', ['tramite' => '__ID__']) }}",
             deshabilitar: "{{ route('deshabilitarTramite', ['tramite' => '__ID__']) }}",
             habilitar: "{{ route('habilitarTramite', ['tramite' => '__ID__']) }}",
+            requisitos: "{{ route('revisarRequisitos', ['tramite' => '__ID__']) }}",
         };
     </script>
     <script src="{{ asset('js/tramites/indexTramites.js') }}"></script>

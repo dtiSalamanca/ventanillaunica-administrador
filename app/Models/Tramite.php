@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tramite extends Model
 {
@@ -20,5 +21,10 @@ class Tramite extends Model
     public function dependencia(): BelongsTo
     {
         return $this->belongsTo(Dependencia::class, 'fk_dependencia', 'id_dependencia');
+    }
+
+    public function requisitos(): HasMany
+    {
+        return $this->hasMany(Requisito::class, 'fk_tramite', 'id_tramite');
     }
 }

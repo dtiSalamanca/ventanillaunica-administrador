@@ -36,4 +36,11 @@ Route::middleware('auth')->controller(TramitesController::class)->group(function
     Route::post('/tramites/editar/{tramite}', 'actualizarTramite')->name('actualizarTramite');
     Route::post('/tramites/deshabilitar/{tramite}', 'deshabilitarTramite')->name('deshabilitarTramite');
     Route::post('/tramites/habilitar/{tramite}', 'habilitarTramite')->name('habilitarTramite');
+    Route::get('/tramites/requisitos/{tramite}', 'revisarRequisitos')->name('revisarRequisitos');
+    Route::get('/tramites/requisitos/{tramite}/activos', 'getRequisitosActivos')->name('getRequisitosActivos');
+    Route::get('/tramites/requisitos/{tramite}/inactivos', 'getRequisitosInactivos')->name('getRequisitosInactivos');
+    Route::post('/tramites/requisitos/{tramite}/agregar', 'registrarRequisito')->name('registrarRequisito');
+    Route::post('/tramites/requisitos/{tramite}/editar/{requisito}', 'actualizarRequisito')->name('actualizarRequisito');
+    Route::post('/tramites/requisitos/{tramite}/deshabilitar/{requisito}', 'deshabilitarRequisito')->name('deshabilitarRequisito');
+    Route::post('/tramites/requisitos/{tramite}/habilitar/{requisito}', 'habilitarRequisito')->name('habilitarRequisito');
 });

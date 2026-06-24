@@ -124,6 +124,7 @@ $(document).ready(function () {
     function updateActionButtonsActivos() {
         var count = getSelectedIds(".tramite-checkbox-activos").length;
         $("#btn-editar-tramite-activos").prop("disabled", count !== 1);
+        $("#btn-revisar-requisitos").prop("disabled", count !== 1);
         $("#btn-deshabilitar-tramite").prop("disabled", count === 0);
     }
 
@@ -177,6 +178,14 @@ $(document).ready(function () {
                 "__ID__",
                 ids[0],
             );
+            window.location.href = url;
+        }
+    });
+
+    $("#btn-revisar-requisitos").on("click", function () {
+        var ids = getSelectedIds(".tramite-checkbox-activos");
+        if (ids.length === 1) {
+            var url = window.tramitesRoutes.requisitos.replace("__ID__", ids[0]);
             window.location.href = url;
         }
     });
