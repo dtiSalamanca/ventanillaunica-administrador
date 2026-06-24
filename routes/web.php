@@ -47,6 +47,7 @@ Route::middleware('auth')->controller(TramitesController::class)->group(function
 Route::middleware('auth')->controller(RequisitosController::class)->group(function () {
     Route::get('/requisitos', 'indexRequisitos')->name('indexRequisitos');
     Route::get('/requisitos/agregar', 'agregarRequisito')->name('agregarRequisito');
+    Route::post('/requisitos/agregar', 'registrarRequisito')->name('registrarRequisito');
     Route::get('/requisitos/activos', 'getRequisitosActivos')->name('getRequisitosActivos');
     Route::get('/requisitos/inactivos', 'getRequisitosInactivos')->name('getRequisitosInactivos');
     Route::post('/requisitos/deshabilitar/{requisito}', 'deshabilitarRequisito')->name('deshabilitarRequisito');
