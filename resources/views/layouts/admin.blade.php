@@ -175,7 +175,7 @@
 
                         <a class="nav-link active {{ request()->routeIs('indexRequisitos') ? 'active-current' : '' }}"
                             href="{{ route('indexRequisitos') }}">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-file-lines"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-clipboard-list"></i></div>
                             Requisitos
                         </a>
 
