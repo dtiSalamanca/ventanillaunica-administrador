@@ -172,6 +172,13 @@
                             Trámites
                         </a>
 
+
+                        <a class="nav-link active {{ request()->routeIs('indexTramites') ? 'active-current' : '' }}"
+                            href="{{ route('indexTramites') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-file-lines"></i></div>
+                            Requisitos
+                        </a>
+
                     </div>
                 </div>
             </nav>
