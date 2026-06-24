@@ -161,3 +161,65 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - To filter on a particular test name: `php artisan test --compact --filter=testName` (recommended after making a change to a related file).
 
 </laravel-boost-guidelines>
+
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+**Ventanilla Única – Administrador** is a Laravel 13 admin panel for managing government procedures (trámites), dependencies (dependencias), and requirements (requisitos). All routes require authentication; registration is disabled (admin accounts are created manually).
+
+## Commands
+
+```bash
+# Development
+composer run dev          # starts server + queue + vite in parallel
+php artisan serve         # standalone server (served via Laravel Herd)
+npm run dev               # vite dev server
+npm run build             # production assets
+
+# Code quality
+vendor/bin/pint --dirty --format agent   # format changed PHP files (run after every PHP edit)
+php artisan test --compact               # full test suite
+php artisan test --compact --filter=testName
+
+# Useful Artisan
+php artisan route:list --except-vendor   # inspect all app routes
+```
+
+## Architecture
+
+### Module Pattern
+
+Each domain module follows the same pattern — use existing modules as the reference:
+
+| Layer | Location |
+|---|---|
+| Controller | `app/Http/Controllers/{Module}Controller.php` |
+| Blade views | `resources/views/{module}/` |
+| Module CSS | `public/css/{module}.css` |
+| Module JS | `public/js/{module}.js` |
+
+Controllers return JSON for AJAX data calls (active/inactive lists) and Blade views for full-page loads. There is no API versioning — AJAX endpoints live alongside web routes.
+
+### Routes (`routes/web.php`)
+
+All authenticated routes are grouped by controller using `->middleware('auth')->controller(XController::class)->group(...)`. Follow this pattern for new modules.
+
+Route naming convention: `{action}{Module}` in camelCase, e.g. `indexDependencias`, `agregarTramite`, `deshabilitarRequisito`.
+
+### Frontend
+
+- Tailwind CSS v4 via Vite
+- Per-module vanilla JS files in `public/js/` — no bundled JS framework
+- Shared layout: `resources/views/layouts/` (check for existing partials before adding new ones)
+- Modal colors helper: `resources/views/modalColores.blade.php`
+
+### Models & Database
+
+Three core models: `Dependencia`, `Tramite`, `Requisito`. Tramites have a many-to-many relationship with Requisitos. All models support enable/disable (soft toggle via a status column — check schema before assuming column names).
+
+### Auth
+
+Uses `laravel/ui` Auth scaffolding. Login is at `/`, home dashboard at `/home`.
