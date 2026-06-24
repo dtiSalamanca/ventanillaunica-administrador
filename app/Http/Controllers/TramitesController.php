@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Requisito;
+use App\Models\RequisitoTramite;
 use App\Models\Tramite;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -138,17 +139,21 @@ class TramitesController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('tbl_requisitos', 'nombre')->where('fk_tramite', $tramite->id_tramite),
+                Rule::unique('cat_requisitos', 'nombre'),
             ],
         ], [
             'nombre.required' => 'El nombre del requisito es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
-            'nombre.unique' => 'Ya existe un requisito con ese nombre en este trámite.',
+            'nombre.unique' => 'Ya existe un requisito con ese nombre.',
         ]);
 
         $requisito = Requisito::create([
             'nombre' => $validated['nombre'],
             'activo' => true,
+        ]);
+
+        RequisitoTramite::create([
+            'fk_requisito' => $requisito->id_requisito,
             'fk_tramite' => $tramite->id_tramite,
         ]);
 
@@ -162,8 +167,7 @@ class TramitesController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('tbl_requisitos', 'nombre')
-                    ->where('fk_tramite', $tramite->id_tramite)
+                Rule::unique('cat_requisitos', 'nombre')
                     ->ignore($requisito->id_requisito, 'id_requisito'),
             ],
         ], [
