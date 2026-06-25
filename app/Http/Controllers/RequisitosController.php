@@ -71,4 +71,10 @@ class RequisitosController extends Controller
 
         return response()->json(['message' => 'Requisito habilitado correctamente.']);
     }
+
+
+    public function editarDependencia(Dependencia $dependencia): View
+    {
+        return view('dependencias.editarDependencia', compact('dependencia'));
+    }
 }
