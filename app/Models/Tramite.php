@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tramite extends Model
 {
-    protected $table = 'tbl_tramites';
+    protected $table = 'cat_tramites';
 
     protected $primaryKey = 'id_tramite';
 
     protected $fillable = [
-        'nombre',
-        'activo',
+        'nombre_tramite',
+        'estatus_tramite',
         'fk_dependencia',
     ];
 
