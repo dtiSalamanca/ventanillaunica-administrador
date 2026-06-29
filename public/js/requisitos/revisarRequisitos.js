@@ -54,9 +54,9 @@ $(document).ready(function () {
                     );
                 },
             },
-            { data: "nombre" },
+            { data: "nombre_requisito" },
             {
-                data: "activo",
+                data: "estatus_requisito",
                 className: "w-estado",
                 orderable: false,
                 searchable: false,
@@ -199,7 +199,7 @@ $(document).ready(function () {
                         results: data.map(function (item) {
                             return {
                                 id: item.id_requisito,
-                                text: item.nombre,
+                                text: item.nombre_requisito,
                             };
                         }),
                     };

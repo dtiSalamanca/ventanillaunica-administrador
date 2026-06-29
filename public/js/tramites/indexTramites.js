@@ -58,7 +58,7 @@ $(document).ready(function () {
                     );
                 },
             },
-            { data: "nombre", className: "w-tramite" },
+            { data: "nombre_tramite", className: "w-tramite" },
         ],
     });
 
@@ -108,7 +108,7 @@ $(document).ready(function () {
                     );
                 },
             },
-            { data: "nombre", className: "w-tramite" },
+            { data: "nombre_tramite", className: "w-tramite" },
         ],
     });
 

@@ -58,7 +58,7 @@ $(document).ready(function () {
                     );
                 },
             },
-            { data: "nombre", className: "w-requisito" },
+            { data: "nombre_requisito", className: "w-requisito" },
         ],
     });
 
@@ -108,7 +108,7 @@ $(document).ready(function () {
                     );
                 },
             },
-            { data: "nombre", className: "w-requisito" },
+            { data: "nombre_requisito", className: "w-requisito" },
         ],
     });
 
