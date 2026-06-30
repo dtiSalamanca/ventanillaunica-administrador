@@ -58,7 +58,7 @@ $(document).ready(function () {
                     );
                 },
             },
-            { data: "nombre", className: "w-dependencia" },
+            { data: "nombre_dependencia", className: "w-dependencia" },
         ],
     });
 
@@ -108,7 +108,7 @@ $(document).ready(function () {
                     );
                 },
             },
-            { data: "nombre", className: "w-dependencia" },
+            { data: "nombre_dependencia", className: "w-dependencia" },
         ],
     });
 

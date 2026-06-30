@@ -43,22 +43,22 @@
 
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="nombre" class="form-label">
+                            <label for="nombre_dependencia" class="form-label">
                                 <i class="fas fa-font me-1"></i>Nombre de la dependencia
                             </label>
-                            <input type="text" name="nombre" id="nombre"
-                                class="form-control @error('nombre') is-invalid @enderror"
-                                value="{{ old('nombre') }}" maxlength="255" required
+                            <input type="text" name="nombre_dependencia" id="nombre_dependencia"
+                                class="form-control @error('nombre_dependencia') is-invalid @enderror"
+                                value="{{ old('nombre_dependencia') }}" maxlength="255" required
                                 autocomplete="off" placeholder="Ej. Dirección de Servicios Públicos">
                             <div class="field-footer">
                                 <span class="field-message">
-                                    @if ($errors->has('nombre'))
-                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('nombre') }}</span>
+                                    @if ($errors->has('nombre_dependencia'))
+                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('nombre_dependencia') }}</span>
                                     @else
                                         <span class="field-hint">Debe ser un nombre único</span>
                                     @endif
                                 </span>
-                                <span class="char-counter" id="counter-nombre"></span>
+                                <span class="char-counter" id="counter-nombre_dependencia"></span>
                             </div>
                         </div>
                     </div>

@@ -12,14 +12,14 @@ class Dependencia extends Model
     protected $primaryKey = 'id_dependencia';
 
     protected $fillable = [
-        'nombre',
-        'activo',
+        'nombre_dependencia',
+        'estatus_dependencia',
     ];
 
     protected function casts(): array
     {
         return [
-            'activo' => 'boolean',
+            'estatus_dependencia' => 'boolean',
         ];
     }
 
