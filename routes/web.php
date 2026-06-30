@@ -53,3 +53,8 @@ Route::middleware('auth')->controller(RequisitosController::class)->group(functi
     Route::post('/requisitos/deshabilitar/{requisito}', 'deshabilitarRequisito')->name('deshabilitarRequisito');
     Route::post('/requisitos/habilitar/{requisito}', 'habilitarRequisito')->name('habilitarRequisito');
 });
+
+Route::middleware('auth')->controller(UsuariosController::class)->group(function () {
+    Route::get('/usuarios', 'indexUsuarios')->name('indexUsuarios');
+   
+});

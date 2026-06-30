@@ -179,6 +179,17 @@
                             Requisitos
                         </a>
 
+                        <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-list-check me-2"></i>Configuración
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('indexRequisitos') ? 'active-current' : '' }}"
+                            href="{{ route('indexRequisitos') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                            Usuarios
+                        </a>
+
+
                     </div>
                 </div>
             </nav>
