@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TblDocumentoPersonal extends Model
+class catDocumentoPersonal extends Model
 {
     protected $table = 'tbl_documentos_personales';
 
@@ -29,6 +29,6 @@ class TblDocumentoPersonal extends Model
 
     public function catalogoDocumento(): BelongsTo
     {
-        return $this->belongsTo(CatDocumentoPersonal::class, 'fk_documento_personal', 'id_documento');
+        return $this->belongsTo(tblDocumentoPersonal::class, 'fk_documento_personal', 'id_documento');
     }
 }

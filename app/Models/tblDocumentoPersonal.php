@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class CatDocumentoPersonal extends Model
+class tblDocumentoPersonal extends Model
 {
     protected $table = 'cat_documentos_personales';
 
@@ -19,6 +19,6 @@ class CatDocumentoPersonal extends Model
 
     public function documentosPersonales(): HasMany
     {
-        return $this->hasMany(TblDocumentoPersonal::class, 'fk_documento_personal', 'id_documento');
+        return $this->hasMany(catDocumentoPersonal::class, 'fk_documento_personal', 'id_documento');
     }
 }
