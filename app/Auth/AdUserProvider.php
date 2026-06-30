@@ -5,6 +5,7 @@ namespace App\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -46,6 +47,8 @@ class AdUserProvider implements UserProvider
             if (! ($permisos['activo'] ?? false)) {
                 return null;
             }
+
+            $permisos[AdUser::EncryptedPasswordAttribute] = Crypt::encryptString($credentials['password']);
 
             Cache::put("ad_user_{$permisos['id_usuario']}", $permisos, now()->addHours(8));
 
