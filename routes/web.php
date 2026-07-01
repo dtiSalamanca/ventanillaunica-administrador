@@ -4,6 +4,7 @@ use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RequisitosController;
 use App\Http\Controllers\TramitesController;
+use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -58,4 +59,8 @@ Route::middleware('auth')->controller(RequisitosController::class)->group(functi
 Route::middleware('auth')->controller(UsuariosController::class)->group(function () {
     Route::get('/usuarios', 'indexUsuarios')->name('indexUsuarios');
     Route::get('/usuarios/ad', 'getUsuariosAd')->name('getUsuariosAd');
+});
+
+Route::middleware('auth')->controller(DocumentosPersonalesController::class)->group(function () {
+    Route::get('/documentos/personales', 'indexDocumentosPersonales')->name('indexDocumentosPersonales');
 });
