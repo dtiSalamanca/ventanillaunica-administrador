@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\AprobacionesController;
 use App\Http\Controllers\DependenciasController;
+use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RequisitosController;
 use App\Http\Controllers\TramitesController;
+use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -52,4 +55,28 @@ Route::middleware('auth')->controller(RequisitosController::class)->group(functi
     Route::get('/requisitos/inactivos', 'getRequisitosInactivos')->name('getRequisitosInactivos');
     Route::post('/requisitos/deshabilitar/{requisito}', 'deshabilitarRequisito')->name('deshabilitarRequisito');
     Route::post('/requisitos/habilitar/{requisito}', 'habilitarRequisito')->name('habilitarRequisito');
+});
+
+Route::middleware('auth')->controller(UsuariosController::class)->group(function () {
+    Route::get('/usuarios', 'indexUsuarios')->name('indexUsuarios');
+    Route::get('/usuarios/ad', 'getUsuariosAd')->name('getUsuariosAd');
+});
+
+Route::middleware('auth')->controller(DocumentosPersonalesController::class)->group(function () {
+    Route::get('/documentos/personales', 'indexDocumentosPersonales')->name('indexDocumentosPersonales');
+    Route::get('/documentos/personales/agregar', 'agregarDocumentoPersonal')->name('agregarDocumentoPersonal');
+    Route::post('/documentos/personales/agregar', 'registrarDocumentoPersonal')->name('registrarDocumentoPersonal');
+    Route::get('/documentos/personales/activos', 'getDocumentosPersonalesActivos')->name('getDocumentosPersonalesActivos');
+    Route::get('/documentos/personales/inactivos', 'getDocumentosPersonalesInactivos')->name('getDocumentosPersonalesInactivos');
+    Route::get('/documentos/personales/editar/{documentoPersonal}', 'editarDocumentoPersonal')->name('editarDocumentoPersonal');
+    Route::post('/documentos/personales/editar/{documentoPersonal}', 'actualizarDocumentoPersonal')->name('actualizarDocumentoPersonal');
+    Route::post('/documentos/personales/deshabilitar/{documentoPersonal}', 'deshabilitarDocumentoPersonal')->name('deshabilitarDocumentoPersonal');
+    Route::post('/documentos/personales/habilitar/{documentoPersonal}', 'habilitarDocumentoPersonal')->name('habilitarDocumentoPersonal');
+});
+
+Route::middleware('auth')->controller(AprobacionesController::class)->group(function () {
+    Route::get('/aprobaciones/documentos-personales', 'indexDocumentosPersonales')->name('indexAprobacionesDocumentosPersonales');
+    Route::get('/aprobaciones/documentos-personales/buscar', 'buscarDocumentosPersonales')->name('buscarAprobacionesDocumentosPersonales');
+    Route::post('/aprobaciones/documentos-personales/{documentoPersonal}/aprobar', 'aprobarDocumentoPersonal')->name('aprobarDocumentoPersonal');
+    Route::post('/aprobaciones/documentos-personales/{documentoPersonal}/rechazar', 'rechazarDocumentoPersonal')->name('rechazarDocumentoPersonal');
 });

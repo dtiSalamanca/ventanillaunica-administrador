@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_predios_docs', function (Blueprint $table) {
-            $table->id('id_predio_doc');
-            $table->unsignedInteger('fk_predio');
-            $table->string('nombre_documento');
-            $table->string('ruta_documento');
-            $table->date('validez')->nullable()->default('2000-01-01');
+        Schema::create('tbl_documentos_solicitud', function (Blueprint $table) {
+            $table->id('id_documento');
+            $table->unsignedBigInteger('fk_solicitud');
+            $table->string('documento_solicitud');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_predios_docs');
+        Schema::dropIfExists('tbl_documentos_solicitud');
     }
 };

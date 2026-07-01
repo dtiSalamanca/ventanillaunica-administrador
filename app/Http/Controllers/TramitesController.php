@@ -23,9 +23,9 @@ class TramitesController extends Controller
 
     public function getTramitesActivos(): JsonResponse
     {
-        $tramites = Tramite::where('activo', true)
-            ->select('id_tramite', 'nombre')
-            ->orderBy('nombre')
+        $tramites = Tramite::where('estatus_tramite', true)
+            ->select('id_tramite', 'nombre_tramite')
+            ->orderBy('nombre_tramite')
             ->get();
 
         return response()->json($tramites);
@@ -34,7 +34,7 @@ class TramitesController extends Controller
     public function registrarTramite(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:tbl_tramites,nombre',
+            'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
@@ -45,8 +45,8 @@ class TramitesController extends Controller
         ]);
 
         Tramite::create([
-            'nombre' => $validated['nombre'],
-            'activo' => true,
+            'nombre_tramite' => $validated['nombre'],
+            'estatus_tramite' => true,
             'fk_dependencia' => $validated['fk_dependencia'],
         ]);
 
@@ -55,9 +55,9 @@ class TramitesController extends Controller
 
     public function getTramitesInactivos(): JsonResponse
     {
-        $tramites = Tramite::where('activo', false)
-            ->select('id_tramite', 'nombre')
-            ->orderBy('nombre')
+        $tramites = Tramite::where('estatus_tramite', false)
+            ->select('id_tramite', 'nombre_tramite')
+            ->orderBy('nombre_tramite')
             ->get();
 
         return response()->json($tramites);
@@ -71,7 +71,7 @@ class TramitesController extends Controller
     public function actualizarTramite(Request $request, Tramite $tramite): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:tbl_tramites,nombre,'.$tramite->id_tramite.',id_tramite',
+            'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite,'.$tramite->id_tramite.',id_tramite',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
@@ -82,7 +82,7 @@ class TramitesController extends Controller
         ]);
 
         $tramite->update([
-            'nombre' => $validated['nombre'],
+            'nombre_tramite' => $validated['nombre'],
             'fk_dependencia' => $validated['fk_dependencia'],
         ]);
 
@@ -91,14 +91,14 @@ class TramitesController extends Controller
 
     public function deshabilitarTramite(Tramite $tramite): JsonResponse
     {
-        $tramite->update(['activo' => false]);
+        $tramite->update(['estatus_tramite' => false]);
 
         return response()->json(['message' => 'Trámite deshabilitado correctamente.']);
     }
 
     public function habilitarTramite(Tramite $tramite): JsonResponse
     {
-        $tramite->update(['activo' => true]);
+        $tramite->update(['estatus_tramite' => true]);
 
         return response()->json(['message' => 'Trámite habilitado correctamente.']);
     }
@@ -111,8 +111,8 @@ class TramitesController extends Controller
     public function getRequisitosAsignados(Tramite $tramite): JsonResponse
     {
         $requisitos = $tramite->requisitos()
-            ->select('cat_requisitos.id_requisito', 'cat_requisitos.nombre', 'cat_requisitos.activo')
-            ->orderBy('cat_requisitos.nombre')
+            ->select('cat_requisitos.id_requisito', 'cat_requisitos.nombre_requisito', 'cat_requisitos.estatus_requisito')
+            ->orderBy('cat_requisitos.nombre_requisito')
             ->get();
 
         return response()->json($requisitos);
@@ -122,10 +122,10 @@ class TramitesController extends Controller
     {
         $asignados = $tramite->requisitos()->pluck('cat_requisitos.id_requisito');
 
-        $disponibles = Requisito::where('activo', true)
+        $disponibles = Requisito::where('estatus_requisito', true)
             ->whereNotIn('id_requisito', $asignados)
-            ->orderBy('nombre')
-            ->get(['id_requisito', 'nombre']);
+            ->orderBy('nombre_requisito')
+            ->get(['id_requisito', 'nombre_requisito']);
 
         return response()->json($disponibles);
     }

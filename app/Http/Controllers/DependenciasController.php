@@ -22,9 +22,9 @@ class DependenciasController extends Controller
 
     public function getDependenciasActivas(): JsonResponse
     {
-        $dependencias = Dependencia::where('activo', true)
-            ->select('id_dependencia', 'nombre')
-            ->orderBy('nombre')
+        $dependencias = Dependencia::where('estatus_dependencia', true)
+            ->select('id_dependencia', 'nombre_dependencia')
+            ->orderBy('nombre_dependencia')
             ->get();
 
         return response()->json($dependencias);
@@ -33,16 +33,16 @@ class DependenciasController extends Controller
     public function registrarDependencia(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:cat_dependencias,nombre',
+            'nombre_dependencia' => 'required|string|max:255|unique:cat_dependencias,nombre_dependencia',
         ], [
-            'nombre.required' => 'El nombre de la dependencia es obligatorio.',
-            'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
-            'nombre.unique' => 'Ya existe una dependencia con ese nombre.',
+            'nombre_dependencia.required' => 'El nombre de la dependencia es obligatorio.',
+            'nombre_dependencia.max' => 'El nombre no debe exceder los 255 caracteres.',
+            'nombre_dependencia.unique' => 'Ya existe una dependencia con ese nombre.',
         ]);
 
         Dependencia::create([
-            'nombre' => $validated['nombre'],
-            'activo' => true,
+            'nombre_dependencia' => $validated['nombre_dependencia'],
+            'estatus_dependencia' => true,
         ]);
 
         return redirect()->route('indexDependencias')->with('success', 'Dependencia registrada correctamente.');
@@ -50,9 +50,9 @@ class DependenciasController extends Controller
 
     public function getDependenciasInactivas(): JsonResponse
     {
-        $dependencias = Dependencia::where('activo', false)
-            ->select('id_dependencia', 'nombre')
-            ->orderBy('nombre')
+        $dependencias = Dependencia::where('estatus_dependencia', false)
+            ->select('id_dependencia', 'nombre_dependencia')
+            ->orderBy('nombre_dependencia')
             ->get();
 
         return response()->json($dependencias);
@@ -66,15 +66,15 @@ class DependenciasController extends Controller
     public function actualizarDependencia(Request $request, Dependencia $dependencia): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:cat_dependencias,nombre,'.$dependencia->id_dependencia.',id_dependencia',
+            'nombre_dependencia' => 'required|string|max:255|unique:cat_dependencias,nombre_dependencia,'.$dependencia->id_dependencia.',id_dependencia',
         ], [
-            'nombre.required' => 'El nombre de la dependencia es obligatorio.',
-            'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
-            'nombre.unique' => 'Ya existe una dependencia con ese nombre.',
+            'nombre_dependencia.required' => 'El nombre de la dependencia es obligatorio.',
+            'nombre_dependencia.max' => 'El nombre no debe exceder los 255 caracteres.',
+            'nombre_dependencia.unique' => 'Ya existe una dependencia con ese nombre.',
         ]);
 
         $dependencia->update([
-            'nombre' => $validated['nombre'],
+            'nombre_dependencia' => $validated['nombre_dependencia'],
         ]);
 
         return redirect()->route('indexDependencias')->with('success', 'Dependencia actualizada correctamente.');
@@ -82,14 +82,14 @@ class DependenciasController extends Controller
 
     public function deshabilitarDependencia(Dependencia $dependencia): JsonResponse
     {
-        $dependencia->update(['activo' => false]);
+        $dependencia->update(['estatus_dependencia' => false]);
 
         return response()->json(['message' => 'Dependencia deshabilitada correctamente.']);
     }
 
     public function habilitarDependencia(Dependencia $dependencia): JsonResponse
     {
-        $dependencia->update(['activo' => true]);
+        $dependencia->update(['estatus_dependencia' => true]);
 
         return response()->json(['message' => 'Dependencia habilitada correctamente.']);
     }

@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!formulario || !botonActualizar) return;
 
     const campos = [
-        { inputId: "nombre", counterId: "counter-nombre", max: 255 },
+        { inputId: "nombre_dependencia", counterId: "counter-nombre_dependencia", max: 255 },
     ];
 
     campos.forEach(({ inputId, counterId, max }) => {

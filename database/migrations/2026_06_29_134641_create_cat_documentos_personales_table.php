@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_extras', function (Blueprint $table) {
-            $table->id('id_extra');
-            $table->string('nombre');
-            $table->date('validez')->nullable()->default('2000-01-01');
-            $table->unsignedInteger('fk_ciudadano');
+        Schema::create('cat_documentos_personales', function (Blueprint $table) {
+            $table->id('id_documento');
+            $table->string('nombre_documento');
+            $table->integer('vigencia_meses');
+            $table->boolean('estatus_documento')->default(true);
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_extras');
+        Schema::dropIfExists('cat_documentos_personales');
     }
 };

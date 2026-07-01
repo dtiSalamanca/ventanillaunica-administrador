@@ -12,8 +12,8 @@ class Requisito extends Model
     protected $primaryKey = 'id_requisito';
 
     protected $fillable = [
-        'nombre',
-        'activo',
+        'nombre_requisito',
+        'estatus_requisito',
     ];
 
     public function tramites(): BelongsToMany

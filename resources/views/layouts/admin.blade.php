@@ -157,6 +157,16 @@
                         </a>
 
                         <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-check-circle me-2"></i>Aprobaciones
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('indexAprobacionesDocumentosPersonales') ? 'active-current' : '' }}"
+                            href="{{ route('indexAprobacionesDocumentosPersonales') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-check-circle"></i></div>
+                            Documentos personales
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">
                             <i class="fas fa-list-check me-2"></i>Catálogos
                         </div>
 
@@ -178,6 +188,23 @@
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-clipboard-list"></i></div>
                             Requisitos
                         </a>
+
+                        <a class="nav-link active {{ request()->routeIs('indexDocumentosPersonales') ? 'active-current' : '' }}"
+                            href="{{ route('indexDocumentosPersonales') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-folder-open"></i></div>
+                            Documentos Personales
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-list-check me-2"></i>Configuración
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('indexUsuarios') ? 'active-current' : '' }}"
+                            href="{{ route('indexUsuarios') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                            Usuarios
+                        </a>
+
 
                     </div>
                 </div>

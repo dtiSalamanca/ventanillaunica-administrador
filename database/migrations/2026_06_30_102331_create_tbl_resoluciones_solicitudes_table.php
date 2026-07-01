@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_predios', function (Blueprint $table) {
-            $table->id('id_predio');
-            $table->string('clave_catastral');
-            $table->unsignedInteger('fk_ciudadano');
+        Schema::create('tbl_resoluciones_solicitudes', function (Blueprint $table) {
+            $table->id('id_resolucion');
+            $table->unsignedBigInteger('fk_turnado');
+            $table->text('resolucion_solicitud');
+            $table->string('documento_resolucion');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_predios');
+        Schema::dropIfExists('tbl_resoluciones_solicitudes');
     }
 };

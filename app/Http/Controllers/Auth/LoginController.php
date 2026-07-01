@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 
@@ -47,6 +50,24 @@ class LoginController extends Controller
     protected function guard()
     {
         return Auth::guard('ad');
+    }
+
+    public function logout(Request $request): JsonResponse|RedirectResponse
+    {
+        $user = $this->guard()->user();
+
+        if ($user) {
+            Cache::forget("ad_user_{$user->getAuthIdentifier()}");
+        }
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect('/');
     }
 
     protected function verifyRecaptcha(string $token): void

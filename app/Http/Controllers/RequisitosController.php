@@ -23,7 +23,7 @@ class RequisitosController extends Controller
     public function registrarRequisito(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:cat_requisitos,nombre',
+            'nombre' => 'required|string|max:255|unique:cat_requisitos,nombre_requisito',
         ], [
             'nombre.required' => 'El nombre del requisito es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
@@ -31,8 +31,8 @@ class RequisitosController extends Controller
         ]);
 
         Requisito::create([
-            'nombre' => $validated['nombre'],
-            'activo' => true,
+            'nombre_requisito' => $validated['nombre'],
+            'estatus_requisito' => true,
         ]);
 
         return redirect()->route('indexRequisitos')->with('success', 'Requisito registrado correctamente.');
@@ -40,9 +40,9 @@ class RequisitosController extends Controller
 
     public function getRequisitosActivos(): JsonResponse
     {
-        $requisitos = Requisito::where('activo', true)
-            ->select('id_requisito', 'nombre')
-            ->orderBy('nombre')
+        $requisitos = Requisito::where('estatus_requisito', true)
+            ->select('id_requisito', 'nombre_requisito')
+            ->orderBy('nombre_requisito')
             ->get();
 
         return response()->json($requisitos);
@@ -50,9 +50,9 @@ class RequisitosController extends Controller
 
     public function getRequisitosInactivos(): JsonResponse
     {
-        $requisitos = Requisito::where('activo', false)
-            ->select('id_requisito', 'nombre')
-            ->orderBy('nombre')
+        $requisitos = Requisito::where('estatus_requisito', false)
+            ->select('id_requisito', 'nombre_requisito')
+            ->orderBy('nombre_requisito')
             ->get();
 
         return response()->json($requisitos);
@@ -60,18 +60,17 @@ class RequisitosController extends Controller
 
     public function deshabilitarRequisito(Requisito $requisito): JsonResponse
     {
-        $requisito->update(['activo' => false]);
+        $requisito->update(['estatus_requisito' => false]);
 
         return response()->json(['message' => 'Requisito deshabilitado correctamente.']);
     }
 
     public function habilitarRequisito(Requisito $requisito): JsonResponse
     {
-        $requisito->update(['activo' => true]);
+        $requisito->update(['estatus_requisito' => true]);
 
         return response()->json(['message' => 'Requisito habilitado correctamente.']);
     }
-
 
     public function editarDependencia(Dependencia $dependencia): View
     {
