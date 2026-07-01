@@ -15,6 +15,6 @@
     </div>
 
     <div class="aprobaciones-pagination">
-        {{ $usuarios->links('pagination::bootstrap-5') }}
+        {{ $usuarios->links('vendor.pagination.aprobaciones') }}
     </div>
 @endif

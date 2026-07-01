@@ -457,20 +457,80 @@ body {
 
 .aprobaciones-pagination {
     margin-top: 2rem;
+}
+
+.aprobaciones-pagination-nav {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+}
+
+.aprobaciones-pagination-info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.aprobaciones-pagination-info strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.aprobaciones-pagination-list {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.aprobaciones-pagination-list .page-item {
+    display: flex;
+}
+
+.aprobaciones-pagination-list .page-link {
+    display: flex;
+    align-items: center;
     justify-content: center;
-}
-
-.aprobaciones-pagination .pagination .page-link {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.6rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
     color: var(--primary);
-    border-radius: 6px;
-    margin: 0 2px;
-    border-color: var(--border);
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: var(--transition);
 }
 
-.aprobaciones-pagination .pagination .page-item.active .page-link {
+.aprobaciones-pagination-list a.page-link:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+}
+
+.aprobaciones-pagination-list .page-item.active .page-link {
     background: var(--primary);
     border-color: var(--primary);
+    color: #fff;
+}
+
+.aprobaciones-pagination-list .page-item.disabled .page-link {
+    color: var(--text-secondary);
+    opacity: 0.5;
+    cursor: default;
+}
+
+@media (max-width: 640px) {
+    .aprobaciones-pagination-nav {
+        justify-content: center;
+        text-align: center;
+    }
 }
 
 @media (max-width: 1024px) {

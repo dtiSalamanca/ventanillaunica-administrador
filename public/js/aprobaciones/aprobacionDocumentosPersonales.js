@@ -87,14 +87,34 @@ $(document).ready(function () {
             $(this).hide();
             cargarGrid(tab, 1);
         });
+    });
 
-        $(document).on("click", config.resultado + " .pagination a", function (event) {
+    // Los enlaces de paginación deben interceptarse en fase de captura: el
+    // listener global de la cortinilla en layouts/admin.js se registra antes
+    // que este script y revisa `event.defaultPrevented` en fase de burbuja,
+    // por lo que un preventDefault() tardío no evita que muestre la cortinilla
+    // (y como aquí nunca hay una navegación real, la cortinilla no vuelve a
+    // ocultarse). Capturando el clic antes de que llegue a esa fase evita el problema.
+    document.addEventListener(
+        "click",
+        function (event) {
+            var anchor = event.target.closest(
+                "#pendientes-resultado .pagination a, #sin-pendientes-resultado .pagination a",
+            );
+            if (!anchor) {
+                return;
+            }
+
             event.preventDefault();
-            var url = new URL(this.href, window.location.origin);
+
+            var tab = anchor.closest("#pendientes-resultado") ? "pendientes" : "sin-pendientes";
+            var config = tabs[tab];
+            var url = new URL(anchor.href, window.location.origin);
             var page = url.searchParams.get(config.pageParam) || 1;
             cargarGrid(tab, page);
-        });
-    });
+        },
+        true,
+    );
 
     function enviarRevision(url, successTitle) {
         fetch(url, {
