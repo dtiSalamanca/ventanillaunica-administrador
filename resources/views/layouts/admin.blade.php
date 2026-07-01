@@ -157,6 +157,16 @@
                         </a>
 
                         <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-check-circle me-2"></i>Aprobaciones
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('home') ? 'active-current' : '' }}"
+                            href="{{ route('home') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-check-circle"></i></div>
+                            Documentos personales
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">
                             <i class="fas fa-list-check me-2"></i>Catálogos
                         </div>
 
