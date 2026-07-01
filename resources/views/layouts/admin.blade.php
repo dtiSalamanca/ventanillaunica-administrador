@@ -160,8 +160,8 @@
                             <i class="fas fa-check-circle me-2"></i>Aprobaciones
                         </div>
 
-                        <a class="nav-link active {{ request()->routeIs('home') ? 'active-current' : '' }}"
-                            href="{{ route('home') }}">
+                        <a class="nav-link active {{ request()->routeIs('indexAprobacionesDocumentosPersonales') ? 'active-current' : '' }}"
+                            href="{{ route('indexAprobacionesDocumentosPersonales') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-check-circle"></i></div>
                             Documentos personales
                         </a>

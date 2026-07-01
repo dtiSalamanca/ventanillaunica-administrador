@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AprobacionesController;
 use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\HomeController;
@@ -71,4 +72,11 @@ Route::middleware('auth')->controller(DocumentosPersonalesController::class)->gr
     Route::post('/documentos/personales/editar/{documentoPersonal}', 'actualizarDocumentoPersonal')->name('actualizarDocumentoPersonal');
     Route::post('/documentos/personales/deshabilitar/{documentoPersonal}', 'deshabilitarDocumentoPersonal')->name('deshabilitarDocumentoPersonal');
     Route::post('/documentos/personales/habilitar/{documentoPersonal}', 'habilitarDocumentoPersonal')->name('habilitarDocumentoPersonal');
+});
+
+Route::middleware('auth')->controller(AprobacionesController::class)->group(function () {
+    Route::get('/aprobaciones/documentos-personales', 'indexDocumentosPersonales')->name('indexAprobacionesDocumentosPersonales');
+    Route::get('/aprobaciones/documentos-personales/buscar', 'buscarDocumentosPersonales')->name('buscarAprobacionesDocumentosPersonales');
+    Route::post('/aprobaciones/documentos-personales/{documentoPersonal}/aprobar', 'aprobarDocumentoPersonal')->name('aprobarDocumentoPersonal');
+    Route::post('/aprobaciones/documentos-personales/{documentoPersonal}/rechazar', 'rechazarDocumentoPersonal')->name('rechazarDocumentoPersonal');
 });

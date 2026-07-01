@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class catDocumentoPersonal extends Model
 {
+    public const ESTATUS_RECHAZADO = 0;
+
+    public const ESTATUS_EN_REVISION = 1;
+
+    public const ESTATUS_APROBADO = 2;
+
     protected $table = 'tbl_documentos_personales';
 
     protected $primaryKey = 'id_documento';
