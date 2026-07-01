@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\DependenciasController;
+use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RequisitosController;
 use App\Http\Controllers\TramitesController;
-use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -63,4 +63,12 @@ Route::middleware('auth')->controller(UsuariosController::class)->group(function
 
 Route::middleware('auth')->controller(DocumentosPersonalesController::class)->group(function () {
     Route::get('/documentos/personales', 'indexDocumentosPersonales')->name('indexDocumentosPersonales');
+    Route::get('/documentos/personales/agregar', 'agregarDocumentoPersonal')->name('agregarDocumentoPersonal');
+    Route::post('/documentos/personales/agregar', 'registrarDocumentoPersonal')->name('registrarDocumentoPersonal');
+    Route::get('/documentos/personales/activos', 'getDocumentosPersonalesActivos')->name('getDocumentosPersonalesActivos');
+    Route::get('/documentos/personales/inactivos', 'getDocumentosPersonalesInactivos')->name('getDocumentosPersonalesInactivos');
+    Route::get('/documentos/personales/editar/{documentoPersonal}', 'editarDocumentoPersonal')->name('editarDocumentoPersonal');
+    Route::post('/documentos/personales/editar/{documentoPersonal}', 'actualizarDocumentoPersonal')->name('actualizarDocumentoPersonal');
+    Route::post('/documentos/personales/deshabilitar/{documentoPersonal}', 'deshabilitarDocumentoPersonal')->name('deshabilitarDocumentoPersonal');
+    Route::post('/documentos/personales/habilitar/{documentoPersonal}', 'habilitarDocumentoPersonal')->name('habilitarDocumentoPersonal');
 });
