@@ -181,7 +181,7 @@
 
                         <a class="nav-link active {{ request()->routeIs('indexDocumentosPersonales') ? 'active-current' : '' }}"
                             href="{{ route('indexDocumentosPersonales') }}">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-folder-open"></i></div>
                             Documentos Personales
                         </a>
 
