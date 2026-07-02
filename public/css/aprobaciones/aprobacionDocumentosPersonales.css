@@ -402,7 +402,8 @@ body {
 }
 
 .btn-aprobar,
-.btn-rechazar {
+.btn-rechazar,
+.btn-visualizar {
     border: none;
     border-radius: var(--radius-sm);
     width: 30px;
@@ -431,6 +432,18 @@ body {
 
 .btn-rechazar:hover {
     background: #ef4444;
+    color: #fff;
+}
+
+.btn-visualizar {
+    background: #e8f0fe;
+    color: #2563eb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-visualizar:hover {
+    background: #2563eb;
     color: #fff;
 }
 

@@ -77,6 +77,7 @@ Route::middleware('auth')->controller(DocumentosPersonalesController::class)->gr
 Route::middleware('auth')->controller(AprobacionesController::class)->group(function () {
     Route::get('/aprobaciones/documentos-personales', 'indexDocumentosPersonales')->name('indexAprobacionesDocumentosPersonales');
     Route::get('/aprobaciones/documentos-personales/buscar', 'buscarDocumentosPersonales')->name('buscarAprobacionesDocumentosPersonales');
+    Route::get('/aprobaciones/documentos-personales/{documentoPersonal}/visualizar', 'visualizarDocumentoPersonal')->name('visualizarDocumentoPersonal');
     Route::post('/aprobaciones/documentos-personales/{documentoPersonal}/aprobar', 'aprobarDocumentoPersonal')->name('aprobarDocumentoPersonal');
     Route::post('/aprobaciones/documentos-personales/{documentoPersonal}/rechazar', 'rechazarDocumentoPersonal')->name('rechazarDocumentoPersonal');
 });

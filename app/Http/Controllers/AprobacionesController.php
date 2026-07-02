@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\catDocumentoPersonal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AprobacionesController extends Controller
@@ -99,5 +103,70 @@ class AprobacionesController extends Controller
         $documentoPersonal->update(['estatus_documento' => catDocumentoPersonal::ESTATUS_RECHAZADO]);
 
         return response()->json(['message' => 'Documento rechazado correctamente.']);
+    }
+
+    /**
+     * Visualiza el archivo del documento personal consumiendo la API del
+     * repositorio ventanillaunica-ciudadano, donde se almacenan los PDFs.
+     * Devuelve el archivo inline para que el navegador lo muestre en su
+     * visor nativo dentro de una pestaña nueva.
+     */
+    public function visualizarDocumentoPersonal(catDocumentoPersonal $documentoPersonal): Response
+    {
+        $url = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/')
+            ."/api/documentos-personales/{$documentoPersonal->id_documento}/archivo";
+
+        try {
+            $respuesta = Http::withHeaders([
+                'X-Api-Token' => config('services.ventanilla_ciudadano.api_token'),
+            ])
+                ->timeout(15)
+                ->connectTimeout(5)
+                ->get($url);
+        } catch (ConnectionException) {
+            return $this->respuestaErrorVisualizacion(
+                'No se pudo conectar con el servicio de documentos.',
+            );
+        }
+
+        if (! $respuesta->successful()) {
+            return $this->respuestaErrorVisualizacion(
+                'El documento no está disponible en este momento.',
+            );
+        }
+
+        $nombreArchivo = Str::slug($documentoPersonal->catalogoDocumento->nombre_documento).'.pdf';
+
+        return response($respuesta->body(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$nombreArchivo.'"',
+        ]);
+    }
+
+    /**
+     * Página HTML mínima para reportar un error al visualizar el documento
+     * dentro de la pestaña nueva abierta por el navegador.
+     */
+    private function respuestaErrorVisualizacion(string $mensaje): Response
+    {
+        $html = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">'
+            .'<meta name="viewport" content="width=device-width, initial-scale=1">'
+            .'<title>Documento no disponible</title>'
+            .'<style>body{font-family:system-ui,Arial,sans-serif;display:flex;'
+            .'align-items:center;justify-content:center;height:100vh;margin:0;'
+            .'background:#f8fafc;color:#334155;text-align:center}'
+            .'.card{background:#fff;padding:2.5rem 3rem;border-radius:12px;'
+            .'box-shadow:0 4px 16px rgba(0,0,0,.08);max-width:420px}'
+            .'i{font-size:3rem;color:#ef4444;margin-bottom:1rem;display:block}'
+            .'</style></head><body><div class="card">'
+            .'<i>&#9888;</i><h2>Documento no disponible</h2>'
+            .'<p>'.$mensaje.'</p>'
+            .'<p style="color:#94a3b8;font-size:.9rem;margin-top:1.5rem">'
+            .'Puedes cerrar esta pestaña e intentarlo nuevamente.</p>'
+            .'</div></body></html>';
+
+        return response($html, 502, [
+            'Content-Type' => 'text/html; charset=UTF-8',
+        ]);
     }
 }

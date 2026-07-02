@@ -22,6 +22,7 @@ class catDocumentoPersonal extends Model
         'fk_documento_personal',
         'fecha_registro',
         'estatus_documento',
+        'ruta_archivo',
     ];
 
     protected $casts = [
