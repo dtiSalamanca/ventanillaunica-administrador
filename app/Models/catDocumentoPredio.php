@@ -13,11 +13,12 @@ class catDocumentoPredio extends Model
 
     protected $fillable = [
         'nombre_documento',
+        'vigencia_meses',
         'estatus_documento',
     ];
 
     public function documentosPredios(): HasMany
     {
-        return $this->hasMany(DocumentoPredio::class, 'fk_documento_predio', 'id_documento_predio');
+        return $this->hasMany(DocumentoPredio::class, 'fk_cat_documento_predio', 'id_documento_predio');
     }
 }
