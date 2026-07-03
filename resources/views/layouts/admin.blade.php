@@ -195,6 +195,12 @@
                             Documentos Personales
                         </a>
 
+                        <a class="nav-link active {{ request()->routeIs('indexDocumentosPersonales') ? 'active-current' : '' }}"
+                            href="{{ route('indexDocumentosPersonales') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-house-circle-check"></i></div>
+                            Documentos de Predios
+                        </a>
+
                         <div class="sb-sidenav-menu-heading">
                             <i class="fas fa-list-check me-2"></i>Configuración
                         </div>
