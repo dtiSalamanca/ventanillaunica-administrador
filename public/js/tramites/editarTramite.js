@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     dependencias.forEach(function (dep) {
                         var option = document.createElement("option");
                         option.value = dep.id_dependencia;
-                        option.textContent = dep.nombre;
+                        option.textContent = dep.nombre_dependencia;
                         selectDependencia.appendChild(option);
                     });
                 }
