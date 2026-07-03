@@ -402,15 +402,18 @@ body {
 }
 
 .btn-aprobar,
-.btn-rechazar {
+.btn-rechazar,
+.btn-visualizar {
     border: none;
     border-radius: var(--radius-sm);
     width: 30px;
     height: 30px;
+    padding: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 0.85rem;
+    line-height: 1;
     transition: var(--transition);
 }
 
@@ -431,6 +434,18 @@ body {
 
 .btn-rechazar:hover {
     background: #ef4444;
+    color: #fff;
+}
+
+.btn-visualizar {
+    background: #e8f0fe;
+    color: #2563eb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-visualizar:hover {
+    background: #2563eb;
     color: #fff;
 }
 

@@ -59,6 +59,24 @@ $(document).ready(function () {
                 },
             },
             { data: "nombre_tramite", className: "w-tramite" },
+            { data: "descripcion_tramite", className: "w-descripcion" },
+            {
+                data: "precio_tramite",
+                className: "w-precio text-end",
+                render: function (data, type) {
+                    if (type === "display") {
+                        var numero = parseFloat(data) || 0;
+                        return (
+                            "$" +
+                            numero.toLocaleString("es-MX", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })
+                        );
+                    }
+                    return data;
+                },
+            },
         ],
     });
 
@@ -109,6 +127,24 @@ $(document).ready(function () {
                 },
             },
             { data: "nombre_tramite", className: "w-tramite" },
+            { data: "descripcion_tramite", className: "w-descripcion" },
+            {
+                data: "precio_tramite",
+                className: "w-precio text-end",
+                render: function (data, type) {
+                    if (type === "display") {
+                        var numero = parseFloat(data) || 0;
+                        return (
+                            "$" +
+                            numero.toLocaleString("es-MX", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })
+                        );
+                    }
+                    return data;
+                },
+            },
         ],
     });
 

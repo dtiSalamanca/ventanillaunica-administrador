@@ -24,7 +24,7 @@ class TramitesController extends Controller
     public function getTramitesActivos(): JsonResponse
     {
         $tramites = Tramite::where('estatus_tramite', true)
-            ->select('id_tramite', 'nombre_tramite')
+            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite')
             ->orderBy('nombre_tramite')
             ->get();
 
@@ -35,19 +35,28 @@ class TramitesController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite',
+            'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
+            'precio' => 'required|numeric|min:0|max:99999999.99',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
             'nombre.unique' => 'Ya existe un trámite con ese nombre.',
+            'descripcion.required' => 'La descripción del trámite es obligatoria.',
             'fk_dependencia.required' => 'La dependencia es obligatoria.',
             'fk_dependencia.exists' => 'La dependencia seleccionada no es válida.',
+            'precio.required' => 'El precio del trámite es obligatorio.',
+            'precio.numeric' => 'El precio debe ser un número válido.',
+            'precio.min' => 'El precio no puede ser negativo.',
+            'precio.max' => 'El precio excede el monto máximo permitido.',
         ]);
 
         Tramite::create([
             'nombre_tramite' => $validated['nombre'],
+            'descripcion_tramite' => $validated['descripcion'],
             'estatus_tramite' => true,
             'fk_dependencia' => $validated['fk_dependencia'],
+            'precio_tramite' => $validated['precio'],
         ]);
 
         return redirect()->route('indexTramites')->with('success', 'Trámite registrado correctamente.');
@@ -56,7 +65,7 @@ class TramitesController extends Controller
     public function getTramitesInactivos(): JsonResponse
     {
         $tramites = Tramite::where('estatus_tramite', false)
-            ->select('id_tramite', 'nombre_tramite')
+            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite')
             ->orderBy('nombre_tramite')
             ->get();
 
@@ -72,18 +81,27 @@ class TramitesController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite,'.$tramite->id_tramite.',id_tramite',
+            'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
+            'precio' => 'required|numeric|min:0|max:99999999.99',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
             'nombre.unique' => 'Ya existe un trámite con ese nombre.',
+            'descripcion.required' => 'La descripción del trámite es obligatoria.',
             'fk_dependencia.required' => 'La dependencia es obligatoria.',
             'fk_dependencia.exists' => 'La dependencia seleccionada no es válida.',
+            'precio.required' => 'El precio del trámite es obligatorio.',
+            'precio.numeric' => 'El precio debe ser un número válido.',
+            'precio.min' => 'El precio no puede ser negativo.',
+            'precio.max' => 'El precio excede el monto máximo permitido.',
         ]);
 
         $tramite->update([
             'nombre_tramite' => $validated['nombre'],
+            'descripcion_tramite' => $validated['descripcion'],
             'fk_dependencia' => $validated['fk_dependencia'],
+            'precio_tramite' => $validated['precio'],
         ]);
 
         return redirect()->route('indexTramites')->with('success', 'Trámite actualizado correctamente.');

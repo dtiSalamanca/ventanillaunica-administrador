@@ -113,6 +113,8 @@
                                             <th class="w-checkbox"></th>
                                             <th class="w-tramite"><i class="fas fa-building me-2"></i>Nombre del
                                                 trámite</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
+                                            <th class="w-precio"><i class="fas fa-dollar-sign me-2"></i>Precio</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -141,6 +143,8 @@
                                             <th class="w-checkbox"></th>
                                             <th class="w-tramite"><i class="fas fa-building me-2"></i>Nombre del
                                                 trámite</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
+                                            <th class="w-precio"><i class="fas fa-dollar-sign me-2"></i>Precio</th>
                                         </tr>
                                     </thead>
                                     <tbody>

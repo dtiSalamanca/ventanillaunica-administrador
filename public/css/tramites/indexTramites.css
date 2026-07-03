@@ -173,6 +173,10 @@ body {
     width: 220px;
 }
 
+.w-precio {
+    width: 140px;
+}
+
 .w-descripcion {
     min-width: 280px;
 }

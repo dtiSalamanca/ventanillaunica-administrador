@@ -42,6 +42,11 @@
                             </div>
                             @if ($pendiente)
                                 <div class="documento-acciones">
+                                    <a href="{{ route('visualizarDocumentoPersonal', $documento->id_documento) }}"
+                                        class="btn-visualizar" target="_blank" rel="noopener"
+                                        title="Visualizar documento">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                     <button type="button" class="btn-aprobar btn-aprobar-documento"
                                         data-id="{{ $documento->id_documento }}" title="Aprobar">
                                         <i class="fas fa-check"></i>
@@ -52,9 +57,16 @@
                                     </button>
                                 </div>
                             @else
-                                <span class="badge-estatus {{ $estatusInfo[$documento->estatus_documento]['class'] }}">
-                                    {{ $estatusInfo[$documento->estatus_documento]['label'] }}
-                                </span>
+                                <div class="documento-acciones">
+                                    <a href="{{ route('visualizarDocumentoPersonal', $documento->id_documento) }}"
+                                        class="btn-visualizar" target="_blank" rel="noopener"
+                                        title="Visualizar documento">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <span class="badge-estatus {{ $estatusInfo[$documento->estatus_documento]['class'] }}">
+                                        {{ $estatusInfo[$documento->estatus_documento]['label'] }}
+                                    </span>
+                                </div>
                             @endif
                         </div>
                     @endforeach
