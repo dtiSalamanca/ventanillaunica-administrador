@@ -59,6 +59,7 @@ $(document).ready(function () {
                 },
             },
             { data: "nombre_tramite", className: "w-tramite" },
+            { data: "descripcion_tramite", className: "w-descripcion" },
             {
                 data: "precio_tramite",
                 className: "w-precio text-end",
@@ -126,6 +127,7 @@ $(document).ready(function () {
                 },
             },
             { data: "nombre_tramite", className: "w-tramite" },
+            { data: "descripcion_tramite", className: "w-descripcion" },
             {
                 data: "precio_tramite",
                 className: "w-precio text-end",
