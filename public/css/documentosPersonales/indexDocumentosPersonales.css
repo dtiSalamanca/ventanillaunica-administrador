@@ -177,6 +177,10 @@ body {
     width: 120px;
 }
 
+.w-descripcion {
+    min-width: 280px;
+}
+
 .dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_filter {
     margin-bottom: 1.1rem;

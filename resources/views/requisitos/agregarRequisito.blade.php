@@ -61,6 +61,25 @@
                                 <span class="char-counter" id="counter-nombre"></span>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="descripcion" class="form-label">
+                                <i class="fas fa-align-left me-1"></i>Descripción del requisito
+                            </label>
+                            <textarea name="descripcion" id="descripcion" rows="4"
+                                class="form-control @error('descripcion') is-invalid @enderror"
+                                required autocomplete="off"
+                                placeholder="Describe brevemente en qué consiste el requisito">{{ old('descripcion') }}</textarea>
+                            <div class="field-footer">
+                                <span class="field-message">
+                                    @if ($errors->has('descripcion'))
+                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('descripcion') }}</span>
+                                    @else
+                                        <span class="field-hint">Explica brevemente el propósito del requisito</span>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-actions">
