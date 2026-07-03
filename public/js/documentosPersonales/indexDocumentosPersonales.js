@@ -59,6 +59,7 @@ $(document).ready(function () {
                 },
             },
             { data: "nombre_documento", className: "w-documento" },
+            { data: "descripcion_documento", className: "w-descripcion" },
             { data: "vigencia_meses", className: "w-vigencia" },
         ],
     });
@@ -110,6 +111,7 @@ $(document).ready(function () {
                 },
             },
             { data: "nombre_documento", className: "w-documento" },
+            { data: "descripcion_documento", className: "w-descripcion" },
             { data: "vigencia_meses", className: "w-vigencia" },
         ],
     });

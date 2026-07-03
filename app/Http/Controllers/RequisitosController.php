@@ -24,14 +24,17 @@ class RequisitosController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_requisitos,nombre_requisito',
+            'descripcion' => 'required|string',
         ], [
             'nombre.required' => 'El nombre del requisito es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
             'nombre.unique' => 'Ya existe un requisito con ese nombre.',
+            'descripcion.required' => 'La descripción del requisito es obligatoria.',
         ]);
 
         Requisito::create([
             'nombre_requisito' => $validated['nombre'],
+            'descripcion_requisito' => $validated['descripcion'],
             'estatus_requisito' => true,
         ]);
 
@@ -41,7 +44,7 @@ class RequisitosController extends Controller
     public function getRequisitosActivos(): JsonResponse
     {
         $requisitos = Requisito::where('estatus_requisito', true)
-            ->select('id_requisito', 'nombre_requisito')
+            ->select('id_requisito', 'nombre_requisito', 'descripcion_requisito')
             ->orderBy('nombre_requisito')
             ->get();
 
@@ -51,7 +54,7 @@ class RequisitosController extends Controller
     public function getRequisitosInactivos(): JsonResponse
     {
         $requisitos = Requisito::where('estatus_requisito', false)
-            ->select('id_requisito', 'nombre_requisito')
+            ->select('id_requisito', 'nombre_requisito', 'descripcion_requisito')
             ->orderBy('nombre_requisito')
             ->get();
 

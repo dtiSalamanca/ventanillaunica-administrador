@@ -102,6 +102,7 @@
                                         <tr>
                                             <th class="w-checkbox"></th>
                                             <th class="w-documento"><i class="fas fa-file me-2"></i>Nombre del documento</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
                                             <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia (meses)</th>
                                         </tr>
                                     </thead>
@@ -128,6 +129,7 @@
                                         <tr>
                                             <th class="w-checkbox"></th>
                                             <th class="w-documento"><i class="fas fa-file me-2"></i>Nombre del documento</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
                                             <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia (meses)</th>
                                         </tr>
                                     </thead>

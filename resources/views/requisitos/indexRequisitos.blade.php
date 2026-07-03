@@ -108,6 +108,7 @@
                                         <tr>
                                             <th class="w-checkbox"></th>
                                             <th class="w-requisito"><i class="fas fa-building me-2"></i>Nombre del requisito</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -135,6 +136,7 @@
                                         <tr>
                                             <th class="w-checkbox"></th>
                                             <th class="w-requisito"><i class="fas fa-building me-2"></i>Nombre del requisito</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
                                         </tr>
                                     </thead>
                                     <tbody>

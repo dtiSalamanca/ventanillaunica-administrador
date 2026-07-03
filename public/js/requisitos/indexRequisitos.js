@@ -59,6 +59,7 @@ $(document).ready(function () {
                 },
             },
             { data: "nombre_requisito", className: "w-requisito" },
+            { data: "descripcion_requisito", className: "w-descripcion" },
         ],
     });
 
@@ -109,6 +110,7 @@ $(document).ready(function () {
                 },
             },
             { data: "nombre_requisito", className: "w-requisito" },
+            { data: "descripcion_requisito", className: "w-descripcion" },
         ],
     });
 
