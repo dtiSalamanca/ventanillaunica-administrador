@@ -81,6 +81,25 @@
                                 </span>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="precio" class="form-label">
+                                <i class="fas fa-dollar-sign me-1"></i>Precio del trámite
+                            </label>
+                            <input type="number" name="precio" id="precio"
+                                class="form-control @error('precio') is-invalid @enderror"
+                                value="{{ old('precio') }}" step="0.01" min="0" max="99999999.99"
+                                required autocomplete="off" placeholder="Ej. 250.00">
+                            <div class="field-footer">
+                                <span class="field-message">
+                                    @if ($errors->has('precio'))
+                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('precio') }}</span>
+                                    @else
+                                        <span class="field-hint">Monto en moneda nacional. Mayor o igual a 0.</span>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-actions">
