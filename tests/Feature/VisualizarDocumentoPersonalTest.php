@@ -33,17 +33,17 @@ class VisualizarDocumentoPersonalTest extends TestCase
     {
         $this->authenticateAdUser();
 
-        $catalogo = tblDocumentoPersonal::create([
+        $catalogo = catDocumentoPersonal::create([
             'nombre_documento' => 'INE',
             'vigencia_meses' => 12,
             'estatus_documento' => true,
         ]);
 
-        $documento = catDocumentoPersonal::create([
+        $documento = tblDocumentoPersonal::create([
             'fk_usuario' => User::factory()->create()->id,
             'fk_documento_personal' => $catalogo->id_documento,
             'fecha_registro' => now(),
-            'estatus_documento' => catDocumentoPersonal::ESTATUS_EN_REVISION,
+            'estatus_documento' => tblDocumentoPersonal::ESTATUS_EN_REVISION,
         ]);
 
         Http::fake([
@@ -66,17 +66,17 @@ class VisualizarDocumentoPersonalTest extends TestCase
     {
         $this->authenticateAdUser();
 
-        $catalogo = tblDocumentoPersonal::create([
+        $catalogo = catDocumentoPersonal::create([
             'nombre_documento' => 'Comprobante de domicilio',
             'vigencia_meses' => 6,
             'estatus_documento' => true,
         ]);
 
-        $documento = catDocumentoPersonal::create([
+        $documento = tblDocumentoPersonal::create([
             'fk_usuario' => User::factory()->create()->id,
             'fk_documento_personal' => $catalogo->id_documento,
             'fecha_registro' => now(),
-            'estatus_documento' => catDocumentoPersonal::ESTATUS_EN_REVISION,
+            'estatus_documento' => tblDocumentoPersonal::ESTATUS_EN_REVISION,
         ]);
 
         Http::fake([
@@ -97,17 +97,17 @@ class VisualizarDocumentoPersonalTest extends TestCase
     {
         $this->authenticateAdUser();
 
-        $catalogo = tblDocumentoPersonal::create([
+        $catalogo = catDocumentoPersonal::create([
             'nombre_documento' => 'INE',
             'vigencia_meses' => 12,
             'estatus_documento' => true,
         ]);
 
-        $documento = catDocumentoPersonal::create([
+        $documento = tblDocumentoPersonal::create([
             'fk_usuario' => User::factory()->create()->id,
             'fk_documento_personal' => $catalogo->id_documento,
             'fecha_registro' => now(),
-            'estatus_documento' => catDocumentoPersonal::ESTATUS_EN_REVISION,
+            'estatus_documento' => tblDocumentoPersonal::ESTATUS_EN_REVISION,
         ]);
 
         Http::fake([
