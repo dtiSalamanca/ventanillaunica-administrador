@@ -1623,7 +1623,7 @@
 }
 
 #select-finado-sin-titular-group .form-label {
-    color: #1e5c50;
+    color: #601028;
     font-weight: 600;
 }
 
@@ -1686,7 +1686,7 @@
 
 #agregarTramitePanteon .select2-finado-option .badge-panteon {
     background: #e6f3f1;
-    color: #1e5c50;
+    color: #601028;
 }
 
 #agregarTramitePanteon .select2-finado-option .badge-gaveta {
@@ -1716,7 +1716,7 @@
 }
 
 .info-solicitante-header {
-    background: linear-gradient(135deg, #1e5c50 0%, #2a7a6a 100%);
+    background: linear-gradient(135deg, #601028 0%, #2a7a6a 100%);
     color: #fff;
     padding: 0.6rem 1rem;
     font-weight: 600;
@@ -1749,7 +1749,7 @@
 }
 
 .info-item:hover {
-    border-color: #1e5c50;
+    border-color: #601028;
     box-shadow: 0 2px 4px rgba(30, 92, 80, 0.1);
 }
 
@@ -1799,7 +1799,7 @@
 
 #btn-info-solicitante .fa-question-circle {
     font-size: 1.1rem;
-    color: #1e5c50 !important;
+    color: #601028 !important;
 }
 
 @media (max-width: 768px) {
