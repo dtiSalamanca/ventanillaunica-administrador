@@ -98,6 +98,7 @@ Route::middleware('auth')->controller(AprobacionesController::class)->group(func
     Route::get('/aprobaciones/predios/buscar', 'buscarPredios')->name('buscarAprobacionesPredios');
     Route::post('/aprobaciones/predios/{predio}/aprobar', 'aprobarPredio')->name('aprobarPredio');
     Route::post('/aprobaciones/predios/{predio}/rechazar', 'rechazarPredio')->name('rechazarPredio');
+    Route::get('/aprobaciones/documentos-predios/{documentoPredio}/visualizar', 'visualizarDocumentoPredio')->name('visualizarDocumentoPredio');
     Route::post('/aprobaciones/documentos-predios/{documentoPredio}/aprobar', 'aprobarDocumentoPredio')->name('aprobarDocumentoPredio');
     Route::post('/aprobaciones/documentos-predios/{documentoPredio}/rechazar', 'rechazarDocumentoPredio')->name('rechazarDocumentoPredio');
 });

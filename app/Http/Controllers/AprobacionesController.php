@@ -220,8 +220,29 @@ class AprobacionesController extends Controller
      */
     public function visualizarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): Response
     {
-        $url = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/')
-            ."/api/documentos-personales/{$documentoPersonal->id_documento}/archivo";
+        return $this->visualizarDocumentoCiudadano(
+            "/api/documentos-personales/{$documentoPersonal->id_documento}/archivo",
+            $documentoPersonal->catalogoDocumento->nombre_documento,
+        );
+    }
+
+    /**
+     * Visualiza el archivo del documento de predio consumiendo la API del
+     * repositorio ventanillaunica-ciudadano, donde se almacenan los PDFs.
+     * Devuelve el archivo inline para que el navegador lo muestre en su
+     * visor nativo dentro de una pestaña nueva.
+     */
+    public function visualizarDocumentoPredio(DocumentoPredio $documentoPredio): Response
+    {
+        return $this->visualizarDocumentoCiudadano(
+            "/api/documentos-predios/{$documentoPredio->id_documento_predio}/archivo",
+            $documentoPredio->catalogoDocumento->nombre_documento,
+        );
+    }
+
+    private function visualizarDocumentoCiudadano(string $rutaApi, string $nombreDocumento): Response
+    {
+        $url = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/').$rutaApi;
 
         try {
             $respuesta = Http::withHeaders([
@@ -242,7 +263,7 @@ class AprobacionesController extends Controller
             );
         }
 
-        $nombreArchivo = Str::slug($documentoPersonal->catalogoDocumento->nombre_documento).'.pdf';
+        $nombreArchivo = Str::slug($nombreDocumento).'.pdf';
 
         return response($respuesta->body(), 200, [
             'Content-Type' => 'application/pdf',

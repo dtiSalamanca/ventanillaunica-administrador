@@ -67,6 +67,11 @@
                                 </div>
 
                                 <div class="documento-acciones">
+                                    <a href="{{ route('visualizarDocumentoPredio', $documento->id_documento_predio) }}"
+                                        class="btn-visualizar" target="_blank" rel="noopener"
+                                        title="Visualizar documento">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                     @if ($documento->estatus_documento === \App\Models\DocumentoPredio::ESTATUS_EN_REVISION)
                                         <button type="button" class="btn-aprobar btn-aprobar-documento-predio"
                                             data-id="{{ $documento->id_documento_predio }}" title="Aprobar">
