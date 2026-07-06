@@ -141,7 +141,17 @@ $(document).ready(function () {
         true,
     );
 
-    function enviarRevision(url, successTitle, errorText) {
+    function enviarRevision(url, successTitle, errorText, loadingText) {
+        Swal.fire({
+            title: loadingText || "Procesando...",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: function () {
+                Swal.showLoading();
+            },
+        });
+
         fetch(url, {
             method: "POST",
             headers: {
@@ -189,7 +199,7 @@ $(document).ready(function () {
                 return;
             }
 
-            enviarRevision(options.url, options.successTitle, options.errorText);
+            enviarRevision(options.url, options.successTitle, options.errorText, options.loadingText);
         });
     }
 
@@ -205,6 +215,7 @@ $(document).ready(function () {
             confirmButtonText: "Sí, aprobar",
             successTitle: "Aprobado",
             errorText: "Ocurrió un error al procesar el predio.",
+            loadingText: "Aprobando predio y enviando notificación por correo…",
         });
     });
 
@@ -220,6 +231,7 @@ $(document).ready(function () {
             confirmButtonText: "Sí, rechazar",
             successTitle: "Rechazado",
             errorText: "Ocurrió un error al procesar el predio.",
+            loadingText: "Rechazando predio y enviando notificación por correo…",
         });
     });
 
@@ -235,6 +247,7 @@ $(document).ready(function () {
             confirmButtonText: "Sí, aprobar",
             successTitle: "Aprobado",
             errorText: "Ocurrió un error al procesar el documento de predio.",
+            loadingText: "Procesando documento…",
         });
     });
 
@@ -250,6 +263,7 @@ $(document).ready(function () {
             confirmButtonText: "Sí, rechazar",
             successTitle: "Rechazado",
             errorText: "Ocurrió un error al procesar el documento de predio.",
+            loadingText: "Procesando documento…",
         });
     });
 });

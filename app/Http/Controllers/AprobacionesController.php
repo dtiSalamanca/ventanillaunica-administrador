@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PredioRevisado;
 use App\Models\DocumentoPredio;
 use App\Models\Predio;
 use App\Models\tblDocumentoPersonal;
@@ -12,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -188,12 +190,16 @@ class AprobacionesController extends Controller
     {
         $predio->update(['estatus_predio' => Predio::ESTATUS_APROBADO]);
 
+        Mail::to($predio->usuario->email)->send(new PredioRevisado($predio));
+
         return response()->json(['message' => 'Predio aprobado correctamente.']);
     }
 
     public function rechazarPredio(Predio $predio): JsonResponse
     {
         $predio->update(['estatus_predio' => Predio::ESTATUS_RECHAZADO]);
+
+        Mail::to($predio->usuario->email)->send(new PredioRevisado($predio));
 
         return response()->json(['message' => 'Predio rechazado correctamente.']);
     }
