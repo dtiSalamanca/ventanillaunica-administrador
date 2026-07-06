@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\tblDocumentoPersonal;
+use App\Models\catDocumentoPersonal;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class DocumentosPersonalesController extends Controller
 
     public function getDocumentosPersonalesActivos(): JsonResponse
     {
-        $documentos = tblDocumentoPersonal::where('estatus_documento', true)
+        $documentos = catDocumentoPersonal::where('estatus_documento', true)
             ->select('id_documento', 'nombre_documento', 'descripcion_documento', 'vigencia_meses')
             ->orderBy('nombre_documento')
             ->get();
@@ -32,7 +32,7 @@ class DocumentosPersonalesController extends Controller
 
     public function getDocumentosPersonalesInactivos(): JsonResponse
     {
-        $documentos = tblDocumentoPersonal::where('estatus_documento', false)
+        $documentos = catDocumentoPersonal::where('estatus_documento', false)
             ->select('id_documento', 'nombre_documento', 'descripcion_documento', 'vigencia_meses')
             ->orderBy('nombre_documento')
             ->get();
@@ -56,7 +56,7 @@ class DocumentosPersonalesController extends Controller
             'vigencia_meses.min' => 'La vigencia debe ser al menos 1 mes.',
         ]);
 
-        tblDocumentoPersonal::create([
+        catDocumentoPersonal::create([
             'nombre_documento' => $validated['nombre_documento'],
             'descripcion_documento' => $validated['descripcion'],
             'vigencia_meses' => $validated['vigencia_meses'],
@@ -66,12 +66,12 @@ class DocumentosPersonalesController extends Controller
         return redirect()->route('indexDocumentosPersonales')->with('success', 'Documento personal registrado correctamente.');
     }
 
-    public function editarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): View
+    public function editarDocumentoPersonal(catDocumentoPersonal $documentoPersonal): View
     {
         return view('documentosPersonales.editarDocumentoPersonal', compact('documentoPersonal'));
     }
 
-    public function actualizarDocumentoPersonal(Request $request, tblDocumentoPersonal $documentoPersonal): RedirectResponse
+    public function actualizarDocumentoPersonal(Request $request, catDocumentoPersonal $documentoPersonal): RedirectResponse
     {
         $validated = $request->validate([
             'nombre_documento' => 'required|string|max:255|unique:cat_documentos_personales,nombre_documento,'.$documentoPersonal->id_documento.',id_documento',
@@ -96,14 +96,14 @@ class DocumentosPersonalesController extends Controller
         return redirect()->route('indexDocumentosPersonales')->with('success', 'Documento personal actualizado correctamente.');
     }
 
-    public function deshabilitarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): JsonResponse
+    public function deshabilitarDocumentoPersonal(catDocumentoPersonal $documentoPersonal): JsonResponse
     {
         $documentoPersonal->update(['estatus_documento' => false]);
 
         return response()->json(['message' => 'Documento personal deshabilitado correctamente.']);
     }
 
-    public function habilitarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): JsonResponse
+    public function habilitarDocumentoPersonal(catDocumentoPersonal $documentoPersonal): JsonResponse
     {
         $documentoPersonal->update(['estatus_documento' => true]);
 

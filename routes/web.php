@@ -4,6 +4,7 @@ use App\Http\Controllers\AprobacionesController;
 use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PrediosController;
 use App\Http\Controllers\RequisitosController;
 use App\Http\Controllers\TramitesController;
 use App\Http\Controllers\UsuariosController;
@@ -72,6 +73,18 @@ Route::middleware('auth')->controller(DocumentosPersonalesController::class)->gr
     Route::post('/documentos/personales/editar/{documentoPersonal}', 'actualizarDocumentoPersonal')->name('actualizarDocumentoPersonal');
     Route::post('/documentos/personales/deshabilitar/{documentoPersonal}', 'deshabilitarDocumentoPersonal')->name('deshabilitarDocumentoPersonal');
     Route::post('/documentos/personales/habilitar/{documentoPersonal}', 'habilitarDocumentoPersonal')->name('habilitarDocumentoPersonal');
+});
+
+Route::middleware('auth')->controller(PrediosController::class)->group(function () {
+    Route::get('/documentos/predios', 'indexPredios')->name('indexPredios');
+    Route::get('/documentos/predios/agregar', 'agregarDocumentoPredio')->name('agregarDocumentoPredio');
+    Route::post('/documentos/predios/agregar', 'registrarDocumentoPredio')->name('registrarDocumentoPredio');
+    Route::get('/documentos/predios/activos', 'getDocumentosPrediosActivos')->name('getDocumentosPrediosActivos');
+    Route::get('/documentos/predios/inactivos', 'getDocumentosPrediosInactivos')->name('getDocumentosPrediosInactivos');
+    Route::get('/documentos/predios/editar/{documentoPredio}', 'editarDocumentoPredio')->name('editarDocumentoPredio');
+    Route::post('/documentos/predios/editar/{documentoPredio}', 'actualizarDocumentoPredio')->name('actualizarDocumentoPredio');
+    Route::post('/documentos/predios/deshabilitar/{documentoPredio}', 'deshabilitarDocumentoPredio')->name('deshabilitarDocumentoPredio');
+    Route::post('/documentos/predios/habilitar/{documentoPredio}', 'habilitarDocumentoPredio')->name('habilitarDocumentoPredio');
 });
 
 Route::middleware('auth')->controller(AprobacionesController::class)->group(function () {

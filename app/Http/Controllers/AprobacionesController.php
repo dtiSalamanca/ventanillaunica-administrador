@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\catDocumentoPersonal;
+use App\Models\tblDocumentoPersonal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Client\ConnectionException;
@@ -55,11 +55,11 @@ class AprobacionesController extends Controller
     private function pendientesPaginator(?string $search)
     {
         return User::whereHas('documentosPersonales', function ($query) {
-            $query->where('estatus_documento', catDocumentoPersonal::ESTATUS_EN_REVISION);
+            $query->where('estatus_documento', tblDocumentoPersonal::ESTATUS_EN_REVISION);
         })
             ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
             ->with(['documentosPersonales' => function ($query) {
-                $query->where('estatus_documento', catDocumentoPersonal::ESTATUS_EN_REVISION)
+                $query->where('estatus_documento', tblDocumentoPersonal::ESTATUS_EN_REVISION)
                     ->with('catalogoDocumento')
                     ->orderBy('fecha_registro');
             }])
@@ -72,7 +72,7 @@ class AprobacionesController extends Controller
     {
         return User::whereHas('documentosPersonales')
             ->whereDoesntHave('documentosPersonales', function ($query) {
-                $query->where('estatus_documento', catDocumentoPersonal::ESTATUS_EN_REVISION);
+                $query->where('estatus_documento', tblDocumentoPersonal::ESTATUS_EN_REVISION);
             })
             ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
             ->with(['documentosPersonales' => function ($query) {
@@ -91,16 +91,16 @@ class AprobacionesController extends Controller
         });
     }
 
-    public function aprobarDocumentoPersonal(catDocumentoPersonal $documentoPersonal): JsonResponse
+    public function aprobarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): JsonResponse
     {
-        $documentoPersonal->update(['estatus_documento' => catDocumentoPersonal::ESTATUS_APROBADO]);
+        $documentoPersonal->update(['estatus_documento' => tblDocumentoPersonal::ESTATUS_APROBADO]);
 
         return response()->json(['message' => 'Documento aprobado correctamente.']);
     }
 
-    public function rechazarDocumentoPersonal(catDocumentoPersonal $documentoPersonal): JsonResponse
+    public function rechazarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): JsonResponse
     {
-        $documentoPersonal->update(['estatus_documento' => catDocumentoPersonal::ESTATUS_RECHAZADO]);
+        $documentoPersonal->update(['estatus_documento' => tblDocumentoPersonal::ESTATUS_RECHAZADO]);
 
         return response()->json(['message' => 'Documento rechazado correctamente.']);
     }
@@ -111,7 +111,7 @@ class AprobacionesController extends Controller
      * Devuelve el archivo inline para que el navegador lo muestre en su
      * visor nativo dentro de una pestaña nueva.
      */
-    public function visualizarDocumentoPersonal(catDocumentoPersonal $documentoPersonal): Response
+    public function visualizarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): Response
     {
         $url = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/')
             ."/api/documentos-personales/{$documentoPersonal->id_documento}/archivo";

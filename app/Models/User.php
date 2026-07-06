@@ -33,6 +33,6 @@ class User extends Authenticatable
 
     public function documentosPersonales(): HasMany
     {
-        return $this->hasMany(catDocumentoPersonal::class, 'fk_usuario', 'id');
+        return $this->hasMany(tblDocumentoPersonal::class, 'fk_usuario', 'id');
     }
 }

@@ -1,7 +1,7 @@
 @php
     $estatusInfo = [
-        \App\Models\catDocumentoPersonal::ESTATUS_APROBADO => ['label' => 'Aprobado', 'class' => 'badge-estatus-aprobado'],
-        \App\Models\catDocumentoPersonal::ESTATUS_RECHAZADO => ['label' => 'Rechazado', 'class' => 'badge-estatus-rechazado'],
+        \App\Models\tblDocumentoPersonal::ESTATUS_APROBADO => ['label' => 'Aprobado', 'class' => 'badge-estatus-aprobado'],
+        \App\Models\tblDocumentoPersonal::ESTATUS_RECHAZADO => ['label' => 'Rechazado', 'class' => 'badge-estatus-rechazado'],
     ];
 @endphp
 
