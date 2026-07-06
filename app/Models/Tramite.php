@@ -4,18 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tramite extends Model
 {
-    protected $table = 'tbl_tramites';
+    protected $table = 'cat_tramites';
 
     protected $primaryKey = 'id_tramite';
 
     protected $fillable = [
-        'nombre',
-        'activo',
+        'nombre_tramite',
+        'descripcion_tramite',
+        'estatus_tramite',
         'fk_dependencia',
+        'precio_tramite',
     ];
 
     public function dependencia(): BelongsTo
@@ -23,8 +25,8 @@ class Tramite extends Model
         return $this->belongsTo(Dependencia::class, 'fk_dependencia', 'id_dependencia');
     }
 
-    public function requisitos(): HasMany
+    public function requisitos(): BelongsToMany
     {
-        return $this->hasMany(Requisito::class, 'fk_tramite', 'id_tramite');
+        return $this->belongsToMany(Requisito::class, 'tbl_requisitos_tramites', 'fk_tramite', 'fk_requisito', 'id_tramite', 'id_requisito');
     }
 }

@@ -157,6 +157,22 @@
                         </a>
 
                         <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-check-circle me-2"></i>Aprobaciones
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('indexAprobacionesDocumentosPersonales') ? 'active-current' : '' }}"
+                            href="{{ route('indexAprobacionesDocumentosPersonales') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-check-circle"></i></div>
+                            Documentos personales
+                        </a>
+
+                        <a class="nav-link active {{ request()->routeIs('indexAprobacionesPredios') ? 'active-current' : '' }}"
+                            href="{{ route('indexAprobacionesPredios') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                            Predios
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">
                             <i class="fas fa-list-check me-2"></i>Catálogos
                         </div>
 
@@ -171,6 +187,36 @@
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-file-lines"></i></div>
                             Trámites
                         </a>
+
+
+                        <a class="nav-link active {{ request()->routeIs('indexRequisitos') ? 'active-current' : '' }}"
+                            href="{{ route('indexRequisitos') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                            Requisitos
+                        </a>
+
+                        <a class="nav-link active {{ request()->routeIs('indexDocumentosPersonales') ? 'active-current' : '' }}"
+                            href="{{ route('indexDocumentosPersonales') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-folder-open"></i></div>
+                            Documentos Personales
+                        </a>
+
+                        <a class="nav-link active {{ request()->routeIs('indexPredios') ? 'active-current' : '' }}"
+                            href="{{ route('indexPredios') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-house-circle-check"></i></div>
+                            Documentos de Predios
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-list-check me-2"></i>Configuración
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('indexUsuarios') ? 'active-current' : '' }}"
+                            href="{{ route('indexUsuarios') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                            Usuarios
+                        </a>
+
 
                     </div>
                 </div>

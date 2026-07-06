@@ -28,8 +28,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'ventanilla_ciudadano' => [
+        'base_url' => env('VENTANILLA_CIUDADANO_URL', 'http://localhost:8000'),
+        'api_token' => env('VENTANILLA_CIUDADANO_API_TOKEN'),
+    ],
+
     'active_directory' => [
         'url' => env('AD_AUTH_URL', 'http://172.17.5.112:8080/api-ad-auth/index.php/login'),
+        'users_url' => env('AD_USERS_URL', 'http://172.17.5.112:8080/api-ad-auth/index.php/usersApp'),
         'aplicativo' => env('AD_APLICATIVO', '24'),
     ],
 

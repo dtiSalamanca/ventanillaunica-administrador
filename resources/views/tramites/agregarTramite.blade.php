@@ -63,6 +63,25 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="descripcion" class="form-label">
+                                <i class="fas fa-align-left me-1"></i>Descripción del trámite
+                            </label>
+                            <textarea name="descripcion" id="descripcion" rows="4"
+                                class="form-control @error('descripcion') is-invalid @enderror"
+                                required autocomplete="off"
+                                placeholder="Describe brevemente en qué consiste el trámite">{{ old('descripcion') }}</textarea>
+                            <div class="field-footer">
+                                <span class="field-message">
+                                    @if ($errors->has('descripcion'))
+                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('descripcion') }}</span>
+                                    @else
+                                        <span class="field-hint">Explica brevemente el propósito del trámite</span>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="fk_dependencia" class="form-label">
                                 <i class="fas fa-building me-1"></i>Dependencia
                             </label>
@@ -77,6 +96,25 @@
                                         <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('fk_dependencia') }}</span>
                                     @else
                                         <span class="field-hint">Seleccione la dependencia a la que pertenece</span>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="precio" class="form-label">
+                                <i class="fas fa-dollar-sign me-1"></i>Precio del trámite
+                            </label>
+                            <input type="number" name="precio" id="precio"
+                                class="form-control @error('precio') is-invalid @enderror"
+                                value="{{ old('precio') }}" step="0.01" min="0" max="99999999.99"
+                                required autocomplete="off" placeholder="Ej. 250.00">
+                            <div class="field-footer">
+                                <span class="field-message">
+                                    @if ($errors->has('precio'))
+                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('precio') }}</span>
+                                    @else
+                                        <span class="field-hint">Monto en moneda nacional. Mayor o igual a 0.</span>
                                     @endif
                                 </span>
                             </div>

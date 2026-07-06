@@ -6,6 +6,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 class AdUser implements Authenticatable
 {
+    public const EncryptedPasswordAttribute = 'ad_password_encrypted';
+
     public function __construct(protected array $attributes) {}
 
     public function getAuthIdentifierName(): string
@@ -40,13 +42,28 @@ class AdUser implements Authenticatable
         return '';
     }
 
+    public function getEncryptedPassword(): ?string
+    {
+        $encryptedPassword = $this->attributes[self::EncryptedPasswordAttribute] ?? null;
+
+        return is_string($encryptedPassword) && $encryptedPassword !== '' ? $encryptedPassword : null;
+    }
+
     public function __get(string $name): mixed
     {
+        if ($name === self::EncryptedPasswordAttribute) {
+            return null;
+        }
+
         return $this->attributes[$name] ?? null;
     }
 
     public function toArray(): array
     {
-        return $this->attributes;
+        $attributes = $this->attributes;
+
+        unset($attributes[self::EncryptedPasswordAttribute]);
+
+        return $attributes;
     }
 }

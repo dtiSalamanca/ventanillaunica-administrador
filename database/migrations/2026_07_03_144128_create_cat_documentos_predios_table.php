@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_predios', function (Blueprint $table) {
-            $table->id('id_predio');
-            $table->string('clave_catastral');
-            $table->unsignedInteger('fk_ciudadano');
+        Schema::create('cat_documentos_predios', function (Blueprint $table) {
+            $table->id('id_documento_predio');
+            $table->string('nombre_documento');
+            $table->boolean('estatus_documento')->default(true);
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_predios');
+        Schema::dropIfExists('cat_documentos_predios');
     }
 };
