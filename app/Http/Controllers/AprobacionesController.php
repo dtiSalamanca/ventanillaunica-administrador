@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DocumentoPredio;
+use App\Models\Predio;
 use App\Models\tblDocumentoPersonal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -103,6 +105,111 @@ class AprobacionesController extends Controller
         $documentoPersonal->update(['estatus_documento' => tblDocumentoPersonal::ESTATUS_RECHAZADO]);
 
         return response()->json(['message' => 'Documento rechazado correctamente.']);
+    }
+
+    public function indexPredios(): View
+    {
+        $pendientesQuery = request()->query('pendientesQ');
+        $sinPendientesQuery = request()->query('sinPendientesQ');
+
+        $pendientes = $this->pendientesPrediosPaginator($pendientesQuery);
+        $sinPendientes = $this->sinPendientesPrediosPaginator($sinPendientesQuery);
+
+        return view('aprobaciones.aprobacionPredios', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
+    }
+
+    public function buscarPredios(Request $request): JsonResponse
+    {
+        $tab = $request->query('tab', 'pendientes');
+
+        if ($tab === 'sin-pendientes') {
+            $query = $request->query('sinPendientesQ');
+            $usuarios = $this->sinPendientesPrediosPaginator($query);
+            $pendiente = false;
+            $prefijo = 'revisado';
+        } else {
+            $query = $request->query('pendientesQ');
+            $usuarios = $this->pendientesPrediosPaginator($query);
+            $pendiente = true;
+            $prefijo = 'pendiente';
+        }
+
+        $html = view('aprobaciones.partials.gridUsuariosPredios', [
+            'usuarios' => $usuarios,
+            'pendiente' => $pendiente,
+            'prefijo' => $prefijo,
+            'query' => $query,
+        ])->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+    private function pendientesPrediosPaginator(?string $search)
+    {
+        return User::whereHas('predios', function (Builder $query) {
+            $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                ->orWhereHas('documentos', function (Builder $query) {
+                    $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
+                });
+        })
+            ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
+            ->with(['predios' => function ($query) {
+                $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                    ->orWhereHas('documentos', function (Builder $query) {
+                        $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
+                    })
+                    ->with('documentos.catalogoDocumento')
+                    ->orderBy('clave_predio');
+            }])
+            ->orderBy('name')
+            ->paginate(6, ['*'], 'pendientesPage')
+            ->withQueryString();
+    }
+
+    private function sinPendientesPrediosPaginator(?string $search)
+    {
+        return User::whereHas('predios')
+            ->whereDoesntHave('predios', function (Builder $query) {
+                $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                    ->orWhereHas('documentos', function (Builder $query) {
+                        $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
+                    });
+            })
+            ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
+            ->with(['predios' => function ($query) {
+                $query->with('documentos.catalogoDocumento')->orderBy('clave_predio');
+            }])
+            ->orderBy('name')
+            ->paginate(6, ['*'], 'sinPendientesPage')
+            ->withQueryString();
+    }
+
+    public function aprobarPredio(Predio $predio): JsonResponse
+    {
+        $predio->update(['estatus_predio' => Predio::ESTATUS_APROBADO]);
+
+        return response()->json(['message' => 'Predio aprobado correctamente.']);
+    }
+
+    public function rechazarPredio(Predio $predio): JsonResponse
+    {
+        $predio->update(['estatus_predio' => Predio::ESTATUS_RECHAZADO]);
+
+        return response()->json(['message' => 'Predio rechazado correctamente.']);
+    }
+
+    public function aprobarDocumentoPredio(DocumentoPredio $documentoPredio): JsonResponse
+    {
+        $documentoPredio->update(['estatus_documento' => DocumentoPredio::ESTATUS_APROBADO]);
+
+        return response()->json(['message' => 'Documento de predio aprobado correctamente.']);
+    }
+
+    public function rechazarDocumentoPredio(DocumentoPredio $documentoPredio): JsonResponse
+    {
+        $documentoPredio->update(['estatus_documento' => DocumentoPredio::ESTATUS_RECHAZADO]);
+
+        return response()->json(['message' => 'Documento de predio rechazado correctamente.']);
     }
 
     /**

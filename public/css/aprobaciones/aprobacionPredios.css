@@ -1,0 +1,645 @@
+:root {
+    --primary: #601028;
+    --primary-dark: #164a3f;
+    --primary-light: #e8f4f1;
+    --accent: #a62346;
+    --text-primary: #1a202c;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --bg-surface: #ffffff;
+    --bg-subtle: #f8fafc;
+    --bg-hover: #f1f5f9;
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm:
+        0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    font-family:
+        "Montserrat",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+body {
+    background: var(--bg-subtle);
+    min-height: 100vh;
+}
+
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.page-header {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #601028 url("/images/fondo_rojo.png") center / cover no-repeat;
+    border: none;
+    padding: 1.1rem 2rem;
+    color: #fff;
+    margin-bottom: 2rem;
+    box-shadow: none;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.45rem;
+}
+
+.header-escudo {
+    width: 52px;
+    height: auto;
+    opacity: 0.92;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.header-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page-title {
+    margin: 0;
+    font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+}
+
+.page-subtitle {
+    margin: 0.15rem auto 0;
+    max-width: 740px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.alert {
+    border-radius: var(--radius-md);
+    border: none;
+    padding: 1rem 1.25rem;
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+}
+
+.alert-success {
+    background: #dff7e9;
+    color: #0d7d3d;
+    border-left: 4px solid #0d7d3d;
+}
+
+.alert-warning {
+    background: #fff4de;
+    color: #b8860b;
+    border-left: 4px solid #b8860b;
+}
+
+.alert-danger {
+    background: #ffe2e5;
+    color: #c62828;
+    border-left: 4px solid #c62828;
+}
+
+/* Grid de cards de usuario */
+.aprobaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+}
+
+.usuario-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xs);
+    transition: var(--transition);
+    overflow: visible;
+}
+
+.usuario-card:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.usuario-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.1rem 1.25rem;
+}
+
+.usuario-avatar {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.usuario-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.usuario-nombre {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.98rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.usuario-email {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.badge-pendientes {
+    flex-shrink: 0;
+    background: #fff4de;
+    color: #b8860b;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+}
+
+.badge-total {
+    flex-shrink: 0;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+}
+
+.badge-estatus {
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 0.76rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+}
+
+.badge-estatus-revision {
+    background: #fff4de;
+    color: #b8860b;
+}
+
+.badge-estatus-aprobado {
+    background: #e6f9f1;
+    color: #10b981;
+}
+
+.badge-estatus-rechazado {
+    background: #fdeceb;
+    color: #ef4444;
+}
+
+.nav-tabs .nav-link.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+    border: 1px solid var(--primary);
+    border-bottom: none;
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    margin-right: 2px;
+}
+
+.aprobaciones-search {
+    margin-bottom: 1.25rem;
+}
+
+.search-bar {
+    position: relative;
+    max-width: 420px;
+}
+
+.search-bar i.fa-magnifying-glass {
+    position: absolute;
+    top: 50%;
+    left: 0.9rem;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.search-bar input[type="text"] {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.55rem 2.25rem;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.search-bar input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 92, 80, 0.12);
+}
+
+.search-clear {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.search-clear {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.search-clear:hover {
+    color: var(--accent);
+}
+
+#pendientes-resultado,
+#sin-pendientes-resultado {
+    transition: opacity 0.15s ease;
+}
+
+#pendientes-resultado.is-loading,
+#sin-pendientes-resultado.is-loading {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.usuario-accordion {
+    border-top: 1px solid var(--border);
+}
+
+.usuario-accordion .accordion-item {
+    border: none;
+    background: transparent;
+}
+
+.usuario-accordion .accordion-item + .accordion-item {
+    border-top: 1px solid var(--border);
+}
+
+.usuario-accordion .accordion-header {
+    margin: 0;
+}
+
+/* Cabecera de predio: botón de colapso + acciones/estatus del predio */
+.predio-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-subtle);
+}
+
+.predio-header .accordion-button {
+    background: transparent;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: 0;
+    box-shadow: none;
+    flex: 1;
+}
+
+.predio-header .accordion-button:not(.collapsed) {
+    background: var(--primary-light);
+    color: var(--primary);
+    box-shadow: none;
+}
+
+.predio-header .accordion-button:focus {
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.predio-header .accordion-button::after {
+    filter: brightness(0) saturate(100%) invert(24%) sepia(19%) saturate(1224%)
+        hue-rotate(122deg) brightness(94%) contrast(90%);
+}
+
+.predio-acciones {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    padding-right: 1rem;
+}
+
+.predio-item .accordion-body {
+    padding: 0.6rem 0.6rem 0.6rem 2.25rem;
+}
+
+.predio-sin-documentos {
+    margin: 0;
+    padding: 0.6rem 0.65rem;
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+}
+
+.documento-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 0.65rem;
+    border-radius: var(--radius-sm);
+}
+
+.documento-item:hover {
+    background: var(--bg-hover);
+}
+
+.documento-item + .documento-item {
+    border-top: 1px solid var(--border);
+}
+
+.documento-info {
+    min-width: 0;
+}
+
+.documento-nombre {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.88rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.documento-fecha {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+}
+
+.documento-acciones {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+.btn-aprobar,
+.btn-rechazar,
+.btn-visualizar {
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.btn-aprobar {
+    background: #e6f9f1;
+    color: #10b981;
+}
+
+.btn-aprobar:hover {
+    background: #10b981;
+    color: #fff;
+}
+
+.btn-rechazar {
+    background: #fdeceb;
+    color: #ef4444;
+}
+
+.btn-rechazar:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+.btn-visualizar {
+    background: #e8f0fe;
+    color: #2563eb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-visualizar:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    color: var(--primary-light);
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.aprobaciones-pagination {
+    margin-top: 2rem;
+}
+
+.aprobaciones-pagination-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+}
+
+.aprobaciones-pagination-info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.aprobaciones-pagination-info strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.aprobaciones-pagination-list {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.aprobaciones-pagination-list .page-item {
+    display: flex;
+}
+
+.aprobaciones-pagination-list .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.6rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+.aprobaciones-pagination-list a.page-link:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+}
+
+.aprobaciones-pagination-list .page-item.active .page-link {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.aprobaciones-pagination-list .page-item.disabled .page-link {
+    color: var(--text-secondary);
+    opacity: 0.5;
+    cursor: default;
+}
+
+@media (max-width: 640px) {
+    .aprobaciones-pagination-nav {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 1024px) {
+    .main-container {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        padding: 1rem;
+    }
+
+    .page-header {
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+    }
+
+    .header-escudo {
+        width: 46px;
+    }
+
+    .page-subtitle {
+        font-size: 0.82rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .aprobaciones-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 0.75rem;
+    }
+
+    .page-header {
+        padding: 0.95rem 0.75rem;
+    }
+
+    .page-title {
+        font-size: 1.12rem;
+    }
+
+    .header-escudo {
+        width: 42px;
+    }
+
+    .page-subtitle {
+        font-size: 0.78rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+}
