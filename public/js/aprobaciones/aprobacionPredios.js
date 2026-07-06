@@ -26,6 +26,29 @@ $(document).ready(function () {
 
     var debounceTimers = {};
 
+    function obtenerAcordeonesAbiertos($resultado) {
+        var ids = [];
+        $resultado.find(".accordion-collapse.show").each(function () {
+            ids.push(this.id);
+        });
+        return ids;
+    }
+
+    function reabrirAcordeones($resultado, ids) {
+        ids.forEach(function (id) {
+            var $collapse = $resultado.find("#" + id);
+            if ($collapse.length === 0) {
+                return;
+            }
+
+            $collapse.addClass("show");
+            $resultado
+                .find('[data-bs-target="#' + id + '"]')
+                .removeClass("collapsed")
+                .attr("aria-expanded", "true");
+        });
+    }
+
     function cargarGrid(tab, page) {
         var config = tabs[tab];
         config.page = page || 1;
@@ -36,6 +59,7 @@ $(document).ready(function () {
         params.set(config.pageParam, config.page);
 
         var $resultado = $(config.resultado);
+        var idsAbiertos = obtenerAcordeonesAbiertos($resultado);
         $resultado.addClass("is-loading");
 
         fetch(window.aprobacionPrediosRoutes.buscar + "?" + params.toString(), {
@@ -46,6 +70,7 @@ $(document).ready(function () {
             })
             .then(function (data) {
                 $resultado.html(data.html);
+                reabrirAcordeones($resultado, idsAbiertos);
             })
             .catch(function () {
                 Swal.fire({
