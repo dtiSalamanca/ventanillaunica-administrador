@@ -23,7 +23,7 @@ class AprobacionesController extends Controller
         $pendientes = $this->pendientesPaginator($pendientesQuery);
         $sinPendientes = $this->sinPendientesPaginator($sinPendientesQuery);
 
-        return view('aprobaciones.indexDocumentosPersonales', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
+        return view('aprobaciones.aprobacionDocumentosPersonales', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
     }
 
     public function buscarDocumentosPersonales(Request $request): JsonResponse
