@@ -166,6 +166,12 @@
                             Documentos personales
                         </a>
 
+                        <a class="nav-link active {{ request()->routeIs('indexAprobacionesPredios') ? 'active-current' : '' }}"
+                            href="{{ route('indexAprobacionesPredios') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                            Predios
+                        </a>
+
                         <div class="sb-sidenav-menu-heading">
                             <i class="fas fa-list-check me-2"></i>Catálogos
                         </div>

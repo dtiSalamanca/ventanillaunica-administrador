@@ -93,4 +93,12 @@ Route::middleware('auth')->controller(AprobacionesController::class)->group(func
     Route::get('/aprobaciones/documentos-personales/{documentoPersonal}/visualizar', 'visualizarDocumentoPersonal')->name('visualizarDocumentoPersonal');
     Route::post('/aprobaciones/documentos-personales/{documentoPersonal}/aprobar', 'aprobarDocumentoPersonal')->name('aprobarDocumentoPersonal');
     Route::post('/aprobaciones/documentos-personales/{documentoPersonal}/rechazar', 'rechazarDocumentoPersonal')->name('rechazarDocumentoPersonal');
+
+    Route::get('/aprobaciones/predios', 'indexPredios')->name('indexAprobacionesPredios');
+    Route::get('/aprobaciones/predios/buscar', 'buscarPredios')->name('buscarAprobacionesPredios');
+    Route::post('/aprobaciones/predios/{predio}/aprobar', 'aprobarPredio')->name('aprobarPredio');
+    Route::post('/aprobaciones/predios/{predio}/rechazar', 'rechazarPredio')->name('rechazarPredio');
+    Route::get('/aprobaciones/documentos-predios/{documentoPredio}/visualizar', 'visualizarDocumentoPredio')->name('visualizarDocumentoPredio');
+    Route::post('/aprobaciones/documentos-predios/{documentoPredio}/aprobar', 'aprobarDocumentoPredio')->name('aprobarDocumentoPredio');
+    Route::post('/aprobaciones/documentos-predios/{documentoPredio}/rechazar', 'rechazarDocumentoPredio')->name('rechazarDocumentoPredio');
 });

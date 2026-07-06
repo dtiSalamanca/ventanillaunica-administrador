@@ -62,7 +62,7 @@ $(document).ready(function () {
         var idsAbiertos = obtenerAcordeonesAbiertos($resultado);
         $resultado.addClass("is-loading");
 
-        fetch(window.aprobacionDocumentosPersonalesRoutes.buscar + "?" + params.toString(), {
+        fetch(window.aprobacionPrediosRoutes.buscar + "?" + params.toString(), {
             headers: { Accept: "application/json" },
         })
             .then(function (response) {
@@ -141,7 +141,17 @@ $(document).ready(function () {
         true,
     );
 
-    function enviarRevision(url, successTitle) {
+    function enviarRevision(url, successTitle, errorText, loadingText) {
+        Swal.fire({
+            title: loadingText || "Procesando...",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: function () {
+                Swal.showLoading();
+            },
+        });
+
         fetch(url, {
             method: "POST",
             headers: {
@@ -169,58 +179,91 @@ $(document).ready(function () {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: "Ocurrió un error al procesar el documento personal.",
+                    text: errorText,
                 });
             });
     }
 
-    $(document).on("click", ".btn-aprobar-documento", function () {
-        var id = $(this).data("id");
-        var url = window.aprobacionDocumentosPersonalesRoutes.aprobar.replace(
-            "__ID__",
-            id,
-        );
-
+    function confirmarRevision(options) {
         Swal.fire({
             title: "¿Está seguro?",
-            text: "El documento personal seleccionado será aprobado.",
-            icon: "question",
+            text: options.text,
+            icon: options.icon,
             showCancelButton: true,
-            confirmButtonColor: "#10b981",
+            confirmButtonColor: options.confirmButtonColor,
             cancelButtonColor: "#6c757d",
-            confirmButtonText: "Sí, aprobar",
+            confirmButtonText: options.confirmButtonText,
             cancelButtonText: "Cancelar",
         }).then(function (result) {
             if (!result.isConfirmed) {
                 return;
             }
 
-            enviarRevision(url, "Aprobado");
+            enviarRevision(options.url, options.successTitle, options.errorText, options.loadingText);
+        });
+    }
+
+    $(document).on("click", ".btn-aprobar-predio", function () {
+        var id = $(this).data("id");
+        var url = window.aprobacionPrediosRoutes.aprobarPredio.replace("__ID__", id);
+
+        confirmarRevision({
+            url: url,
+            text: "El predio seleccionado será aprobado.",
+            icon: "question",
+            confirmButtonColor: "#10b981",
+            confirmButtonText: "Sí, aprobar",
+            successTitle: "Aprobado",
+            errorText: "Ocurrió un error al procesar el predio.",
+            loadingText: "Aprobando predio y enviando notificación por correo…",
         });
     });
 
-    $(document).on("click", ".btn-rechazar-documento", function () {
+    $(document).on("click", ".btn-rechazar-predio", function () {
         var id = $(this).data("id");
-        var url = window.aprobacionDocumentosPersonalesRoutes.rechazar.replace(
-            "__ID__",
-            id,
-        );
+        var url = window.aprobacionPrediosRoutes.rechazarPredio.replace("__ID__", id);
 
-        Swal.fire({
-            title: "¿Está seguro?",
-            text: "El documento personal seleccionado será rechazado.",
+        confirmarRevision({
+            url: url,
+            text: "El predio seleccionado será rechazado.",
             icon: "warning",
-            showCancelButton: true,
             confirmButtonColor: "#d33",
-            cancelButtonColor: "#6c757d",
             confirmButtonText: "Sí, rechazar",
-            cancelButtonText: "Cancelar",
-        }).then(function (result) {
-            if (!result.isConfirmed) {
-                return;
-            }
+            successTitle: "Rechazado",
+            errorText: "Ocurrió un error al procesar el predio.",
+            loadingText: "Rechazando predio y enviando notificación por correo…",
+        });
+    });
 
-            enviarRevision(url, "Rechazado");
+    $(document).on("click", ".btn-aprobar-documento-predio", function () {
+        var id = $(this).data("id");
+        var url = window.aprobacionPrediosRoutes.aprobarDocumento.replace("__ID__", id);
+
+        confirmarRevision({
+            url: url,
+            text: "El documento de predio seleccionado será aprobado.",
+            icon: "question",
+            confirmButtonColor: "#10b981",
+            confirmButtonText: "Sí, aprobar",
+            successTitle: "Aprobado",
+            errorText: "Ocurrió un error al procesar el documento de predio.",
+            loadingText: "Procesando documento…",
+        });
+    });
+
+    $(document).on("click", ".btn-rechazar-documento-predio", function () {
+        var id = $(this).data("id");
+        var url = window.aprobacionPrediosRoutes.rechazarDocumento.replace("__ID__", id);
+
+        confirmarRevision({
+            url: url,
+            text: "El documento de predio seleccionado será rechazado.",
+            icon: "warning",
+            confirmButtonColor: "#d33",
+            confirmButtonText: "Sí, rechazar",
+            successTitle: "Rechazado",
+            errorText: "Ocurrió un error al procesar el documento de predio.",
+            loadingText: "Procesando documento…",
         });
     });
 });

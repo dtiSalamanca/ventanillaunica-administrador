@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PredioRevisado;
+use App\Models\DocumentoPredio;
+use App\Models\Predio;
 use App\Models\tblDocumentoPersonal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -23,7 +27,7 @@ class AprobacionesController extends Controller
         $pendientes = $this->pendientesPaginator($pendientesQuery);
         $sinPendientes = $this->sinPendientesPaginator($sinPendientesQuery);
 
-        return view('aprobaciones.indexDocumentosPersonales', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
+        return view('aprobaciones.aprobacionDocumentosPersonales', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
     }
 
     public function buscarDocumentosPersonales(Request $request): JsonResponse
@@ -105,6 +109,115 @@ class AprobacionesController extends Controller
         return response()->json(['message' => 'Documento rechazado correctamente.']);
     }
 
+    public function indexPredios(): View
+    {
+        $pendientesQuery = request()->query('pendientesQ');
+        $sinPendientesQuery = request()->query('sinPendientesQ');
+
+        $pendientes = $this->pendientesPrediosPaginator($pendientesQuery);
+        $sinPendientes = $this->sinPendientesPrediosPaginator($sinPendientesQuery);
+
+        return view('aprobaciones.aprobacionPredios', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
+    }
+
+    public function buscarPredios(Request $request): JsonResponse
+    {
+        $tab = $request->query('tab', 'pendientes');
+
+        if ($tab === 'sin-pendientes') {
+            $query = $request->query('sinPendientesQ');
+            $usuarios = $this->sinPendientesPrediosPaginator($query);
+            $pendiente = false;
+            $prefijo = 'revisado';
+        } else {
+            $query = $request->query('pendientesQ');
+            $usuarios = $this->pendientesPrediosPaginator($query);
+            $pendiente = true;
+            $prefijo = 'pendiente';
+        }
+
+        $html = view('aprobaciones.partials.gridUsuariosPredios', [
+            'usuarios' => $usuarios,
+            'pendiente' => $pendiente,
+            'prefijo' => $prefijo,
+            'query' => $query,
+        ])->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+    private function pendientesPrediosPaginator(?string $search)
+    {
+        return User::whereHas('predios', function (Builder $query) {
+            $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                ->orWhereHas('documentos', function (Builder $query) {
+                    $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
+                });
+        })
+            ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
+            ->with(['predios' => function ($query) {
+                $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                    ->orWhereHas('documentos', function (Builder $query) {
+                        $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
+                    })
+                    ->with('documentos.catalogoDocumento')
+                    ->orderBy('clave_predio');
+            }])
+            ->orderBy('name')
+            ->paginate(6, ['*'], 'pendientesPage')
+            ->withQueryString();
+    }
+
+    private function sinPendientesPrediosPaginator(?string $search)
+    {
+        return User::whereHas('predios')
+            ->whereDoesntHave('predios', function (Builder $query) {
+                $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                    ->orWhereHas('documentos', function (Builder $query) {
+                        $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
+                    });
+            })
+            ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
+            ->with(['predios' => function ($query) {
+                $query->with('documentos.catalogoDocumento')->orderBy('clave_predio');
+            }])
+            ->orderBy('name')
+            ->paginate(6, ['*'], 'sinPendientesPage')
+            ->withQueryString();
+    }
+
+    public function aprobarPredio(Predio $predio): JsonResponse
+    {
+        $predio->update(['estatus_predio' => Predio::ESTATUS_APROBADO]);
+
+        Mail::to($predio->usuario->email)->send(new PredioRevisado($predio));
+
+        return response()->json(['message' => 'Predio aprobado correctamente.']);
+    }
+
+    public function rechazarPredio(Predio $predio): JsonResponse
+    {
+        $predio->update(['estatus_predio' => Predio::ESTATUS_RECHAZADO]);
+
+        Mail::to($predio->usuario->email)->send(new PredioRevisado($predio));
+
+        return response()->json(['message' => 'Predio rechazado correctamente.']);
+    }
+
+    public function aprobarDocumentoPredio(DocumentoPredio $documentoPredio): JsonResponse
+    {
+        $documentoPredio->update(['estatus_documento' => DocumentoPredio::ESTATUS_APROBADO]);
+
+        return response()->json(['message' => 'Documento de predio aprobado correctamente.']);
+    }
+
+    public function rechazarDocumentoPredio(DocumentoPredio $documentoPredio): JsonResponse
+    {
+        $documentoPredio->update(['estatus_documento' => DocumentoPredio::ESTATUS_RECHAZADO]);
+
+        return response()->json(['message' => 'Documento de predio rechazado correctamente.']);
+    }
+
     /**
      * Visualiza el archivo del documento personal consumiendo la API del
      * repositorio ventanillaunica-ciudadano, donde se almacenan los PDFs.
@@ -113,8 +226,29 @@ class AprobacionesController extends Controller
      */
     public function visualizarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): Response
     {
-        $url = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/')
-            ."/api/documentos-personales/{$documentoPersonal->id_documento}/archivo";
+        return $this->visualizarDocumentoCiudadano(
+            "/api/documentos-personales/{$documentoPersonal->id_documento}/archivo",
+            $documentoPersonal->catalogoDocumento->nombre_documento,
+        );
+    }
+
+    /**
+     * Visualiza el archivo del documento de predio consumiendo la API del
+     * repositorio ventanillaunica-ciudadano, donde se almacenan los PDFs.
+     * Devuelve el archivo inline para que el navegador lo muestre en su
+     * visor nativo dentro de una pestaña nueva.
+     */
+    public function visualizarDocumentoPredio(DocumentoPredio $documentoPredio): Response
+    {
+        return $this->visualizarDocumentoCiudadano(
+            "/api/documentos-predios/{$documentoPredio->id_documento_predio}/archivo",
+            $documentoPredio->catalogoDocumento->nombre_documento,
+        );
+    }
+
+    private function visualizarDocumentoCiudadano(string $rutaApi, string $nombreDocumento): Response
+    {
+        $url = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/').$rutaApi;
 
         try {
             $respuesta = Http::withHeaders([
@@ -135,7 +269,7 @@ class AprobacionesController extends Controller
             );
         }
 
-        $nombreArchivo = Str::slug($documentoPersonal->catalogoDocumento->nombre_documento).'.pdf';
+        $nombreArchivo = Str::slug($nombreDocumento).'.pdf';
 
         return response($respuesta->body(), 200, [
             'Content-Type' => 'application/pdf',

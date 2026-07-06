@@ -35,4 +35,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(tblDocumentoPersonal::class, 'fk_usuario', 'id');
     }
+
+    public function predios(): HasMany
+    {
+        return $this->hasMany(Predio::class, 'fk_usuario', 'id');
+    }
 }
