@@ -12,7 +12,6 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -27,6 +26,7 @@ class AprobacionesController extends Controller
 
         $pendientes = $this->pendientesPaginator($pendientesQuery);
         $sinPendientes = $this->sinPendientesPaginator($sinPendientesQuery);
+
         return view('aprobaciones.aprobacionDocumentosPersonales', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
     }
 
@@ -110,28 +110,28 @@ class AprobacionesController extends Controller
     }
 
     public function indexPredios(): View
-{
-    $sinPendientesQuery = request()->query('sinPendientesQ');
-    $pendientesQuery = request()->query('pendientesQ');
+    {
+        $sinPendientesQuery = request()->query('sinPendientesQ');
+        $pendientesQuery = request()->query('pendientesQ');
 
-    $sinPendientes = $this->sinPendientesPrediosPaginator($sinPendientesQuery);
+        $sinPendientes = $this->sinPendientesPrediosPaginator($sinPendientesQuery);
 
-    $pendientes = User::whereHas('predios', function ($query) {
+        $pendientes = User::whereHas('predios', function ($query) {
             $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
                 ->orWhereHas('documentos', function ($q) {
                     $q->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
                 });
         })
-        ->when($pendientesQuery, function ($query, $busqueda) {
-            $query->where('name', 'like', "%{$busqueda}%");
-        })
-        ->with(['predios.documentos.catRequisitos']) // <- nombre correcto de la relación
-        ->orderBy('name')
-        ->paginate(6, ['*'], 'pendientesPage')
-        ->withQueryString();
+            ->when($pendientesQuery, function ($query, $busqueda) {
+                $query->where('name', 'like', "%{$busqueda}%");
+            })
+            ->with(['predios.documentos.catalogoDocumento'])
+            ->orderBy('name')
+            ->paginate(6, ['*'], 'pendientesPage')
+            ->withQueryString();
 
-    return view('aprobaciones.aprobacionPredios', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
-}
+        return view('aprobaciones.aprobacionPredios', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
+    }
 
     public function buscarPredios(Request $request): JsonResponse
     {

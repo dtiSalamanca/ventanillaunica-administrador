@@ -5,10 +5,12 @@
         \App\Models\Predio::ESTATUS_RECHAZADO => ['label' => 'Rechazado', 'class' => 'badge-estatus-rechazado'],
     ];
 
-    $prediosPendientes = $usuario->predios->filter(function ($predio) {
-        return $predio->estatus_predio === \App\Models\Predio::ESTATUS_EN_REVISION
-            || $predio->documentos->contains('estatus_documento', \App\Models\DocumentoPredio::ESTATUS_EN_REVISION);
-    })->count();
+    $prediosPendientes = $usuario->predios
+        ->filter(function ($predio) {
+            return $predio->estatus_predio === \App\Models\Predio::ESTATUS_EN_REVISION ||
+                $predio->documentos->contains('estatus_documento', \App\Models\DocumentoPredio::ESTATUS_EN_REVISION);
+        })
+        ->count();
 @endphp
 
 <div class="usuario-card">
@@ -32,7 +34,8 @@
             <div class="accordion-item predio-item">
                 <h2 class="accordion-header predio-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapse-predio-{{ $prefijo }}-{{ $predio->id_predio }}" aria-expanded="false"
+                        data-bs-target="#collapse-predio-{{ $prefijo }}-{{ $predio->id_predio }}"
+                        aria-expanded="false"
                         aria-controls="collapse-predio-{{ $prefijo }}-{{ $predio->id_predio }}">
                         <i class="fa-solid fa-map-location-dot me-2"></i>
                         Predio: {{ $predio->clave_predio }}
@@ -40,21 +43,21 @@
 
                     <div class="predio-acciones">
                         @if ($predio->estatus_predio === \App\Models\Predio::ESTATUS_EN_REVISION)
-                            <button type="button" class="btn-aprobar btn-aprobar-predio" data-id="{{ $predio->id_predio }}"
-                                title="Aprobar predio">
+                            <button type="button" class="btn-aprobar btn-aprobar-predio"
+                                data-id="{{ $predio->id_predio }}" title="Aprobar predio">
                                 <i class="fas fa-check"></i>
                             </button>
-                            <button type="button" class="btn-rechazar btn-rechazar-predio" data-id="{{ $predio->id_predio }}"
-                                title="Rechazar predio">
+                            <button type="button" class="btn-rechazar btn-rechazar-predio"
+                                data-id="{{ $predio->id_predio }}" title="Rechazar predio">
                                 <i class="fas fa-xmark"></i>
                             </button>
                         @elseif ($predio->estatus_predio === \App\Models\Predio::ESTATUS_POR_REVISAR)
-                            <button type="button" class="btn-validar btn-buscar-predio" data-id="{{ $predio->clave_predio }}"
-                                title="Buscar predio">
+                            <button type="button" class="btn-validar btn-buscar-predio"
+                                data-id="{{ $predio->clave_predio }}" title="Buscar predio">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
-                            <button type="button" class="btn-rechazar btn-rechazar-predio" data-id="{{ $predio->id_predio }}"
-                                title="Rechazar predio">
+                            <button type="button" class="btn-rechazar btn-rechazar-predio"
+                                data-id="{{ $predio->id_predio }}" title="Rechazar predio">
                                 <i class="fas fa-xmark"></i>
                             </button>
                         @else
@@ -65,13 +68,15 @@
                     </div>
                 </h2>
 
-                <div id="collapse-predio-{{ $prefijo }}-{{ $predio->id_predio }}" class="accordion-collapse collapse"
+                <div id="collapse-predio-{{ $prefijo }}-{{ $predio->id_predio }}"
+                    class="accordion-collapse collapse"
                     data-bs-parent="#accordion-usuario-{{ $prefijo }}-{{ $usuario->id }}">
                     <div class="accordion-body">
                         @forelse ($predio->documentos as $documento)
                             <div class="documento-item">
                                 <div class="documento-info">
-                                    <div class="documento-nombre">{{ $documento->catRequisitos->nombre_requisito }}</div>
+                                    <div class="documento-nombre">{{ $documento->catalogoDocumento->nombre_documento }}
+                                    </div>
                                     <div class="documento-fecha">{{ $documento->created_at->format('d/m/Y') }}</div>
                                 </div>
 
@@ -91,7 +96,8 @@
                                             <i class="fas fa-xmark"></i>
                                         </button>
                                     @else
-                                        <span class="badge-estatus {{ $estatusInfo[$documento->estatus_documento]['class'] }}">
+                                        <span
+                                            class="badge-estatus {{ $estatusInfo[$documento->estatus_documento]['class'] }}">
                                             {{ $estatusInfo[$documento->estatus_documento]['label'] }}
                                         </span>
                                     @endif
