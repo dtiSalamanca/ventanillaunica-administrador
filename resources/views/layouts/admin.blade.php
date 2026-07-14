@@ -157,6 +157,16 @@
                         </a>
 
                         <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-check-circle me-2"></i>Solicitudes de trámites
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('solicitudes.index') ? 'active-current' : '' }}"
+                            href="{{ route('solicitudes.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+                            Nuevas solicitudes
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">
                             <i class="fas fa-check-circle me-2"></i>Aprobaciones
                         </div>
 

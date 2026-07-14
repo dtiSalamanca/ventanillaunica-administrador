@@ -17,7 +17,8 @@
 
                 <div class="header-main">
                     <h1 class="page-title">Aprobación de predios</h1>
-                    <p class="page-subtitle">Revisa, aprueba o rechaza los predios y sus documentos cargados por los usuarios</p>
+                    <p class="page-subtitle">Revisa, aprueba o rechaza los predios y sus documentos cargados por los
+                        usuarios</p>
                 </div>
             </div>
         </div>
@@ -53,15 +54,17 @@
                 <!-- Tabs -->
                 <ul class="nav nav-tabs mb-3" id="tabs-aprobaciones" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="pendientes-tab" data-bs-toggle="tab" data-bs-target="#pendientes"
-                            type="button" role="tab" aria-controls="pendientes" aria-selected="true">
+                        <button class="nav-link active" id="pendientes-tab" data-bs-toggle="tab"
+                            data-bs-target="#pendientes" type="button" role="tab" aria-controls="pendientes"
+                            aria-selected="true">
                             <i class="fa-solid fa-clock me-1"></i> Pendientes de revisión
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="sin-pendientes-tab" data-bs-toggle="tab" data-bs-target="#sin-pendientes"
-                            type="button" role="tab" aria-controls="sin-pendientes" aria-selected="false">
+                        <button class="nav-link" id="sin-pendientes-tab" data-bs-toggle="tab"
+                            data-bs-target="#sin-pendientes" type="button" role="tab" aria-controls="sin-pendientes"
+                            aria-selected="false">
                             <i class="fa-solid fa-check-double me-1"></i> Sin pendientes
                         </button>
                     </li>
@@ -112,6 +115,84 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).on("click", ".btn-buscar-predio", async function () {
+            const cuenta = $(this).data("id");
+            // Estado inicial
+            Swal.fire({
+                title: 'Buscando predio...',
+                text: 'Validando la cuenta catastral en el sistema de predial.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            try {
+                const resultado = await existeCuenta(cuenta);
+                if (resultado === true) {
+                    // Cambiamos el estado del mismo Swal
+                    Swal.update({
+                        icon: 'info',
+                        title: 'Predio encontrado',
+                        text: 'Actualizando información del predio...'
+                    });
+                    const url = "{{ route('predio.validar', ['id' => '__ID__']) }}".replace('__ID__', cuenta);
+                    const actPredio = await fetch(url);
+                    if (actPredio.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Proceso completado',
+                            html: `
+                                El predio con cuenta catastral 
+                                <strong>${cuenta}</strong> fue encontrado 
+                                y actualizado correctamente.
+                            `,
+                            confirmButtonText: 'Aceptar'
+                        });
+                        location.reload();
+                    } else {
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Error al actualizar',
+                            text: 'El predio existe, pero ocurrió un problema al actualizar la información.',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                } else {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Predio no encontrado',
+                        text: 'La cuenta catastral proporcionada no existe en el sistema de predial.',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error inesperado',
+                    text: 'Ocurrió un error al procesar la solicitud.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        });
+
+        async function existeCuenta(cuenta) {
+            try {
+                const response = await fetch(`http://localhost:8001/api/puurbanos/${cuenta}/existe`);
+                const resp = await response.json();
+                if (resp.existe === true) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        }
+    </script>
     <script>
         window.aprobacionPrediosRoutes = {
             aprobarPredio: "{{ route('aprobarPredio', ['predio' => '__ID__']) }}",

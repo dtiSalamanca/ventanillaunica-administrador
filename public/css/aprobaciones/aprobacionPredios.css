@@ -434,6 +434,21 @@ body {
     flex-shrink: 0;
 }
 
+.btn-validar{
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    line-height: 1;
+    transition: var(--transition);
+    color: orange;
+}
+
 .btn-aprobar,
 .btn-rechazar,
 .btn-visualizar {

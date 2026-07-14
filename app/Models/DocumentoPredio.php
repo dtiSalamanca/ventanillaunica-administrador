@@ -18,7 +18,7 @@ class DocumentoPredio extends Model
     protected $primaryKey = 'id_documento_predio';
 
     protected $fillable = [
-        'fk_cat_documento_predio',
+        'fk_requisito',
         'ruta_documento',
         'fk_predio',
         'estatus_documento',
@@ -29,8 +29,9 @@ class DocumentoPredio extends Model
         return $this->belongsTo(Predio::class, 'fk_predio', 'id_predio');
     }
 
-    public function catalogoDocumento(): BelongsTo
+    public function catRequisitos(): BelongsTo
     {
-        return $this->belongsTo(catDocumentoPredio::class, 'fk_cat_documento_predio', 'id_documento_predio');
+        return $this->belongsTo(Requisito::class, 'fk_requisito', 'id_requisito');
     }
+
 }

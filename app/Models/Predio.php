@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Predio extends Model
 {
+    public const ESTATUS_POR_REVISAR = -1;
     public const ESTATUS_RECHAZADO = 0;
 
     public const ESTATUS_EN_REVISION = 1;

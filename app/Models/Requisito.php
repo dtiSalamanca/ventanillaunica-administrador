@@ -21,4 +21,9 @@ class Requisito extends Model
     {
         return $this->belongsToMany(Tramite::class, 'tbl_requisitos_tramites', 'fk_requisito', 'fk_tramite', 'id_requisito', 'id_tramite');
     }
+
+    public function documentosPredio(): BelongsToMany
+    {
+        return $this->belongsToMany(DocumentoPredio::class, 'tbl_documentos_predios', 'fk_requisito', 'id_requisito');
+    }
 }

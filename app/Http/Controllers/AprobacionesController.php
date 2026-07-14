@@ -12,6 +12,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -26,7 +27,6 @@ class AprobacionesController extends Controller
 
         $pendientes = $this->pendientesPaginator($pendientesQuery);
         $sinPendientes = $this->sinPendientesPaginator($sinPendientesQuery);
-
         return view('aprobaciones.aprobacionDocumentosPersonales', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
     }
 
@@ -110,15 +110,28 @@ class AprobacionesController extends Controller
     }
 
     public function indexPredios(): View
-    {
-        $pendientesQuery = request()->query('pendientesQ');
-        $sinPendientesQuery = request()->query('sinPendientesQ');
+{
+    $sinPendientesQuery = request()->query('sinPendientesQ');
+    $pendientesQuery = request()->query('pendientesQ');
 
-        $pendientes = $this->pendientesPrediosPaginator($pendientesQuery);
-        $sinPendientes = $this->sinPendientesPrediosPaginator($sinPendientesQuery);
+    $sinPendientes = $this->sinPendientesPrediosPaginator($sinPendientesQuery);
 
-        return view('aprobaciones.aprobacionPredios', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
-    }
+    $pendientes = User::whereHas('predios', function ($query) {
+            $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                ->orWhereHas('documentos', function ($q) {
+                    $q->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
+                });
+        })
+        ->when($pendientesQuery, function ($query, $busqueda) {
+            $query->where('name', 'like', "%{$busqueda}%");
+        })
+        ->with(['predios.documentos.catRequisitos']) // <- nombre correcto de la relación
+        ->orderBy('name')
+        ->paginate(6, ['*'], 'pendientesPage')
+        ->withQueryString();
+
+    return view('aprobaciones.aprobacionPredios', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
+}
 
     public function buscarPredios(Request $request): JsonResponse
     {
@@ -149,7 +162,7 @@ class AprobacionesController extends Controller
     private function pendientesPrediosPaginator(?string $search)
     {
         return User::whereHas('predios', function (Builder $query) {
-            $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+            $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)->orWhere('estatus_predio', Predio::ESTATUS_POR_REVISAR)
                 ->orWhereHas('documentos', function (Builder $query) {
                     $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
                 });
@@ -157,6 +170,7 @@ class AprobacionesController extends Controller
             ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
             ->with(['predios' => function ($query) {
                 $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                    ->orWhere('estatus_predio', Predio::ESTATUS_POR_REVISAR)
                     ->orWhereHas('documentos', function (Builder $query) {
                         $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
                     })

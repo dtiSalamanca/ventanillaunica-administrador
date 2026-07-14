@@ -48,6 +48,15 @@
                                 title="Rechazar predio">
                                 <i class="fas fa-xmark"></i>
                             </button>
+                        @elseif ($predio->estatus_predio === \App\Models\Predio::ESTATUS_POR_REVISAR)
+                            <button type="button" class="btn-validar btn-buscar-predio" data-id="{{ $predio->clave_predio }}"
+                                title="Buscar predio">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                            <button type="button" class="btn-rechazar btn-rechazar-predio" data-id="{{ $predio->id_predio }}"
+                                title="Rechazar predio">
+                                <i class="fas fa-xmark"></i>
+                            </button>
                         @else
                             <span class="badge-estatus {{ $estatusInfo[$predio->estatus_predio]['class'] }}">
                                 {{ $estatusInfo[$predio->estatus_predio]['label'] }}
@@ -62,7 +71,7 @@
                         @forelse ($predio->documentos as $documento)
                             <div class="documento-item">
                                 <div class="documento-info">
-                                    <div class="documento-nombre">{{ $documento->catalogoDocumento->nombre_documento }}</div>
+                                    <div class="documento-nombre">{{ $documento->catRequisitos->nombre_requisito }}</div>
                                     <div class="documento-fecha">{{ $documento->created_at->format('d/m/Y') }}</div>
                                 </div>
 
