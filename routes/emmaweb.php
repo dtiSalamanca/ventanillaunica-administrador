@@ -14,4 +14,6 @@ Route::middleware('auth')->controller(SolicitudesEmmaController::class)->group(f
 
 Route::middleware('auth')->controller(AjaxEmmaController::class)->group(function () {
     Route::get('/ajax/solicitudes', 'solicitudes')->name('ajax.solicitudes');
+    Route::get('/ajax/solicitud/{id}', 'consultaSolicitud')->name('ajax.consulta.solicitud');
+    Route::get('/ajax/usuarios/ad', 'consultaUsuarios')->name('ajax.consulta.usuarios');
 });
