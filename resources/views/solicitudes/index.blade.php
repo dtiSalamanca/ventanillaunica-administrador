@@ -239,5 +239,52 @@
             // Inicializar DataTable para solicitudes inactivas/rechazadas (estatus = 2)
             initSolicitudesDataTable('tabla-solicitudes-inactivas', 2);
         });
+
+        async function loadDocumentos(id_solicitud) {
+            try {
+                const response = await fetch(`/ajax/solicitud/${id_solicitud}`);
+
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+                renderDocumentosEnModal(data);
+
+            } catch (error) {
+                console.error("Error al cargar los documentos:", error);
+            }
+        }
+
+        function renderDocumentosEnModal(documentos) {
+            const tbody = document.querySelector('#documentosBody');
+            tbody.innerHTML = ''; // limpiar contenido anterior
+
+            if (documentos.length === 0) {
+                tbody.innerHTML =
+                '<tr><td colspan="3" class="text-center">No hay documentos para esta solicitud.</td></tr>';
+                return;
+            }
+
+            documentos.forEach((doc, index) => {
+                const estatusBadge = doc.entregado ?
+                    '<span class="badge bg-success">Entregado</span>' :
+                    '<span class="badge bg-warning text-dark">Pendiente</span>';
+
+                const accion = doc.entregado ?
+                    `<a href="${doc.ruta_documento}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+                            <i class="fas fa-eye"></i> Ver
+                        </a>` :
+                    '<span class="text-muted">Sin documento</span>';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <th scope="row">${index + 1}</th>
+                        <td>${doc.nombre_requisito} ${estatusBadge}</td>
+                        <td>${accion}</td>
+                    </tr>
+                `;
+            });
+        }
     </script>
 @endsection
