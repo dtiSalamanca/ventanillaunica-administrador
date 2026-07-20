@@ -1,8 +1,6 @@
 <?php
 
-
 use App\Http\Controllers\HomeController;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +12,6 @@ Auth::routes(['register' => false]);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-require __DIR__ . '/jairweb.php';
-require __DIR__ . '/emmaweb.php';
-require __DIR__ . '/raulweb.php';
+require __DIR__.'/jairweb.php';
+require __DIR__.'/emmaweb.php';
+require __DIR__.'/raulweb.php';

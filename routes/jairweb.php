@@ -1,12 +1,12 @@
 <?php
+
+use App\Http\Controllers\AprobacionesController;
+use App\Http\Controllers\DependenciasController;
+use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\PrediosController;
 use App\Http\Controllers\RequisitosController;
 use App\Http\Controllers\TramitesController;
 use App\Http\Controllers\UsuariosController;
-use App\Http\Controllers\AprobacionesController;
-use App\Http\Controllers\DependenciasController;
-use App\Http\Controllers\DocumentosPersonalesController;
-
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->controller(DependenciasController::class)->group(function () {
@@ -51,6 +51,7 @@ Route::middleware('auth')->controller(RequisitosController::class)->group(functi
 Route::middleware('auth')->controller(UsuariosController::class)->group(function () {
     Route::get('/usuarios', 'indexUsuarios')->name('indexUsuarios');
     Route::get('/usuarios/ad', 'getUsuariosAd')->name('getUsuariosAd');
+    Route::post('/usuarios/asignar-dependencia', 'asignarDependencia')->name('asignarDependencia');
 });
 
 Route::middleware('auth')->controller(DocumentosPersonalesController::class)->group(function () {

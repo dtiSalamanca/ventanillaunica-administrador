@@ -17,7 +17,7 @@
 
                 <div class="header-main">
                     <h1 class="page-title">Nuevas solicitudes</h1>
-                    <p class="page-subtitle">Seguimiento para las solicitudes activas</p>
+                    <p class="page-subtitle">Seguimiento y gestión de solicitudes</p>
                 </div>
 
                 {{-- <div class="header-actions">
@@ -65,38 +65,34 @@
                     </div>
                 @endif
 
-                <ul class="nav nav-tabs mb-3" id="tabs-documentos-predios" role="tablist">
+                <ul class="nav nav-tabs mb-3" id="tabs-solicitudes" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="activos-tab" data-bs-toggle="tab" data-bs-target="#activos"
-                            type="button" role="tab" aria-controls="activos" aria-selected="true">
-                            <i class="fa-solid fa-check-circle me-1"></i> Solicitudes activas
+                        <button class="nav-link active" id="pendientes-tab" data-bs-toggle="tab"
+                            data-bs-target="#pendientes" type="button" role="tab" aria-controls="pendientes"
+                            aria-selected="true">
+                            <i class="fa-solid fa-clock me-1"></i> Solicitudes pendientes
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="inactivos-tab" data-bs-toggle="tab" data-bs-target="#inactivos"
-                            type="button" role="tab" aria-controls="inactivos" aria-selected="false">
+                        <button class="nav-link" id="aprobadas-tab" data-bs-toggle="tab" data-bs-target="#aprobadas"
+                            type="button" role="tab" aria-controls="aprobadas" aria-selected="false">
+                            <i class="fa-solid fa-check-circle me-1"></i> Solicitudes aprobadas / turnadas
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="inactivas-tab" data-bs-toggle="tab" data-bs-target="#inactivas"
+                            type="button" role="tab" aria-controls="inactivas" aria-selected="false">
                             <i class="fa-solid fa-ban me-1"></i> Solicitudes inactivas
                         </button>
                     </li>
                 </ul>
-                <div class="tab-content" id="tabs-documentos-predios-content">
-                    <div class="tab-pane fade show active" id="activos" role="tabpanel" aria-labelledby="activos-tab">
-                        <div class="action-bar">
-                            <div class="action-bar-right" style="margin-left: auto;">
-                                <button type="button" class="action-bar-btn btn-edit-top"
-                                    id="btn-editar-documentoPredio-activos" disabled>
-                                    <i class="fas fa-pen-to-square"></i> Modificar documento
-                                </button>
-                                <button type="button" class="action-bar-btn btn-delete-top"
-                                    id="btn-deshabilitar-documentoPredio" disabled>
-                                    <i class="fas fa-ban"></i> Deshabilitar
-                                </button>
-                            </div>
-                        </div>
+                <div class="tab-content" id="tabs-solicitudes-content">
+                    <div class="tab-pane fade show active" id="pendientes" role="tabpanel" aria-labelledby="pendientes-tab">
                         <div class="table-container">
                             <div class="table-responsive">
-                                <table id="tabla-solicitudes-activas" class="table table-striped align-middle"
+                                <table id="tabla-solicitudes-pendientes" class="table table-striped align-middle"
                                     style="width:100%">
                                     <thead>
                                         <tr>
@@ -115,26 +111,44 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="inactivos" role="tabpanel" aria-labelledby="inactivos-tab">
-                        <div class="action-bar">
-                            <div class="action-bar-right" style="margin-left: auto;">
-                                <button type="button" class="action-bar-btn btn-activate-top"
-                                    id="btn-habilitar-documentoPredio" disabled>
-                                    <i class="fas fa-check"></i> Habilitar
-                                </button>
+
+                    <div class="tab-pane fade" id="aprobadas" role="tabpanel" aria-labelledby="aprobadas-tab">
+                        <div class="table-container">
+                            <div class="table-responsive">
+                                <table id="tabla-solicitudes-aprobadas" class="table table-striped align-middle"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="w-documento"># solicitud</th>
+                                            <th class="w-tramite"><i class="fas fa-info-circle me-2"></i>Trámite</th>
+                                            <th class="w-usuario"><i class="fas fa-user me-2"></i>Usuario</th>
+                                            <th class="w-fecha"><i class="fas fa-calendar-alt me-2"></i>Fecha de solicitud
+                                            </th>
+                                            <th class="w-estado"><i class="fas fa-info-circle me-2"></i>Estado</th>
+                                            <th class="w-acciones"><i class="fas fa-cogs me-2"></i>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="inactivas" role="tabpanel" aria-labelledby="inactivas-tab">
                         <div class="table-container">
                             <div class="table-responsive">
                                 <table id="tabla-solicitudes-inactivas" class="table table-striped align-middle"
                                     style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th class="w-checkbox"></th>
-                                            <th class="w-documento"><i class="fas fa-file me-2"></i>Nombre del documento
+                                            <th class="w-documento"># solicitud</th>
+                                            <th class="w-tramite"><i class="fas fa-info-circle me-2"></i>Trámite</th>
+                                            <th class="w-usuario"><i class="fas fa-user me-2"></i>Usuario</th>
+                                            <th class="w-fecha"><i class="fas fa-calendar-alt me-2"></i>Fecha de solicitud
                                             </th>
-                                            <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia (meses)
-                                            </th>
+                                            <th class="w-estado"><i class="fas fa-info-circle me-2"></i>Estado</th>
+                                            <th class="w-acciones"><i class="fas fa-cogs me-2"></i>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -156,35 +170,46 @@
     <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.3.0/js/responsive.bootstrap5.min.js"></script>
     <script>
-        $(document).ready(function () {
-            // Inicializar DataTables para solicitudes activas
-            $('#tabla-solicitudes-activas').DataTable({
+        function initSolicitudesDataTable(tableId, filterStatus) {
+            return $('#' + tableId).DataTable({
                 responsive: true,
                 ajax: {
                     url: "{{ route('ajax.solicitudes') }}",
-                    dataSrc: ''
+                    dataSrc: function(json) {
+                        return json.filter(function(item) {
+                            return item.estatus_solicitud === filterStatus;
+                        });
+                    }
                 },
-                columns: [
-                    { data: 'id_solicitud', title: '# solicitud' },
-                    { data: 'nombre_tramite', title: 'Trámite' },
-                    { data: 'nombre_usuario', title: 'Usuario' },
-                    { 
-                        data: 'fecha_solicitud', 
+                columns: [{
+                        data: 'id_solicitud',
+                        title: '# solicitud'
+                    },
+                    {
+                        data: 'nombre_tramite',
+                        title: 'Trámite'
+                    },
+                    {
+                        data: 'nombre_usuario',
+                        title: 'Usuario'
+                    },
+                    {
+                        data: 'fecha_solicitud',
                         title: 'Fecha de solicitud',
-                        render: function (data, type, row) {
+                        render: function(data, type, row) {
                             if (!data) return '';
                             const dt = new Date(data);
                             const pad = (n) => String(n).padStart(2, '0');
                             return `${pad(dt.getUTCDate())}-${pad(dt.getUTCMonth() + 1)}-${dt.getUTCFullYear()} ${pad(dt.getUTCHours())}:${pad(dt.getUTCMinutes())}:${pad(dt.getUTCSeconds())}`;
                         }
                     },
-                    { 
-                        //data: 'estatus_solicitud', title: 'Estado' 
-                        data: null, render: function (data, type, row) {
+                    {
+                        data: null,
+                        render: function(data, type, row) {
                             if (row.estatus_solicitud === 0) {
                                 return '<span class="badge bg-warning text-dark">Pendiente</span>';
                             } else if (row.estatus_solicitud === 1) {
-                                return '<span class="badge bg-success">Aprobada</span>';
+                                return '<span class="badge bg-success">Aprobada / Turnada</span>';
                             } else if (row.estatus_solicitud === 2) {
                                 return '<span class="badge bg-danger">Rechazada</span>';
                             } else {
@@ -193,12 +218,26 @@
                         }
                     },
                     {
-                        data: null, render: function (data, type, row) {
-                            return '<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalAcciones">Ver</button>';
-                        }, orderable: false
+                        data: null,
+                        render: function(data, type, row) {
+                            return '<a href="/solicitudes/' + row.id_solicitud +
+                                '/detalles" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Ver</a>';
+                        },
+                        orderable: false
                     }
                 ]
             });
+        }
+
+        $(document).ready(function() {
+            // Inicializar DataTable para solicitudes pendientes (estatus = 0)
+            initSolicitudesDataTable('tabla-solicitudes-pendientes', 0);
+
+            // Inicializar DataTable para solicitudes aprobadas/turnadas (estatus = 1)
+            initSolicitudesDataTable('tabla-solicitudes-aprobadas', 1);
+
+            // Inicializar DataTable para solicitudes inactivas/rechazadas (estatus = 2)
+            initSolicitudesDataTable('tabla-solicitudes-inactivas', 2);
         });
     </script>
 @endsection

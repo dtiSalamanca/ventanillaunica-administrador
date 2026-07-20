@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UsuarioAD;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -104,5 +106,28 @@ class UsuariosController extends Controller
             ->values();
 
         return response()->json($usuarios);
+    }
+
+    public function asignarDependencia(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'usuarios' => 'required|array',
+            'usuarios.*' => 'required|string',
+            'fk_dependencia' => 'required|integer|exists:cat_dependencias,id_dependencia',
+        ]);
+
+        $asignados = 0;
+        foreach ($validated['usuarios'] as $username) {
+            UsuarioAD::updateOrCreate(
+                ['nombre_usuario' => $username],
+                ['fk_dependencia' => $validated['fk_dependencia']]
+            );
+            $asignados++;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Dependencia asignada a {$asignados} usuario(s) correctamente.",
+        ]);
     }
 }
