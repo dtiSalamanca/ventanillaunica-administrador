@@ -77,14 +77,14 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="aprobadas-tab" data-bs-toggle="tab" data-bs-target="#aprobadas"
                             type="button" role="tab" aria-controls="aprobadas" aria-selected="false">
-                            <i class="fa-solid fa-check-circle me-1"></i> Solicitudes aprobadas / turnadas
+                            <i class="fa-solid fa-check-circle me-1"></i> Solicitudes turnadas
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="inactivas-tab" data-bs-toggle="tab" data-bs-target="#inactivas"
                             type="button" role="tab" aria-controls="inactivas" aria-selected="false">
-                            <i class="fa-solid fa-ban me-1"></i> Solicitudes inactivas
+                            <i class="fa-solid fa-ban me-1"></i> Rechazadas
                         </button>
                     </li>
                 </ul>
@@ -170,15 +170,35 @@
     <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.3.0/js/responsive.bootstrap5.min.js"></script>
     <script>
-        function initSolicitudesDataTable(tableId, filterStatus) {
+        var solicitudesEndpoint = "{{ route('ajax.solicitudes.completas') }}";
+
+        function renderEstatus(row) {
+            if (row.estatus_solicitud === 0) {
+                return '<span class="badge bg-warning text-dark">Pendiente</span>';
+            } else if (row.estatus_solicitud === 1) {
+                return '<span class="badge bg-success">Turnada</span>';
+            } else if (row.estatus_solicitud === 2) {
+                return '<span class="badge bg-danger">Rechazada</span>';
+            } else if (row.estatus_solicitud === 3) {
+                return '<span class="badge bg-info text-dark">Por pagar</span>';
+            } else if (row.estatus_solicitud === 4) {
+                return '<span class="badge bg-primary">Completado</span>';
+            }
+            return '<span class="badge bg-secondary">Desconocido</span>';
+        }
+
+        function renderAcciones(row) {
+            var url = '/solicitudes/' + row.id_solicitud + '/detalles';
+            return '<a href="' + url + '" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Ver</a>';
+        }
+
+        function initSolicitudesDataTable(tableId, filterFn) {
             return $('#' + tableId).DataTable({
                 responsive: true,
                 ajax: {
-                    url: "{{ route('ajax.solicitudes') }}",
+                    url: solicitudesEndpoint,
                     dataSrc: function(json) {
-                        return json.filter(function(item) {
-                            return item.estatus_solicitud === filterStatus;
-                        });
+                        return json.filter(filterFn);
                     }
                 },
                 columns: [{
@@ -200,28 +220,21 @@
                             if (!data) return '';
                             const dt = new Date(data);
                             const pad = (n) => String(n).padStart(2, '0');
-                            return `${pad(dt.getUTCDate())}-${pad(dt.getUTCMonth() + 1)}-${dt.getUTCFullYear()} ${pad(dt.getUTCHours())}:${pad(dt.getUTCMinutes())}:${pad(dt.getUTCSeconds())}`;
+                            return pad(dt.getUTCDate()) + '-' + pad(dt.getUTCMonth() + 1) + '-' + dt
+                                .getUTCFullYear() + ' ' + pad(dt.getUTCHours()) + ':' + pad(dt
+                                    .getUTCMinutes()) + ':' + pad(dt.getUTCSeconds());
                         }
                     },
                     {
                         data: null,
                         render: function(data, type, row) {
-                            if (row.estatus_solicitud === 0) {
-                                return '<span class="badge bg-warning text-dark">Pendiente</span>';
-                            } else if (row.estatus_solicitud === 1) {
-                                return '<span class="badge bg-success">Aprobada / Turnada</span>';
-                            } else if (row.estatus_solicitud === 2) {
-                                return '<span class="badge bg-danger">Rechazada</span>';
-                            } else {
-                                return data;
-                            }
+                            return renderEstatus(row);
                         }
                     },
                     {
                         data: null,
                         render: function(data, type, row) {
-                            return '<a href="/solicitudes/' + row.id_solicitud +
-                                '/detalles" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Ver</a>';
+                            return renderAcciones(row);
                         },
                         orderable: false
                     }
@@ -230,14 +243,20 @@
         }
 
         $(document).ready(function() {
-            // Inicializar DataTable para solicitudes pendientes (estatus = 0)
-            initSolicitudesDataTable('tabla-solicitudes-pendientes', 0);
+            // Pendientes (estatus = 0): necesita revisión del admin
+            initSolicitudesDataTable('tabla-solicitudes-pendientes', function(item) {
+                return item.estatus_solicitud === 0;
+            });
 
-            // Inicializar DataTable para solicitudes aprobadas/turnadas (estatus = 1)
-            initSolicitudesDataTable('tabla-solicitudes-aprobadas', 1);
+            // Turnadas (estatus >= 1 con turnado): todas las que el admin turnó
+            initSolicitudesDataTable('tabla-solicitudes-aprobadas', function(item) {
+                return item.has_turnado == 1;
+            });
 
-            // Inicializar DataTable para solicitudes inactivas/rechazadas (estatus = 2)
-            initSolicitudesDataTable('tabla-solicitudes-inactivas', 2);
+            // Rechazadas: solo las que el admin rechazó directamente (sin turnado)
+            initSolicitudesDataTable('tabla-solicitudes-inactivas', function(item) {
+                return item.estatus_solicitud === 2 && item.has_turnado == 0;
+            });
         });
 
         async function loadDocumentos(id_solicitud) {
@@ -262,7 +281,7 @@
 
             if (documentos.length === 0) {
                 tbody.innerHTML =
-                '<tr><td colspan="3" class="text-center">No hay documentos para esta solicitud.</td></tr>';
+                    '<tr><td colspan="3" class="text-center">No hay documentos para esta solicitud.</td></tr>';
                 return;
             }
 

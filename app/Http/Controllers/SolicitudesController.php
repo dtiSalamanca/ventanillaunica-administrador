@@ -6,14 +6,35 @@ use App\Models\Dependencia;
 use App\Models\DocumentoPredio;
 use App\Models\DocumentoSolicitud;
 use App\Models\DocumentoTramite;
+use App\Models\ResolucionSolicitud;
 use App\Models\Solicitud;
 use App\Models\TurnadoSolicitud;
 use App\Models\UsuarioAD;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class SolicitudesController extends Controller
 {
+    /**
+     * Devuelve todas las solicitudes con indicador de si tienen turnado.
+     */
+    public function getSolicitudesCompletas()
+    {
+        $solicitudes = DB::table('tbl_solicitudes')
+            ->join('cat_tramites', 'tbl_solicitudes.fk_tramite', '=', 'cat_tramites.id_tramite')
+            ->join('users', 'tbl_solicitudes.fk_usuario', '=', 'users.id')
+            ->select(
+                'tbl_solicitudes.*',
+                'cat_tramites.nombre_tramite',
+                'users.name as nombre_usuario',
+                DB::raw('(SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM tbl_turnados_solicitudes WHERE fk_solicitud = tbl_solicitudes.id_solicitud) as has_turnado')
+            )
+            ->get();
+
+        return response()->json($solicitudes);
+    }
+
     public function verDetalles($id)
     {
         $solicitud = Solicitud::with(['tramite', 'user'])
@@ -39,12 +60,20 @@ class SolicitudesController extends Controller
             })->with('catalogoDocumento')->get();
         }
 
+        // Resolución del enlace (si fue atendida/rechazada por enlace)
+        $turnado = TurnadoSolicitud::where('fk_solicitud', $solicitud->id_solicitud)->first();
+        $resolucion = null;
+        if ($turnado) {
+            $resolucion = ResolucionSolicitud::where('fk_turnado', $turnado->id_turnado)->first();
+        }
+
         return view('solicitudes.ver_detalles', compact(
             'solicitud',
             'documentosSolicitud',
             'requisitosTramite',
             'dependencias',
-            'predioDocs'
+            'predioDocs',
+            'resolucion',
         ));
     }
 

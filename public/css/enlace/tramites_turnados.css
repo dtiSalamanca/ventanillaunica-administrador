@@ -1,0 +1,169 @@
+/* ==========================================================================
+   Enlace - Trámites Turnados
+   ========================================================================== */
+
+.enlace-tramites-container {
+    max-width: 1200px;
+    margin: 1.5rem auto;
+    padding: 0 1.5rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════════════════════════ */
+.enlace-page-header {
+    margin-bottom: 1.75rem;
+}
+
+.enlace-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+}
+
+.enlace-header-escudo {
+    width: 60px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.enlace-header-main {
+    flex: 1;
+}
+
+.enlace-page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.25rem;
+}
+
+.enlace-page-subtitle {
+    font-size: 0.88rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CARD
+   ═══════════════════════════════════════════════════════════════════════════ */
+.enlace-card {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.enlace-card-body {
+    padding: 1.5rem;
+}
+
+.enlace-table-container {
+    width: 100%;
+}
+
+.enlace-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* DataTables refinements */
+#tabla-tramites-turnados thead th {
+    background: #f9fafb;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 0.85rem 0.75rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+#tabla-tramites-turnados tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    color: #1f2937;
+    font-size: 0.88rem;
+}
+
+#tabla-tramites-turnados tbody tr:hover {
+    background: #f0fdfa;
+}
+
+/* Badge estatus */
+.enlace-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.enlace-badge--pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.enlace-badge--atendido {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.enlace-badge--rechazado {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Botón de acción en tabla */
+.btn-accion-tabla {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #edf7f4;
+    color: #1e5c50;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-accion-tabla:hover {
+    background: #1e5c50;
+    color: #ffffff;
+    transform: scale(1.08);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .enlace-tramites-container {
+        padding: 0 0.85rem;
+        margin: 1rem auto;
+    }
+
+    .enlace-header-content {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .enlace-header-escudo {
+        width: 50px;
+    }
+
+    .enlace-page-title {
+        font-size: 1.2rem;
+    }
+
+    .enlace-card-body {
+        padding: 1rem;
+    }
+}

@@ -161,6 +161,7 @@ $(document).ready(function () {
         var count = getSelectedIds(".tramite-checkbox-activos").length;
         $("#btn-editar-tramite-activos").prop("disabled", count !== 1);
         $("#btn-revisar-requisitos").prop("disabled", count !== 1);
+        $("#btn-revisar-prerequisitos").prop("disabled", count !== 1);
         $("#btn-deshabilitar-tramite").prop("disabled", count === 0);
     }
 
@@ -195,9 +196,7 @@ $(document).ready(function () {
                 return;
             }
 
-            $(".tramite-checkbox-activos")
-                .not(checkbox)
-                .prop("checked", false);
+            $(".tramite-checkbox-activos").not(checkbox).prop("checked", false);
             checkbox.prop("checked", true);
             updateActionButtonsActivos();
         },
@@ -210,10 +209,7 @@ $(document).ready(function () {
     $("#btn-editar-tramite-activos").on("click", function () {
         var ids = getSelectedIds(".tramite-checkbox-activos");
         if (ids.length === 1) {
-            var url = window.tramitesRoutes.editar.replace(
-                "__ID__",
-                ids[0],
-            );
+            var url = window.tramitesRoutes.editar.replace("__ID__", ids[0]);
             window.location.href = url;
         }
     });
@@ -221,7 +217,21 @@ $(document).ready(function () {
     $("#btn-revisar-requisitos").on("click", function () {
         var ids = getSelectedIds(".tramite-checkbox-activos");
         if (ids.length === 1) {
-            var url = window.tramitesRoutes.requisitos.replace("__ID__", ids[0]);
+            var url = window.tramitesRoutes.requisitos.replace(
+                "__ID__",
+                ids[0],
+            );
+            window.location.href = url;
+        }
+    });
+
+    $("#btn-revisar-prerequisitos").on("click", function () {
+        var ids = getSelectedIds(".tramite-checkbox-activos");
+        if (ids.length === 1) {
+            var url = window.tramitesRoutes.prerequisitos.replace(
+                "__ID__",
+                ids[0],
+            );
             window.location.href = url;
         }
     });
@@ -295,9 +305,7 @@ $(document).ready(function () {
 
     $(document).on("change", ".tramite-checkbox-inactivos", function () {
         if ($(this).prop("checked")) {
-            $(".tramite-checkbox-inactivos")
-                .not(this)
-                .prop("checked", false);
+            $(".tramite-checkbox-inactivos").not(this).prop("checked", false);
         }
         updateActionButtonsInactivos();
     });
@@ -358,10 +366,7 @@ $(document).ready(function () {
                 return;
             }
 
-            var url = window.tramitesRoutes.habilitar.replace(
-                "__ID__",
-                ids[0],
-            );
+            var url = window.tramitesRoutes.habilitar.replace("__ID__", ids[0]);
 
             fetch(url, {
                 method: "POST",

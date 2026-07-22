@@ -107,8 +107,10 @@
                                     <thead>
                                         <tr>
                                             <th class="w-checkbox"></th>
-                                            <th class="w-requisito"><i class="fas fa-building me-2"></i>Nombre del requisito</th>
-                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
+                                            <th class="w-requisito"><i class="fas fa-building me-2"></i>Nombre del
+                                                requisito</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -122,8 +124,8 @@
                         <!-- Barra de acciones -->
                         <div class="action-bar">
                             <div class="action-bar-right" style="margin-left: auto;">
-                                <button type="button" class="action-bar-btn btn-activate-top" id="btn-habilitar-requisito"
-                                    disabled>
+                                <button type="button" class="action-bar-btn btn-activate-top"
+                                    id="btn-habilitar-requisito" disabled>
                                     <i class="fas fa-check"></i> Habilitar
                                 </button>
                             </div>
@@ -135,8 +137,10 @@
                                     <thead>
                                         <tr>
                                             <th class="w-checkbox"></th>
-                                            <th class="w-requisito"><i class="fas fa-building me-2"></i>Nombre del requisito</th>
-                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
+                                            <th class="w-requisito"><i class="fas fa-building me-2"></i>Nombre del
+                                                requisito</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -163,7 +167,7 @@
         window.requisitosRoutes = {
             activas: "{{ route('getRequisitosActivos') }}",
             inactivas: "{{ route('getRequisitosInactivos') }}",
-            {{-- editar, deshabilitar, habilitar pendientes --}}
+            editar: "{{ route('editarRequisito', ['requisito' => '__ID__']) }}",
             deshabilitar: "{{ route('deshabilitarRequisito', ['requisito' => '__ID__']) }}",
             habilitar: "{{ route('habilitarRequisito', ['requisito' => '__ID__']) }}",
         };

@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 
 @section('content')
-
     <link rel="stylesheet" href="{{ asset('css/requisitos/revisarRequisitos.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,8 +19,8 @@
                 <img src="{{ asset('images/escudoBlanco.png') }}" alt="Escudo de Salamanca" class="header-escudo">
 
                 <div class="header-main">
-                    <h1 class="page-title">Requisitos del trámite</h1>
-                    <p class="page-subtitle">{{ $tramite->nombre }}</p>
+                    <h1 class="page-title">Prerequisitos del trámite</h1>
+                    <p class="page-subtitle">{{ $tramite->nombre_tramite }}</p>
                 </div>
 
                 <div class="header-actions">
@@ -29,8 +28,8 @@
                         <i class="fas fa-arrow-left me-2"></i>Regresar
                     </a>
                     <button type="button" class="btn btn-primary header-add-btn" data-bs-toggle="modal"
-                        data-bs-target="#modalAsignarRequisitos">
-                        <i class="fas fa-plus me-2"></i>Asignar requisitos
+                        data-bs-target="#modalAsignarPrerequisitos">
+                        <i class="fas fa-plus me-2"></i>Asignar prerequisito
                     </button>
                 </div>
             </div>
@@ -55,23 +54,31 @@
         <div class="card">
             <div class="card-body">
 
+                <div class="info-banner mb-3">
+                    <i class="fas fa-circle-info me-2"></i>
+                    Los <strong>prerequisitos</strong> son trámites que el ciudadano debe haber completado
+                    <strong>antes</strong>
+                    de poder solicitar <strong>{{ $tramite->nombre_tramite }}</strong>.
+                </div>
+
                 <!-- Barra de acciones -->
                 <div class="action-bar">
                     <div class="action-bar-right" style="margin-left: auto;">
-                        <button type="button" class="action-bar-btn btn-delete-top" id="btn-quitar-requisito" disabled>
-                            <i class="fas fa-xmark"></i> Quitar del trámite
+                        <button type="button" class="action-bar-btn btn-delete-top" id="btn-quitar-prerequisito" disabled>
+                            <i class="fas fa-xmark"></i> Quitar prerequisito
                         </button>
                     </div>
                 </div>
 
-                <!-- Tabla de requisitos asignados -->
+                <!-- Tabla de prerequisitos asignados -->
                 <div class="table-container">
                     <div class="table-responsive">
-                        <table id="tabla-requisitos-asignados" class="table table-striped align-middle" style="width:100%">
+                        <table id="tabla-prerequisitos-asignados" class="table table-striped align-middle"
+                            style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="w-checkbox"></th>
-                                    <th><i class="fas fa-file-lines me-2"></i>Nombre del requisito</th>
+                                    <th><i class="fas fa-file-lines me-2"></i>Nombre del trámite requerido</th>
                                     <th class="w-estado">Estado en catálogo</th>
                                 </tr>
                             </thead>
@@ -82,77 +89,33 @@
                     </div>
                 </div>
 
-                <!-- ── Prerequisitos (trámites requeridos) ── -->
-                @if ($prerequisitos->isNotEmpty())
-                    <hr class="my-4">
-                    <div class="mb-3">
-                        <div class="info-banner-prerequisitos mb-3">
-                            <i class="fas fa-link me-2"></i>
-                            Este trámite requiere que el ciudadano haya <strong>completado</strong>
-                            los siguientes <strong>trámites</strong> antes de poder solicitar
-                            <strong>{{ $tramite->nombre_tramite }}</strong>:
-                        </div>
-                        <div class="table-container">
-                            <div class="table-responsive">
-                                <table class="table table-striped align-middle" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th><i class="fas fa-file-lines me-2"></i>Nombre del trámite requerido</th>
-                                            <th class="w-estado">Estado en catálogo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($prerequisitos as $prerequisito)
-                                            <tr>
-                                                <td>
-                                                    {{ $prerequisito->nombre_tramite }}
-                                                    <span class="badge-tramite-tag"><i
-                                                            class="fas fa-file-lines me-1"></i>Trámite</span>
-                                                </td>
-                                                <td>
-                                                    @if ($prerequisito->estatus_tramite)
-                                                        <span class="badge-activo"><i
-                                                                class="fas fa-circle-check me-1"></i>Activo</span>
-                                                    @else
-                                                        <span class="badge-inactivo"><i
-                                                                class="fas fa-circle-xmark me-1"></i>Inactivo</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
             </div>
         </div>
     </div>
 
-    <!-- Modal asignar requisitos -->
-    <div class="modal fade" id="modalAsignarRequisitos" tabindex="-1" aria-labelledby="modalAsignarRequisitosLabel"
+    <!-- Modal asignar prerequisitos -->
+    <div class="modal fade" id="modalAsignarPrerequisitos" tabindex="-1" aria-labelledby="modalAsignarPrerequisitosLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalAsignarRequisitosLabel">
-                        <i class="fas fa-file-lines me-2"></i>Asignar requisitos al trámite
+                    <h5 class="modal-title" id="modalAsignarPrerequisitosLabel">
+                        <i class="fas fa-file-lines me-2"></i>Asignar trámite prerequisito
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="modal-alert" class="alert alert-danger d-none mb-3"></div>
                     <div class="mb-3">
-                        <label for="select-requisitos" class="form-label fw-semibold">
+                        <label for="select-prerequisitos" class="form-label fw-semibold">
                             Seleccionar del catálogo <span class="text-danger">*</span>
                         </label>
-                        <select id="select-requisitos" class="form-control" multiple="multiple" style="width:100%">
+                        <select id="select-prerequisitos" class="form-control" multiple="multiple" style="width:100%">
                         </select>
                         <div class="form-text mt-2">
                             <i class="fas fa-circle-info me-1 text-muted"></i>
-                            Solo se muestran requisitos activos del catálogo que aún no están asignados a este trámite.
+                            Solo se muestran trámites activos que aún no están asignados como prerequisito.
+                            No se puede asignar el mismo trámite ni crear dependencias circulares.
                         </div>
                     </div>
                 </div>
@@ -165,7 +128,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('scripts')
@@ -177,12 +139,12 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/es.js"></script>
     <script>
-        window.requisitosRoutes = {
-            asignados: "{{ route('getRequisitosAsignados', ['tramite' => $tramite->id_tramite]) }}",
-            catalogo: "{{ route('getCatalogoDisponible', ['tramite' => $tramite->id_tramite]) }}",
-            asignar: "{{ route('asignarRequisitos', ['tramite' => $tramite->id_tramite]) }}",
-            quitar: "{{ route('quitarRequisito', ['tramite' => $tramite->id_tramite, 'requisito' => '__ID__']) }}",
+        window.prerequisitosRoutes = {
+            asignados: "{{ route('getPrerequisitosAsignados', ['tramite' => $tramite->id_tramite]) }}",
+            catalogo: "{{ route('getPrerequisitosDisponibles', ['tramite' => $tramite->id_tramite]) }}",
+            asignar: "{{ route('asignarPrerequisitos', ['tramite' => $tramite->id_tramite]) }}",
+            quitar: "{{ route('quitarPrerequisito', ['tramite' => $tramite->id_tramite, 'requerido' => '__ID__']) }}",
         };
     </script>
-    <script src="{{ asset('js/requisitos/revisarRequisitos.js') }}"></script>
+    <script src="{{ asset('js/tramites/revisarPrerequisitos.js') }}"></script>
 @endsection

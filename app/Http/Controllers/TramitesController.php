@@ -123,7 +123,12 @@ class TramitesController extends Controller
 
     public function revisarRequisitos(Tramite $tramite): View
     {
-        return view('requisitos.revisarRequisitos', compact('tramite'));
+        $prerequisitos = $tramite->tramitesRequeridos()
+            ->select('cat_tramites.id_tramite', 'cat_tramites.nombre_tramite', 'cat_tramites.estatus_tramite')
+            ->orderBy('cat_tramites.nombre_tramite')
+            ->get();
+
+        return view('requisitos.revisarRequisitos', compact('tramite', 'prerequisitos'));
     }
 
     public function getRequisitosAsignados(Tramite $tramite): JsonResponse
@@ -179,5 +184,99 @@ class TramitesController extends Controller
         $tramite->requisitos()->detach($requisito->id_requisito);
 
         return response()->json(['message' => 'Requisito quitado del trámite correctamente.']);
+    }
+
+    // ─── Prerequisitos (trámites requeridos) ─────────────────────────────────
+
+    public function revisarPrerequisitos(Tramite $tramite): View
+    {
+        return view('tramites.revisarPrerequisitos', compact('tramite'));
+    }
+
+    public function getPrerequisitosAsignados(Tramite $tramite): JsonResponse
+    {
+        $prerequisitos = $tramite->tramitesRequeridos()
+            ->select('cat_tramites.id_tramite', 'cat_tramites.nombre_tramite', 'cat_tramites.estatus_tramite')
+            ->orderBy('cat_tramites.nombre_tramite')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id_tramite' => $item->id_tramite,
+                    'nombre_tramite' => $item->nombre_tramite,
+                    'estatus_tramite' => $item->estatus_tramite,
+                ];
+            });
+
+        return response()->json($prerequisitos);
+    }
+
+    public function getPrerequisitosDisponibles(Tramite $tramite): JsonResponse
+    {
+        $asignados = $tramite->tramitesRequeridos()->pluck('cat_tramites.id_tramite');
+
+        // También excluir el propio trámite (no puede requerirse a sí mismo)
+        $excluir = $asignados->push($tramite->id_tramite);
+
+        $disponibles = Tramite::where('estatus_tramite', true)
+            ->whereNotIn('id_tramite', $excluir)
+            ->orderBy('nombre_tramite')
+            ->get(['id_tramite', 'nombre_tramite']);
+
+        return response()->json($disponibles);
+    }
+
+    public function asignarPrerequisitos(Request $request, Tramite $tramite): JsonResponse
+    {
+        $validated = $request->validate([
+            'prerequisitos' => 'required|array|min:1',
+            'prerequisitos.*' => 'exists:cat_tramites,id_tramite',
+        ], [
+            'prerequisitos.required' => 'Debe seleccionar al menos un trámite prerequisito.',
+            'prerequisitos.min' => 'Debe seleccionar al menos un trámite prerequisito.',
+            'prerequisitos.*.exists' => 'Uno o más trámites seleccionados no son válidos.',
+        ]);
+
+        // Validar que no se asigne a sí mismo
+        if (in_array($tramite->id_tramite, $validated['prerequisitos'])) {
+            return response()->json(['message' => 'Un trámite no puede requerirse a sí mismo.'], 422);
+        }
+
+        // Validar circularidad simple (A requiere B y B requiere A)
+        $yaAsignados = $tramite->tramitesRequeridos()->pluck('cat_tramites.id_tramite')->toArray();
+        $nuevos = array_diff($validated['prerequisitos'], $yaAsignados);
+
+        if (empty($nuevos)) {
+            return response()->json(['message' => 'Los trámites seleccionados ya están asignados como prerequisitos.'], 422);
+        }
+
+        // Validar que ningún prerequisito nuevo tenga ya este trámite como su prerequisito (circular)
+        $conflictos = Tramite::whereIn('id_tramite', $nuevos)
+            ->whereHas('tramitesRequeridos', function ($query) use ($tramite) {
+                $query->where('cat_tramites.id_tramite', $tramite->id_tramite);
+            })
+            ->pluck('nombre_tramite');
+
+        if ($conflictos->isNotEmpty()) {
+            $nombres = $conflictos->implode(', ');
+            $message = "No se puede asignar porque los siguientes trámites ya requieren a este: {$nombres}. Esto crearía una dependencia circular.";
+
+            return response()->json(['message' => $message], 422);
+        }
+
+        $tramite->tramitesRequeridos()->attach($nuevos);
+
+        $count = count($nuevos);
+        $message = $count === 1
+            ? 'Trámite prerequisito asignado correctamente.'
+            : "{$count} trámites prerequisito asignados correctamente.";
+
+        return response()->json(['message' => $message], 201);
+    }
+
+    public function quitarPrerequisito(Tramite $tramite, Tramite $requerido): JsonResponse
+    {
+        $tramite->tramitesRequeridos()->detach($requerido->id_tramite);
+
+        return response()->json(['message' => 'Trámite prerequisito quitado correctamente.']);
     }
 }

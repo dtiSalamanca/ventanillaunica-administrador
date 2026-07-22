@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/requisitos/agregarRequisito.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/requisitos/editarRequisito.css') }}">
 
     <div class="main-container">
         <div class="page-header">
             <div class="header-content">
                 <img src="{{ asset('images/escudoBlanco.png') }}" alt="Escudo de Salamanca" class="header-escudo">
                 <div class="header-main">
-                    <h1 class="page-title">Agregar requisito</h1>
-                    <p class="page-subtitle">Registra un nuevo requisito con su nombre.</p>
+                    <h1 class="page-title">Editar requisito</h1>
+                    <p class="page-subtitle">Modifica los datos del requisito seleccionado.</p>
                 </div>
             </div>
         </div>
@@ -38,7 +38,8 @@
             </div>
 
             <div class="card-body">
-                <form method="POST" action="{{ route('registrarRequisito') }}" id="form-agregar-requisito" novalidate>
+                <form method="POST" action="{{ route('actualizarRequisito', $requisito) }}" id="form-editar-requisito"
+                    novalidate>
                     @csrf
 
                     <div class="form-grid">
@@ -47,8 +48,9 @@
                                 <i class="fas fa-font me-1"></i>Nombre del requisito
                             </label>
                             <input type="text" name="nombre" id="nombre"
-                                class="form-control @error('nombre') is-invalid @enderror" value="{{ old('nombre') }}"
-                                maxlength="255" required autocomplete="off" placeholder="Ej. Acta de nacimiento">
+                                class="form-control @error('nombre') is-invalid @enderror"
+                                value="{{ old('nombre', $requisito->nombre_requisito) }}" maxlength="255" required
+                                autocomplete="off" placeholder="Ej. Acta de nacimiento">
                             <div class="field-footer">
                                 <span class="field-message">
                                     @if ($errors->has('nombre'))
@@ -68,7 +70,7 @@
                             </label>
                             <textarea name="descripcion" id="descripcion" rows="4"
                                 class="form-control @error('descripcion') is-invalid @enderror" autocomplete="off"
-                                placeholder="Describe brevemente en qué consiste el requisito (opcional)">{{ old('descripcion') }}</textarea>
+                                placeholder="Describe brevemente en qué consiste el requisito">{{ old('descripcion', $requisito->descripcion_requisito) }}</textarea>
                             <div class="field-footer">
                                 <span class="field-message">
                                     @if ($errors->has('descripcion'))
@@ -86,8 +88,8 @@
                         <a href="{{ route('indexRequisitos') }}" class="btn-accion btn-regresar">
                             <i class="fas fa-arrow-left"></i>Regresar
                         </a>
-                        <button type="submit" class="btn-accion btn-guardar" id="btn-guardar-requisito">
-                            <i class="fas fa-floppy-disk"></i>Guardar requisito
+                        <button type="submit" class="btn-accion btn-guardar" id="btn-actualizar-requisito">
+                            <i class="fas fa-floppy-disk"></i>Actualizar requisito
                         </button>
                     </div>
                 </form>
@@ -97,5 +99,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/requisitos/agregarRequisito.js') }}"></script>
+    <script src="{{ asset('js/requisitos/editarRequisito.js') }}"></script>
 @endsection

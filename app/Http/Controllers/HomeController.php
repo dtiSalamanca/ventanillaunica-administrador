@@ -29,6 +29,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // Redirigir a enlaces a su panel
+        if ((auth()->user()?->rol_id ?? 0) === 2) {
+            return redirect()->route('enlace.home');
+        }
         $totalSolicitudes = Solicitud::count();
         $solicitudesPendientes = Solicitud::where('estatus_solicitud', 0)->count();
         $solicitudesEnProceso = Solicitud::where('estatus_solicitud', 1)->count();

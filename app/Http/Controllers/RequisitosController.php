@@ -24,12 +24,11 @@ class RequisitosController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_requisitos,nombre_requisito',
-            'descripcion' => 'required|string',
+            'descripcion' => 'nullable|string',
         ], [
             'nombre.required' => 'El nombre del requisito es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
             'nombre.unique' => 'Ya existe un requisito con ese nombre.',
-            'descripcion.required' => 'La descripción del requisito es obligatoria.',
         ]);
 
         Requisito::create([
@@ -75,8 +74,27 @@ class RequisitosController extends Controller
         return response()->json(['message' => 'Requisito habilitado correctamente.']);
     }
 
-    public function editarDependencia(Dependencia $dependencia): View
+    public function editarRequisito(Requisito $requisito): View
     {
-        return view('dependencias.editarDependencia', compact('dependencia'));
+        return view('requisitos.editarRequisito', compact('requisito'));
+    }
+
+    public function actualizarRequisito(Request $request, Requisito $requisito): RedirectResponse
+    {
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255|unique:cat_requisitos,nombre_requisito,'.$requisito->id_requisito.',id_requisito',
+            'descripcion' => 'nullable|string',
+        ], [
+            'nombre.required' => 'El nombre del requisito es obligatorio.',
+            'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
+            'nombre.unique' => 'Ya existe un requisito con ese nombre.',
+        ]);
+
+        $requisito->update([
+            'nombre_requisito' => $validated['nombre'],
+            'descripcion_requisito' => $validated['descripcion'],
+        ]);
+
+        return redirect()->route('indexRequisitos')->with('success', 'Requisito actualizado correctamente.');
     }
 }

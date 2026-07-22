@@ -3,8 +3,10 @@
 use App\Http\Controllers\AprobacionesController;
 use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\DocumentosPersonalesController;
+use App\Http\Controllers\EnlaceController;
 use App\Http\Controllers\PrediosController;
 use App\Http\Controllers\RequisitosController;
+use App\Http\Controllers\SolicitudesController;
 use App\Http\Controllers\TramitesController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +38,13 @@ Route::middleware('auth')->controller(TramitesController::class)->group(function
     Route::get('/tramites/requisitos/{tramite}/catalogo', 'getCatalogoDisponible')->name('getCatalogoDisponible');
     Route::post('/tramites/requisitos/{tramite}/asignar', 'asignarRequisitos')->name('asignarRequisitos');
     Route::post('/tramites/requisitos/{tramite}/quitar/{requisito}', 'quitarRequisito')->name('quitarRequisito');
+
+    // Prerequisitos (trámites requeridos)
+    Route::get('/tramites/prerequisitos/{tramite}', 'revisarPrerequisitos')->name('revisarPrerequisitos');
+    Route::get('/tramites/prerequisitos/{tramite}/asignados', 'getPrerequisitosAsignados')->name('getPrerequisitosAsignados');
+    Route::get('/tramites/prerequisitos/{tramite}/catalogo', 'getPrerequisitosDisponibles')->name('getPrerequisitosDisponibles');
+    Route::post('/tramites/prerequisitos/{tramite}/asignar', 'asignarPrerequisitos')->name('asignarPrerequisitos');
+    Route::post('/tramites/prerequisitos/{tramite}/quitar/{requerido}', 'quitarPrerequisito')->name('quitarPrerequisito');
 });
 
 Route::middleware('auth')->controller(RequisitosController::class)->group(function () {
@@ -44,6 +53,8 @@ Route::middleware('auth')->controller(RequisitosController::class)->group(functi
     Route::post('/requisitos/agregar', 'registrarRequisito')->name('registrarRequisito');
     Route::get('/requisitos/activos', 'getRequisitosActivos')->name('getRequisitosActivos');
     Route::get('/requisitos/inactivos', 'getRequisitosInactivos')->name('getRequisitosInactivos');
+    Route::get('/requisitos/editar/{requisito}', 'editarRequisito')->name('editarRequisito');
+    Route::post('/requisitos/editar/{requisito}', 'actualizarRequisito')->name('actualizarRequisito');
     Route::post('/requisitos/deshabilitar/{requisito}', 'deshabilitarRequisito')->name('deshabilitarRequisito');
     Route::post('/requisitos/habilitar/{requisito}', 'habilitarRequisito')->name('habilitarRequisito');
 });
@@ -92,4 +103,22 @@ Route::middleware('auth')->controller(AprobacionesController::class)->group(func
     Route::get('/aprobaciones/documentos-predios/{documentoPredio}/visualizar', 'visualizarDocumentoPredio')->name('visualizarDocumentoPredio');
     Route::post('/aprobaciones/documentos-predios/{documentoPredio}/aprobar', 'aprobarDocumentoPredio')->name('aprobarDocumentoPredio');
     Route::post('/aprobaciones/documentos-predios/{documentoPredio}/rechazar', 'rechazarDocumentoPredio')->name('rechazarDocumentoPredio');
+});
+
+// =========================================================================
+// AJAX - Solicitudes con información de turnado (para el admin)
+// =========================================================================
+Route::middleware('auth')->get('/ajax/solicitudes-completas', [SolicitudesController::class, 'getSolicitudesCompletas'])
+    ->name('ajax.solicitudes.completas');
+
+// =========================================================================
+// Rutas para rol Enlace
+// =========================================================================
+Route::middleware('auth')->prefix('enlace')->name('enlace.')->controller(EnlaceController::class)->group(function () {
+    Route::get('/home', 'home')->name('home');
+    Route::get('/tramites-turnados', 'tramitesTurnados')->name('tramitesTurnados');
+    Route::get('/tramites-turnados/data', 'getTramitesTurnados')->name('getTramitesTurnados');
+    Route::get('/tramites-turnados/{id}/detalles', 'verDetalles')->name('tramitesTurnadosDetalles');
+    Route::post('/tramites-turnados/{id}/aprobar', 'aprobarSolicitud')->name('tramitesTurnadosAprobar');
+    Route::post('/tramites-turnados/{id}/rechazar', 'rechazarSolicitud')->name('tramitesTurnadosRechazar');
 });

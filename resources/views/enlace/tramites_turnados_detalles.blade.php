@@ -1,13 +1,192 @@
-@extends('layouts.admin')
+@extends('layouts.enlace')
 
-@section('content')
+@section('css')
     <link rel="stylesheet" href="{{ asset('css/solicitudes/verDetalles.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .estado-atendida {
+            background: #dff7e9;
+            color: #0d7d3d;
+            border: 1px solid #a8e6c1;
+        }
 
+        /* Upload zone */
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: #1e5c50;
+            background: #edf7f4;
+        }
+
+        .upload-zone.has-file {
+            border-style: solid;
+            border-color: #1e5c50;
+            background: #f0faf4;
+            padding: 1rem 1.5rem;
+        }
+
+        .upload-zone-icon {
+            font-size: 2.5rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-zone.has-file .upload-zone-icon {
+            color: #1e5c50;
+            font-size: 1.5rem;
+            margin-bottom: 0;
+        }
+
+        .upload-zone-text {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .upload-zone.has-file .upload-zone-text {
+            font-size: 0.85rem;
+        }
+
+        .upload-zone input[type="file"] {
+            display: none;
+        }
+
+        .upload-file-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-file-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1e5c50;
+            background: #fff;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #d1ede6;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .upload-file-actions {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .btn-icon-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .btn-icon-sm:hover {
+            border-color: #94a3b8;
+            background: #f1f5f9;
+        }
+
+        .btn-icon-sm.btn-change:hover {
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+        .btn-icon-sm.btn-remove:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .upload-zone-browse {
+            color: #1e5c50;
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .aprobacion-panel {
+            margin-top: 1.2rem;
+            border: 2px solid #1e5c50;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            display: none;
+        }
+
+        .aprobacion-panel.mostrar {
+            display: block;
+        }
+
+        .aprobacion-header {
+            background: #1e5c50;
+            color: #fff;
+            padding: 0.75rem 1.2rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .aprobacion-body {
+            padding: 1.2rem;
+            background: #f0faf4;
+        }
+
+        .resolucion-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: "Montserrat", sans-serif;
+            font-size: 0.88rem;
+            resize: vertical;
+            min-height: 80px;
+            transition: all 0.2s ease;
+            background: var(--bg-surface);
+        }
+
+        .resolucion-textarea:focus {
+            outline: none;
+            border-color: #1e5c50;
+            box-shadow: 0 0 0 3px rgba(30, 92, 80, 0.12);
+        }
+
+        .resolucion-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+    </style>
+@endsection
+
+@section('content')
     <div class="detalles-container">
+
         {{-- Header --}}
         <div class="detalles-header">
             <div class="detalles-header-icon">
@@ -15,7 +194,7 @@
             </div>
             <div class="detalles-header-text">
                 <h1>Detalles de la solicitud #{{ $solicitud->id_solicitud }}</h1>
-                <p>Información completa de la solicitud y documentos presentados</p>
+                <p>Información completa de la solicitud turnada y documentos presentados</p>
             </div>
         </div>
 
@@ -51,10 +230,13 @@
                                         class="fas fa-clock me-1"></i>Pendiente</span>
                             @elseif ($solicitud->estatus_solicitud === 1)
                                 <span class="estado-badge estado-aprobada"><i
-                                        class="fas fa-check-circle me-1"></i>Turnada</span>
+                                        class="fas fa-exchange-alt me-1"></i>Turnado</span>
                             @elseif ($solicitud->estatus_solicitud === 2)
                                 <span class="estado-badge estado-rechazada"><i
                                         class="fas fa-times-circle me-1"></i>Rechazada</span>
+                            @elseif ($solicitud->estatus_solicitud === 3)
+                                <span class="estado-badge estado-atendida"><i
+                                        class="fas fa-check-circle me-1"></i>Atendida</span>
                             @else
                                 <span class="estado-badge">Desconocido</span>
                             @endif
@@ -99,7 +281,6 @@
                                             $archivo = $docTramite->documentoPersonal->ruta_archivo;
                                             $tipoDocumento = 'personal';
                                         } else {
-                                            // Buscar en documentos de predio por nombre del requisito
                                             $reqNombre = $docTramite->requisito?->nombre_requisito ?? '';
                                             $predioDoc = $predioDocs->first(function ($pd) use ($reqNombre) {
                                                 return $pd->catalogoDocumento &&
@@ -157,58 +338,76 @@
             </div>
         </div>
 
-        {{-- Card: Acciones (solo si está pendiente) --}}
-        @if ($solicitud->estatus_solicitud === 0)
+        {{-- Card: Acciones (solo si está turnada) --}}
+        @if ($solicitud->estatus_solicitud === 1)
             <div class="detalles-card">
                 <div class="detalles-card-header">
                     <i class="fas fa-gavel"></i> Resolver solicitud
                 </div>
                 <div class="detalles-card-body">
-                    {{-- Botones principales --}}
                     <div class="acciones-container">
                         <button type="button" class="btn-accion btn-aprobar" id="btnAprobar">
-                            <i class="fas fa-check-circle"></i> Aprobar y turnar
+                            <i class="fas fa-check-circle"></i> Aprobar y pagar
                         </button>
                         <button type="button" class="btn-accion btn-rechazar" id="btnRechazar">
                             <i class="fas fa-times-circle"></i> Rechazar
                         </button>
-                        <a href="{{ route('solicitudes.index') }}" class="btn-accion btn-regresar">
+                        <a href="{{ route('enlace.tramitesTurnados') }}" class="btn-accion btn-regresar">
                             <i class="fas fa-arrow-left"></i> Regresar
                         </a>
                     </div>
 
-                    {{-- Panel de aprobación con turnado --}}
-                    <div class="turnado-panel" id="turnadoPanel">
-                        <div class="turnado-header">
-                            <i class="fas fa-exchange-alt me-1"></i> Turnar solicitud
+                    {{-- Panel de aprobación con subida de archivo --}}
+                    <div class="aprobacion-panel" id="aprobacionPanel">
+                        <div class="aprobacion-header">
+                            <i class="fas fa-file-circle-check me-1"></i> Aprobar trámite — Documento de resolución
                         </div>
-                        <div class="turnado-body">
-                            <div class="turnado-grid">
-                                <div class="turnado-field">
-                                    <label for="selectDependencia">
-                                        <i class="fas fa-building me-1"></i> Dependencia:
-                                    </label>
-                                    <select id="selectDependencia" class="turnado-select">
-                                        <option value="">— Seleccionar dependencia —</option>
-                                        @foreach ($dependencias as $dep)
-                                            <option value="{{ $dep->id_dependencia }}">{{ $dep->nombre_dependencia }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                        <div class="aprobacion-body">
+                            {{-- Nota opcional --}}
+                            <div class="mb-3">
+                                <label for="resolucionNota" class="form-label fw-bold"
+                                    style="font-size:0.82rem;color:#1e5c50;">
+                                    <i class="fas fa-sticky-note me-1"></i> Nota de resolución (opcional)
+                                </label>
+                                <textarea id="resolucionNota" class="resolucion-textarea"
+                                    placeholder="Agrega una nota o comentario sobre la resolución...">{{ $resolucion?->resolucion_solicitud && !str_starts_with($resolucion->resolucion_solicitud, 'Rechazado:') ? $resolucion->resolucion_solicitud : '' }}</textarea>
+                            </div>
+
+                            {{-- Zona de subida de archivo --}}
+                            <label class="form-label fw-bold" style="font-size:0.82rem;color:#1e5c50;">
+                                <i class="fas fa-file-pdf me-1"></i> Documento de resolución (PDF, JPG, PNG — máx. 10 MB)
+                            </label>
+                            <div class="upload-zone" id="uploadZone">
+                                <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png">
+                                <div class="upload-zone-icon" id="uploadIcon">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
                                 </div>
-                                <div class="turnado-field">
-                                    <label for="selectUsuario">
-                                        <i class="fas fa-user-tie me-1"></i> Usuario responsable:
-                                    </label>
-                                    <select id="selectUsuario" class="turnado-select" disabled>
-                                        <option value="">— Primero selecciona una dependencia —</option>
-                                    </select>
+                                <div class="upload-zone-text" id="uploadText">
+                                    <span class="upload-zone-browse">Browse File to upload!</span>
+                                </div>
+                                <div class="upload-file-info" id="uploadFileInfo" style="display:none;">
+                                    <span class="upload-file-name" id="fileNameDisplay">
+                                        <i class="fa-regular fa-file-pdf"></i>
+                                        <span id="fileNameText"></span>
+                                    </span>
+                                    <span class="upload-file-actions">
+                                        <button type="button" class="btn-icon-sm btn-change" id="btnChangeFile"
+                                            title="Cambiar archivo">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        <button type="button" class="btn-icon-sm btn-remove" id="btnRemoveFile"
+                                            title="Quitar archivo">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="turnado-actions">
+                            <div id="fileError" class="text-danger mt-1" style="font-size:0.8rem;display:none;"></div>
+
+                            <div class="resolucion-actions">
                                 <button type="button" class="btn-confirmar-accion" id="btnConfirmarAprobar"
-                                    data-solicitud-id="{{ $solicitud->id_solicitud }}" disabled>
-                                    <i class="fas fa-check me-1"></i> Confirmar aprobación y turnar
+                                    style="background:#1e5c50;color:#fff;">
+                                    <i class="fas fa-check me-1"></i> Confirmar aprobación
                                 </button>
                                 <button type="button" class="btn-cancelar-accion" id="btnCancelarAprobar">
                                     <i class="fas fa-times me-1"></i> Cancelar
@@ -218,7 +417,7 @@
                     </div>
 
                     {{-- Panel de rechazo --}}
-                    <div class="rechazo-panel" id="rechazoPanel">
+                    <div class="rechazo-panel" id="rechazoPanel" style="display: none;">
                         <div class="rechazo-header">
                             <i class="fas fa-exclamation-triangle me-1"></i> Motivo del rechazo
                         </div>
@@ -227,7 +426,7 @@
                                 placeholder="Describe el motivo por el cual se rechaza esta solicitud..."></textarea>
                             <div class="rechazo-actions">
                                 <button type="button" class="btn-confirmar-accion btn-confirmar-rechazo"
-                                    id="btnConfirmarRechazo" data-solicitud-id="{{ $solicitud->id_solicitud }}">
+                                    id="btnConfirmarRechazo" data-turnado-id="{{ $turnado->id_turnado }}">
                                     <i class="fas fa-check me-1"></i> Confirmar rechazo
                                 </button>
                                 <button type="button" class="btn-cancelar-accion" id="btnCancelarRechazo">
@@ -241,12 +440,12 @@
         @endif
 
         {{-- Si ya está resuelta --}}
-        @if ($solicitud->estatus_solicitud !== 0)
-            {{-- Mostrar resolución del enlace si existe --}}
+        @if ($solicitud->estatus_solicitud !== 1)
+            {{-- Mostrar resolución si existe --}}
             @if (isset($resolucion) && $resolucion)
-                <div class="detalles-card" id="resolucion">
+                <div class="detalles-card">
                     <div class="detalles-card-header">
-                        <i class="fas fa-file-circle-check"></i> Resolución del enlace
+                        <i class="fas fa-file-circle-check"></i> Resolución
                     </div>
                     <div class="detalles-card-body">
                         <div class="info-grid">
@@ -261,7 +460,7 @@
                                     <span class="info-value" style="display:flex;align-items:center;gap:0.75rem;">
                                         <i class="fa-regular fa-file-pdf" style="font-size:1.2rem;color:#c62828;"></i>
                                         {{ basename($resolucion->documento_resolucion) }}
-                                        <button type="button" class="btn-ver-archivo" title="Ver resolución"
+                                        <button type="button" class="btn-ver-archivo" title="Ver documento"
                                             onclick="verArchivo('{{ $resolucion->documento_resolucion }}')">
                                             <i class="fas fa-eye"></i>
                                         </button>
@@ -274,7 +473,7 @@
             @endif
             <div class="detalles-card">
                 <div class="detalles-card-body text-center">
-                    <a href="{{ route('solicitudes.index') }}" class="btn-accion btn-regresar">
+                    <a href="{{ route('enlace.tramitesTurnados') }}" class="btn-accion btn-regresar">
                         <i class="fas fa-arrow-left"></i> Regresar al listado
                     </a>
                 </div>
@@ -286,8 +485,14 @@
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="{{ asset('js/solicitudes/verDetalles.js') }}"></script>
     <script>
+        window.enlaceDetallesRoutes = {
+            aprobar: "{{ route('enlace.tramitesTurnadosAprobar', ['id' => $turnado->id_turnado]) }}",
+            rechazar: "{{ route('enlace.tramitesTurnadosRechazar', ['id' => $turnado->id_turnado]) }}",
+            verDocumento: "{{ route('documento.ver') }}",
+            listado: "{{ route('enlace.tramitesTurnados') }}",
+        };
+
         function verArchivo(ruta) {
             if (!ruta) {
                 Swal.fire({
@@ -298,7 +503,8 @@
                 });
                 return;
             }
-            window.open('{{ route('documento.ver') }}?ruta=' + encodeURIComponent(ruta), '_blank');
+            window.open(window.enlaceDetallesRoutes.verDocumento + '?ruta=' + encodeURIComponent(ruta), '_blank');
         }
     </script>
+    <script src="{{ asset('js/enlace/tramites_turnados_detalles.js') }}"></script>
 @endsection
