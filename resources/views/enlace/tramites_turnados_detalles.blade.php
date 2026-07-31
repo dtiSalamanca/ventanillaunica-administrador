@@ -407,7 +407,7 @@
                             <div class="resolucion-actions">
                                 <button type="button" class="btn-confirmar-accion" id="btnConfirmarAprobar"
                                     style="background:#1e5c50;color:#fff;">
-                                    <i class="fas fa-check me-1"></i> Confirmar aprobación
+                                    <i class="fas fa-upload me-1"></i> Subir resolutivo
                                 </button>
                                 <button type="button" class="btn-cancelar-accion" id="btnCancelarAprobar">
                                     <i class="fas fa-times me-1"></i> Cancelar

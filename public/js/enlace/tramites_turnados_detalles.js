@@ -35,6 +35,23 @@
 
     let selectedFile = null;
 
+    /* ───────── Estado de carga del boton de aprobacion ───────── */
+    const CONFIRMAR_APROBAR_LABEL =
+        '<i class="fas fa-upload me-1"></i> Subir resolutivo';
+    const CONFIRMAR_APROBAR_LOADING =
+        '<i class="fas fa-spinner fa-spin me-1"></i> Subiendo resolutivo...';
+
+    function setConfirmarAprobarLoading(loading) {
+        if (!$btnConfirmarAprobar) return;
+        $btnConfirmarAprobar.disabled = loading;
+        $btnConfirmarAprobar.innerHTML = loading
+            ? CONFIRMAR_APROBAR_LOADING
+            : CONFIRMAR_APROBAR_LABEL;
+        if ($btnCancelarAprobar) $btnCancelarAprobar.disabled = loading;
+        if ($uploadZone)
+            $uploadZone.style.pointerEvents = loading ? "none" : "";
+    }
+
     /* ───────── Mostrar panel de aprobacion ───────── */
     if ($btnAprobar) {
         $btnAprobar.addEventListener("click", function () {
@@ -181,6 +198,8 @@
             }).then(function (result) {
                 if (!result.isConfirmed) return;
 
+                setConfirmarAprobarLoading(true);
+
                 const formData = new FormData();
                 formData.append("resolucion_solicitud", nota || "Atendido");
                 if (selectedFile) {
@@ -211,6 +230,7 @@
                                 window.location.href = routes.listado;
                             });
                         } else {
+                            setConfirmarAprobarLoading(false);
                             Swal.fire({
                                 icon: "error",
                                 title: "Error",
@@ -222,6 +242,7 @@
                         }
                     })
                     .catch(function () {
+                        setConfirmarAprobarLoading(false);
                         Swal.fire({
                             icon: "error",
                             title: "Error de conexion",

@@ -193,7 +193,7 @@ class AprobacionesController extends Controller
             })
             ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
             ->with(['predios' => function ($query) {
-                $query->with('documentos.catRequisitos')->orderBy('clave_predio'); // <- corregido
+                $query->with('documentos.catalogoDocumento')->orderBy('clave_predio');
             }])
             ->orderBy('name')
             ->paginate(6, ['*'], 'sinPendientesPage')
