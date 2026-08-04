@@ -102,6 +102,27 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="fk_cri" class="form-label">
+                                <i class="fas fa-building me-1"></i>Elegir cuenta contable del trámite
+                            </label>
+                            <select name="fk_cri" id="fk_cri"
+                                class="form-control @error('fk_cri') is-invalid @enderror"
+                                data-old="{{ old('fk_cri') }}"
+                                required>
+                                <option value="" disabled selected>Cargando cuentas contables...</option>
+                            </select>
+                            <div class="field-footer">
+                                <span class="field-message">
+                                    @if ($errors->has('fk_cri'))
+                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('fk_cri') }}</span>
+                                    @else
+                                        <span class="field-hint">Seleccione la cuenta contable a la que pertenece</span>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="precio" class="form-label">
                                 <i class="fas fa-dollar-sign me-1"></i>Precio del trámite
                             </label>
@@ -139,6 +160,7 @@
     <script>
         window.dependenciasRoutes = {
             activas: "{{ route('getDependenciasActivas') }}",
+            cuentasCri: "{{ route('ajax.ordenes-pago.consulta-cuentas-cri') }}",
         };
     </script>
     <script src="{{ asset('js/tramites/agregarTramite.js') }}"></script>
