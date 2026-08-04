@@ -38,6 +38,7 @@ class TramitesController extends Controller
             'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
             'precio' => 'required|numeric|min:0|max:99999999.99',
+            'fk_cri' => 'required|numeric|min:1',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
@@ -49,6 +50,9 @@ class TramitesController extends Controller
             'precio.numeric' => 'El precio debe ser un número válido.',
             'precio.min' => 'El precio no puede ser negativo.',
             'precio.max' => 'El precio excede el monto máximo permitido.',
+            'fk_cri.required' => 'El campo CRI es obligatorio.',
+            'fk_cri.numeric' => 'El campo CRI debe ser un número válido.',
+            'fk_cri.min' => 'El campo CRI debe ser mayor o igual a 1.',
         ]);
 
         Tramite::create([
@@ -57,6 +61,7 @@ class TramitesController extends Controller
             'estatus_tramite' => true,
             'fk_dependencia' => $validated['fk_dependencia'],
             'precio_tramite' => $validated['precio'],
+            'tramite_cri' => $validated['fk_cri'],
         ]);
 
         return redirect()->route('indexTramites')->with('success', 'Trámite registrado correctamente.');
@@ -84,6 +89,7 @@ class TramitesController extends Controller
             'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
             'precio' => 'required|numeric|min:0|max:99999999.99',
+            'fk_cri' => 'required|numeric|min:1',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
@@ -95,6 +101,9 @@ class TramitesController extends Controller
             'precio.numeric' => 'El precio debe ser un número válido.',
             'precio.min' => 'El precio no puede ser negativo.',
             'precio.max' => 'El precio excede el monto máximo permitido.',
+            'fk_cri.required' => 'El campo CRI es obligatorio.',
+            'fk_cri.numeric' => 'El campo CRI debe ser un número válido.',
+            'fk_cri.min' => 'El campo CRI debe ser mayor o igual a 1.',
         ]);
 
         $tramite->update([
@@ -102,6 +111,7 @@ class TramitesController extends Controller
             'descripcion_tramite' => $validated['descripcion'],
             'fk_dependencia' => $validated['fk_dependencia'],
             'precio_tramite' => $validated['precio'],
+            'tramite_cri' => $validated['fk_cri'],
         ]);
 
         return redirect()->route('indexTramites')->with('success', 'Trámite actualizado correctamente.');

@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AjaxEmmaController;
+use App\Http\Controllers\OrdesPagoController;
 use App\Http\Controllers\PrediosEmmaController;
 use App\Http\Controllers\SolicitudesEmmaController;
 use Illuminate\Support\Facades\Route;
@@ -17,3 +18,8 @@ Route::middleware('auth')->controller(AjaxEmmaController::class)->group(function
     Route::get('/ajax/solicitud/{id}', 'consultaSolicitud')->name('ajax.consulta.solicitud');
     Route::get('/ajax/usuarios/ad', 'consultaUsuarios')->name('ajax.consulta.usuarios');
 });
+
+Route::middleware('auth')->controller(OrdesPagoController::class)->group(function () {
+    Route::get('/ajax/ordenes-pago/consulta-cuentas-cri', 'consultaCuentasCri')->name('ajax.ordenes-pago.consulta-cuentas-cri');
+});
+
