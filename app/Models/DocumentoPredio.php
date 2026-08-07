@@ -33,4 +33,10 @@ class DocumentoPredio extends Model
     {
         return $this->belongsTo(catDocumentoPredio::class, 'fk_cat_documento_predio', 'id_documento_predio');
     }
+
+    // En DocumentoPredio.php
+    public function catRequisitos(): BelongsTo
+    {
+        return $this->belongsTo(Requisito::class, 'fk_cat_requisito', 'id'); // Ajusta los nombres de las columnas
+    }
 }
