@@ -11,6 +11,7 @@ Route::middleware('auth')->controller(PrediosEmmaController::class)->group(funct
 
 Route::middleware('auth')->controller(SolicitudesEmmaController::class)->group(function () {
     Route::get('/solicitudes', 'index')->name('solicitudes.index');
+    Route::post('/tramites/requisitos/{tramite}/asignar-e', 'asignarRequisitosE')->name('asignarRequisitosE');
 });
 
 Route::middleware('auth')->controller(AjaxEmmaController::class)->group(function () {
