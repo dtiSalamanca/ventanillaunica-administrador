@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\catDocumentoPersonal;
+use App\Models\catDocumentoPredio;
 use App\Models\Requisito;
 use App\Models\Tramite;
+use App\Models\RequisitoTramite;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class TramitesController extends Controller
@@ -38,6 +42,7 @@ class TramitesController extends Controller
             'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
             'precio' => 'required|numeric|min:0|max:99999999.99',
+            'fk_cri' => 'required|numeric|min:1',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
@@ -49,6 +54,9 @@ class TramitesController extends Controller
             'precio.numeric' => 'El precio debe ser un número válido.',
             'precio.min' => 'El precio no puede ser negativo.',
             'precio.max' => 'El precio excede el monto máximo permitido.',
+            'fk_cri.required' => 'El campo CRI es obligatorio.',
+            'fk_cri.numeric' => 'El campo CRI debe ser un número válido.',
+            'fk_cri.min' => 'El campo CRI debe ser mayor o igual a 1.',
         ]);
 
         Tramite::create([
@@ -57,6 +65,7 @@ class TramitesController extends Controller
             'estatus_tramite' => true,
             'fk_dependencia' => $validated['fk_dependencia'],
             'precio_tramite' => $validated['precio'],
+            'tramite_cri' => $validated['fk_cri'],
         ]);
 
         return redirect()->route('indexTramites')->with('success', 'Trámite registrado correctamente.');
@@ -84,6 +93,7 @@ class TramitesController extends Controller
             'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
             'precio' => 'required|numeric|min:0|max:99999999.99',
+            'fk_cri' => 'required|numeric|min:1',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
@@ -95,6 +105,9 @@ class TramitesController extends Controller
             'precio.numeric' => 'El precio debe ser un número válido.',
             'precio.min' => 'El precio no puede ser negativo.',
             'precio.max' => 'El precio excede el monto máximo permitido.',
+            'fk_cri.required' => 'El campo CRI es obligatorio.',
+            'fk_cri.numeric' => 'El campo CRI debe ser un número válido.',
+            'fk_cri.min' => 'El campo CRI debe ser mayor o igual a 1.',
         ]);
 
         $tramite->update([
@@ -102,6 +115,7 @@ class TramitesController extends Controller
             'descripcion_tramite' => $validated['descripcion'],
             'fk_dependencia' => $validated['fk_dependencia'],
             'precio_tramite' => $validated['precio'],
+            'tramite_cri' => $validated['fk_cri'],
         ]);
 
         return redirect()->route('indexTramites')->with('success', 'Trámite actualizado correctamente.');
@@ -138,19 +152,52 @@ class TramitesController extends Controller
             ->orderBy('cat_requisitos.nombre_requisito')
             ->get();
 
+        $requisitos = DB::table('tbl_requisitos_tramites as rt')
+            ->leftJoin('cat_documentos_personales as cp', 'cp.id_documento', '=', 'rt.fk_requisito')
+            ->leftJoin('cat_documentos_predios as cpr', 'cpr.id_documento_predio', '=', 'rt.fk_predio')
+            ->where('rt.fk_tramite', $tramite->id_tramite)
+            ->selectRaw("
+                rt.id_requisito,
+                    COALESCE(cp.id_documento, cpr.id_documento_predio) as id_documento,
+                    COALESCE(cp.nombre_documento, cpr.nombre_documento) as nombre_documento,
+                    CASE
+                        WHEN cp.id_documento IS NOT NULL THEN 'd'
+                        ELSE 'p'
+                    END as tipo_documento
+                ")
+            ->get();
+
         return response()->json($requisitos);
     }
 
     public function getCatalogoDisponible(Tramite $tramite): JsonResponse
     {
-        $asignados = $tramite->requisitos()->pluck('cat_requisitos.id_requisito');
+        // IDs de documentos personales ya asignados
+        $personalesAsignados = DB::table('tbl_requisitos_tramites')
+            ->where('fk_tramite', $tramite->id_tramite) // Ajusta el nombre de la PK si es diferente
+            ->whereNotNull('fk_requisito')
+            ->pluck('fk_requisito');
 
-        $disponibles = Requisito::where('estatus_requisito', true)
-            ->whereNotIn('id_requisito', $asignados)
-            ->orderBy('nombre_requisito')
-            ->get(['id_requisito', 'nombre_requisito']);
+        // IDs de documentos del predio ya asignados
+        $prediosAsignados = DB::table('tbl_requisitos_tramites')
+            ->where('fk_tramite', $tramite->id_tramite)
+            ->whereNotNull('fk_predio')
+            ->pluck('fk_predio');
 
-        return response()->json($disponibles);
+        $docsPersonales = catDocumentoPersonal::where('estatus_documento', true)
+            ->whereNotIn('id_documento', $personalesAsignados)
+            ->orderBy('nombre_documento')
+            ->get(['id_documento', 'nombre_documento']);
+
+        $docsPredio = catDocumentoPredio::where('estatus_documento', true)
+            ->whereNotIn('id_documento_predio', $prediosAsignados)
+            ->orderBy('nombre_documento')
+            ->get(['id_documento_predio', 'nombre_documento']);
+
+        return response()->json([
+            'docsPredio' => $docsPredio,
+            'docsPersonales' => $docsPersonales,
+        ]);
     }
 
     public function asignarRequisitos(Request $request, Tramite $tramite): JsonResponse

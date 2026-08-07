@@ -146,9 +146,22 @@
                     <div id="modal-alert" class="alert alert-danger d-none mb-3"></div>
                     <div class="mb-3">
                         <label for="select-requisitos" class="form-label fw-semibold">
-                            Seleccionar del catálogo <span class="text-danger">*</span>
+                            Seleccionar del catálogo de requisitos para predios <span class="text-danger">*</span>
                         </label>
                         <select id="select-requisitos" class="form-control" multiple="multiple" style="width:100%">
+                        </select>
+                        <div class="form-text mt-2">
+                            <i class="fas fa-circle-info me-1 text-muted"></i>
+                            Solo se muestran requisitos activos del catálogo que aún no están asignados a este trámite.
+                        </div>
+                    </div>
+                    <div id="modal-alert" class="alert alert-danger d-none mb-3"></div>
+                    <div class="mb-3">
+                        <label for="select-personal" class="form-label fw-semibold">
+                            Seleccionar del catálogo de requisitos personales <span class="text-danger">*</span>
+                        </label>
+                        <select id="select-personal" class="form-control" multiple="multiple"
+                            style="width:100%">
                         </select>
                         <div class="form-text mt-2">
                             <i class="fas fa-circle-info me-1 text-muted"></i>
@@ -182,6 +195,7 @@
             catalogo: "{{ route('getCatalogoDisponible', ['tramite' => $tramite->id_tramite]) }}",
             asignar: "{{ route('asignarRequisitos', ['tramite' => $tramite->id_tramite]) }}",
             quitar: "{{ route('quitarRequisito', ['tramite' => $tramite->id_tramite, 'requisito' => '__ID__']) }}",
+            asignarE: "{{ route('asignarRequisitosE', ['tramite' => $tramite->id_tramite]) }}",
         };
     </script>
     <script src="{{ asset('js/requisitos/revisarRequisitos.js') }}"></script>
