@@ -13,7 +13,7 @@ return new class extends Migration
     {
         //
         Schema::table('tbl_requisitos_tramites', function (Blueprint $table) {
-            $table->integer('fk_predio')->after('fk_requisito');
+            $table->integer('fk_predio')->after('fk_requisito')->default(null);
         });
     }
 

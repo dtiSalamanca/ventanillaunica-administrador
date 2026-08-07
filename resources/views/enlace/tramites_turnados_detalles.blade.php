@@ -274,6 +274,10 @@
                                     @php
                                         $archivo = null;
                                         $tipoDocumento = null;
+                                        $nombreRequisito =
+                                            $docTramite->requisito?->nombre_requisito ??
+                                            'Requisito #' . $docTramite->fk_requisito;
+
                                         if ($docTramite->documentoSolicitud) {
                                             $archivo = $docTramite->documentoSolicitud->documento_solicitud;
                                             $tipoDocumento = 'solicitud';
@@ -281,17 +285,17 @@
                                             $archivo = $docTramite->documentoPersonal->ruta_archivo;
                                             $tipoDocumento = 'personal';
                                         } else {
-                                            $reqNombre = $docTramite->requisito?->nombre_requisito ?? '';
-                                            $predioDoc = $predioDocs->first(function ($pd) use ($reqNombre) {
-                                                return $pd->catalogoDocumento &&
-                                                    strcasecmp(
-                                                        trim($pd->catalogoDocumento->nombre_documento),
-                                                        trim($reqNombre),
-                                                    ) === 0;
-                                            });
+                                            // Buscar documento del predio por tipo: fk_cat_documento_predio == fk_requisito
+                                            $predioDoc = $predioDocs
+                                                ->where('fk_cat_documento_predio', $docTramite->fk_requisito)
+                                                ->sortByDesc('estatus_documento')
+                                                ->first();
                                             if ($predioDoc) {
                                                 $archivo = $predioDoc->ruta_documento;
                                                 $tipoDocumento = 'predio';
+                                                $nombreRequisito =
+                                                    $predioDoc->catalogoDocumento?->nombre_documento ??
+                                                    $nombreRequisito;
                                             }
                                         }
                                     @endphp
@@ -299,7 +303,7 @@
                                         <td class="req-num">{{ $index + 1 }}</td>
                                         <td class="req-nombre">
                                             <div class="req-nombre-texto">
-                                                {{ $docTramite->requisito?->nombre_requisito ?? 'Requisito #' . $docTramite->fk_requisito }}
+                                                {{ $nombreRequisito }}
                                             </div>
                                         </td>
                                         <td class="req-archivo">
