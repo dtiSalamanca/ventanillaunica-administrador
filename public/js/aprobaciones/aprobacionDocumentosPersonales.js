@@ -62,9 +62,14 @@ $(document).ready(function () {
         var idsAbiertos = obtenerAcordeonesAbiertos($resultado);
         $resultado.addClass("is-loading");
 
-        fetch(window.aprobacionDocumentosPersonalesRoutes.buscar + "?" + params.toString(), {
-            headers: { Accept: "application/json" },
-        })
+        fetch(
+            window.aprobacionDocumentosPersonalesRoutes.buscar +
+                "?" +
+                params.toString(),
+            {
+                headers: { Accept: "application/json" },
+            },
+        )
             .then(function (response) {
                 return response.json();
             })
@@ -132,7 +137,9 @@ $(document).ready(function () {
 
             event.preventDefault();
 
-            var tab = anchor.closest("#pendientes-resultado") ? "pendientes" : "sin-pendientes";
+            var tab = anchor.closest("#pendientes-resultado")
+                ? "pendientes"
+                : "sin-pendientes";
             var config = tabs[tab];
             var url = new URL(anchor.href, window.location.origin);
             var page = url.searchParams.get(config.pageParam) || 1;
@@ -201,26 +208,140 @@ $(document).ready(function () {
 
     $(document).on("click", ".btn-rechazar-documento", function () {
         var id = $(this).data("id");
+        var nombreDocumento = $(this).data("documento") || "documento";
+        var nombreUsuario = $(this).data("nombre-usuario") || "el ciudadano";
         var url = window.aprobacionDocumentosPersonalesRoutes.rechazar.replace(
             "__ID__",
             id,
         );
 
         Swal.fire({
-            title: "¿Está seguro?",
-            text: "El documento personal seleccionado será rechazado.",
+            title: "Motivo del rechazo",
+            html:
+                "El documento <strong>" +
+                nombreDocumento +
+                "</strong> será rechazado para <strong>" +
+                nombreUsuario +
+                "</strong>.<br><br>" +
+                "Indica por qué se rechaza el documento y qué debe corregir el ciudadano.<br><br>" +
+                "Esta información se enviará al ciudadano por correo electrónico y también podrá consultarla nuevamente dentro del sistema.",
             icon: "warning",
+            input: "textarea",
+            inputLabel: "Motivo del rechazo:",
+            inputPlaceholder: "Escribe aquí el motivo...",
+            inputAttributes: {
+                "aria-label": "Motivo del rechazo",
+                maxlength: "500",
+            },
             showCancelButton: true,
             confirmButtonColor: "#d33",
             cancelButtonColor: "#6c757d",
-            confirmButtonText: "Sí, rechazar",
+            confirmButtonText: "Confirmar rechazo",
             cancelButtonText: "Cancelar",
+            inputValidator: function (value) {
+                if (!value || !value.trim()) {
+                    return "Debes escribir el motivo del rechazo.";
+                }
+            },
+            preConfirm: function (motivo) {
+                return fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content",
+                        ),
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify({ motivo: motivo }),
+                })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error("error");
+                        }
+                        return response.json();
+                    })
+                    .catch(function () {
+                        Swal.showValidationMessage(
+                            "No se pudo procesar la solicitud. Inténtalo nuevamente.",
+                        );
+                    });
+            },
         }).then(function (result) {
             if (!result.isConfirmed) {
                 return;
             }
 
-            enviarRevision(url, "Rechazado");
+            Swal.fire({
+                icon: "success",
+                title: "Rechazado",
+                text: result.value.message,
+                timer: 1500,
+                showConfirmButton: false,
+            }).then(function () {
+                cargarGrid("pendientes", tabs.pendientes.page);
+                cargarGrid("sin-pendientes", tabs["sin-pendientes"].page);
+            });
         });
     });
+
+    // --- Recarga automática de la página cada 30 segundos ---
+    // Si un ciudadano sube un documento nuevo, la página se recarga sola para
+    // mostrarlo, sin necesidad de refrescar el navegador.
+    var INTERVALO_AUTO_REFRESH = 30000;
+
+    function puedeAutoRefrescarPagina() {
+        // No recargar si la pestaña del navegador no está visible.
+        if (typeof document.hidden !== "undefined" && document.hidden) {
+            return false;
+        }
+
+        // No recargar si hay un modal de SweetAlert abierto (p. ej. al aprobar
+        // o rechazar), para no perder lo que el usuario está haciendo.
+        if (typeof Swal !== "undefined" && Swal.isVisible()) {
+            return false;
+        }
+
+        // No recargar si el usuario está escribiendo en algún buscador.
+        if (
+            $("#pendientes-search-input").is(":focus") ||
+            $("#sin-pendientes-search-input").is(":focus")
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function refrescarPaginaAutomaticamente() {
+        if (!puedeAutoRefrescarPagina()) {
+            return;
+        }
+
+        // Conserva la pestaña activa y las búsquedas al recargar.
+        var params = new URLSearchParams(window.location.search);
+        var tabActiva = $("#sin-pendientes-tab").hasClass("active")
+            ? "sin-pendientes"
+            : "pendientes";
+        params.set("tab", tabActiva);
+
+        var pendientesQ = $("#pendientes-search-input").val() || "";
+        var sinPendientesQ = $("#sin-pendientes-search-input").val() || "";
+
+        if (pendientesQ) {
+            params.set("pendientesQ", pendientesQ);
+        } else {
+            params.delete("pendientesQ");
+        }
+        if (sinPendientesQ) {
+            params.set("sinPendientesQ", sinPendientesQ);
+        } else {
+            params.delete("sinPendientesQ");
+        }
+
+        var qs = params.toString();
+        window.location.href = window.location.pathname + (qs ? "?" + qs : "");
+    }
+
+    setInterval(refrescarPaginaAutomaticamente, INTERVALO_AUTO_REFRESH);
 });

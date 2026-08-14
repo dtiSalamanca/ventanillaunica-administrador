@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AprobacionesController;
+use App\Http\Controllers\CiudadanosController;
 use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\EnlaceController;
@@ -63,6 +64,13 @@ Route::middleware('auth')->controller(UsuariosController::class)->group(function
     Route::get('/usuarios', 'indexUsuarios')->name('indexUsuarios');
     Route::get('/usuarios/ad', 'getUsuariosAd')->name('getUsuariosAd');
     Route::post('/usuarios/asignar-dependencia', 'asignarDependencia')->name('asignarDependencia');
+});
+
+Route::middleware('auth')->controller(CiudadanosController::class)->group(function () {
+    Route::get('/ciudadanos', 'indexCiudadanos')->name('indexCiudadanos');
+    Route::get('/ciudadanos/data', 'getCiudadanos')->name('getCiudadanos');
+    Route::post('/ciudadanos/bloquear', 'bloquearCiudadanos')->name('bloquearCiudadanos');
+    Route::post('/ciudadanos/desbloquear', 'desbloquearCiudadanos')->name('desbloquearCiudadanos');
 });
 
 Route::middleware('auth')->controller(DocumentosPersonalesController::class)->group(function () {

@@ -47,18 +47,19 @@ class SolicitudesEmmaController extends Controller
         $documentosPredio = $validated['documentos_predio'] ?? [];
 
         foreach ($documentosPersonales as $documentoPersonal) {
-            $nRequisitoTramite = new RequisitoTramite();
+            $nRequisitoTramite = new RequisitoTramite;
             $nRequisitoTramite->fk_tramite = $tramite;
             $nRequisitoTramite->fk_requisito = $documentoPersonal;
             $nRequisitoTramite->save();
         }
 
         foreach ($documentosPredio as $documentoPredio) {
-            $nRequisitoTramite = new RequisitoTramite();
+            $nRequisitoTramite = new RequisitoTramite;
             $nRequisitoTramite->fk_tramite = $tramite;
             $nRequisitoTramite->fk_predio = $documentoPredio;
             $nRequisitoTramite->save();
         }
+
         // Retornar una respuesta exitosa
         return response()->json(['message' => 'Requisitos asignados correctamente.'], 201);
     }

@@ -74,7 +74,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var optionText = "";
 
         valueKeys.forEach(function (key) {
-            if (optionValue !== "" || !Object.prototype.hasOwnProperty.call(item, key)) {
+            if (
+                optionValue !== "" ||
+                !Object.prototype.hasOwnProperty.call(item, key)
+            ) {
                 return;
             }
 
@@ -88,8 +91,20 @@ document.addEventListener("DOMContentLoaded", function () {
             optionValue = String(item.id ?? "");
         }
 
-        var accountCode = item.account_code ?? item.codigo ?? item.codigo_cuenta ?? item.code ?? "";
-        var accountName = item.account_name ?? item.nombre ?? item.nombre_cuenta ?? item.cuenta ?? item.descripcion ?? item.label ?? "";
+        var accountCode =
+            item.account_code ??
+            item.codigo ??
+            item.codigo_cuenta ??
+            item.code ??
+            "";
+        var accountName =
+            item.account_name ??
+            item.nombre ??
+            item.nombre_cuenta ??
+            item.cuenta ??
+            item.descripcion ??
+            item.label ??
+            "";
 
         if (accountCode && accountName) {
             optionText = accountCode + " - " + accountName;
@@ -108,10 +123,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Cargar dependencias activas en el select y activar Select2
-    if (selectDependencia && window.dependenciasRoutes && window.dependenciasRoutes.activas) {
+    if (
+        selectDependencia &&
+        window.dependenciasRoutes &&
+        window.dependenciasRoutes.activas
+    ) {
         fetch(window.dependenciasRoutes.activas)
             .then(function (response) {
-                if (!response.ok) throw new Error("Error al cargar dependencias");
+                if (!response.ok)
+                    throw new Error("Error al cargar dependencias");
                 return response.json();
             })
             .then(function (dependencias) {
@@ -130,7 +150,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 }
 
-                var selectedValue = selectDependencia.getAttribute("data-selected");
+                var selectedValue =
+                    selectDependencia.getAttribute("data-selected");
                 if (selectedValue) {
                     selectDependencia.value = selectedValue;
                 }
@@ -150,10 +171,15 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    if (selectCuentaCri && window.dependenciasRoutes && window.dependenciasRoutes.cuentasCri) {
+    if (
+        selectCuentaCri &&
+        window.dependenciasRoutes &&
+        window.dependenciasRoutes.cuentasCri
+    ) {
         fetch(window.dependenciasRoutes.cuentasCri)
             .then(function (response) {
-                if (!response.ok) throw new Error("Error al cargar cuentas CRI");
+                if (!response.ok)
+                    throw new Error("Error al cargar cuentas CRI");
                 return response.json();
             })
             .then(function (payload) {
@@ -174,7 +200,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 }
 
-                var selectedValue = selectCuentaCri.getAttribute("data-selected");
+                var selectedValue =
+                    selectCuentaCri.getAttribute("data-selected");
                 if (selectedValue) {
                     selectCuentaCri.value = selectedValue;
                 }
@@ -195,9 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Contador de caracteres para el nombre
-    var campos = [
-        { inputId: "nombre", counterId: "counter-nombre", max: 255 },
-    ];
+    var campos = [{ inputId: "nombre", counterId: "counter-nombre", max: 255 }];
 
     campos.forEach(function (campo) {
         var input = document.getElementById(campo.inputId);
@@ -223,6 +248,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         actualizar();
     });
+
+    // Toggle: nota de cobro por metro cuadrado
+    var checkCobraM2 = document.getElementById("cobra_por_m2");
+    var notaPrecioPorM2 = document.getElementById("nota-precio-por-m2");
+
+    function toggleNotaPorM2() {
+        var esPorM2 = checkCobraM2 && checkCobraM2.checked;
+
+        if (notaPrecioPorM2) {
+            notaPrecioPorM2.classList.toggle("d-none", !esPorM2);
+        }
+    }
+
+    if (checkCobraM2) {
+        checkCobraM2.addEventListener("change", toggleNotaPorM2);
+        toggleNotaPorM2();
+    }
 
     // Deshabilitar botón al enviar
     formulario.addEventListener("submit", function () {

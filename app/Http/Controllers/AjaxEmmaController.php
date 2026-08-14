@@ -55,6 +55,7 @@ class AjaxEmmaController extends Controller
     public function consultaUsuarios()
     {
         $usuarios = DB::table('tbl_usuarios_ad')->select('id_usuario', 'nombre_usuario')->get();
+
         return response()->json($usuarios);
     }
 }

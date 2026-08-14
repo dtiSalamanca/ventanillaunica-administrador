@@ -218,11 +218,19 @@
                         title: 'Fecha de solicitud',
                         render: function(data, type, row) {
                             if (!data) return '';
-                            const dt = new Date(data);
+                            // El valor viene de la BD ya en hora de México (America/Mexico_City),
+                            // así que se formatea directamente sin conversión de zona horaria.
+                            const [fecha, hora] = data.split(' ');
+                            if (!hora) return data;
+                            const [anio, mes, dia] = fecha.split('-');
+
+                            // Conversión al formato de 12 horas (a.m./p.m.)
+                            const [h, m] = hora.split(':').map(Number);
+                            const horas12 = h % 12 === 0 ? 12 : h % 12;
+                            const periodo = h < 12 ? 'a.m.' : 'p.m.';
                             const pad = (n) => String(n).padStart(2, '0');
-                            return pad(dt.getUTCDate()) + '-' + pad(dt.getUTCMonth() + 1) + '-' + dt
-                                .getUTCFullYear() + ' ' + pad(dt.getUTCHours()) + ':' + pad(dt
-                                    .getUTCMinutes()) + ':' + pad(dt.getUTCSeconds());
+
+                            return `${dia}-${mes}-${anio} ${pad(horas12)}:${pad(m)} ${periodo}`;
                         }
                     },
                     {

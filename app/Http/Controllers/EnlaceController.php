@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ResolutivoDisponible;
+use App\Models\Dependencia;
 use App\Models\DocumentoPredio;
 use App\Models\DocumentoSolicitud;
 use App\Models\DocumentoTramite;
+use App\Models\OrdenPago;
 use App\Models\ResolucionSolicitud;
 use App\Models\Solicitud;
 use App\Models\TurnadoSolicitud;
@@ -12,6 +15,7 @@ use App\Models\UsuarioAD;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class EnlaceController extends Controller
 {
@@ -95,7 +99,13 @@ class EnlaceController extends Controller
                     'tramite' => $solicitud?->tramite?->nombre_tramite ?? '—',
                     'dependencia' => $solicitud?->tramite?->dependencia?->nombre_dependencia ?? '—',
                     'ciudadano' => $solicitud?->user?->name ?? '—',
-                    'fecha_turnado' => $turnado->created_at?->format('d/m/Y H:i') ?? '—',
+                    'fecha_turnado' => $turnado->created_at
+                        ? str_replace(
+                            ['AM', 'PM'],
+                            ['a. m.', 'p. m.'],
+                            $turnado->created_at->format('d/m/Y h:i A')
+                        )
+                        : '—',
                     'estatus_solicitud' => $solicitud?->estatus_solicitud,
                     'estatus_turnado' => (bool) $turnado->estatus_turnado,
                 ];
@@ -167,7 +177,26 @@ class EnlaceController extends Controller
             ->where('fk_usuario_ad', $usuarioAd?->id_usuario)
             ->firstOrFail();
 
-        $solicitud = Solicitud::findOrFail($turnado->fk_solicitud);
+        $solicitud = Solicitud::with('tramite')->findOrFail($turnado->fk_solicitud);
+
+        // El precio del trámite siempre lo captura el enlace al atender la solicitud
+        $request->validate([
+            'precio_tramite' => 'required|integer|min:1',
+        ], [
+            'precio_tramite.required' => 'Debes capturar el precio del trámite.',
+            'precio_tramite.integer' => 'El precio debe ser un número entero (sin centavos).',
+            'precio_tramite.min' => 'El precio debe ser mayor a 0.',
+        ]);
+
+        OrdenPago::create([
+            'nombre_tramite' => $solicitud->tramite->nombre_tramite,
+            'precio_tramite' => $request->input('precio_tramite'),
+            'numero_cri' => $solicitud->tramite->tramite_cri,
+            'orden_estatus' => 1, // Pendiente
+            'fk_tramite' => $solicitud->tramite->id_tramite,
+            'fk_solicitud' => $solicitud->id_solicitud,
+        ]);
+
         $solicitud->estatus_solicitud = 3; // Atendido
         $solicitud->fecha_resolucion = now();
         $solicitud->save();
@@ -189,11 +218,26 @@ class EnlaceController extends Controller
         if ($request->hasFile('documento_resolucion')) {
             $archivo = $request->file('documento_resolucion');
             $ext = $archivo->getClientOriginalExtension();
+
+            // El resolutivo se nombra con las siglas de la dependencia del enlace,
+            // el número de la solicitud y la fecha actual.
+            $dependencia = Dependencia::find($usuarioAd?->fk_dependencia);
+            $siglas = $dependencia?->siglas() ?? 'GEN';
+            $idSolicitud = str_pad((string) $solicitud->id_solicitud, 2, '0', STR_PAD_LEFT);
             $fecha = now()->format('Y-m-d');
-            $nombre = "Res_{$resolucion->id_resolucion}_{$fecha}.{$ext}";
+
+            $nombre = "{$siglas}-{$idSolicitud}-{$fecha}.{$ext}";
             $ruta = $archivo->storeAs('doc_resolutivos', $nombre, 'local');
 
             $resolucion->update(['documento_resolucion' => $ruta]);
+
+            // Notifica al ciudadano que su trámite concluyó y que debe acudir
+            // a caja para realizar el pago y consultar/descargar su resolutivo.
+            Mail::to($solicitud->user->email)->send(new ResolutivoDisponible(
+                nombreUsuario: $solicitud->user->name,
+                nombreTramite: $solicitud->tramite->nombre_tramite,
+                urlPortal: $this->urlPortalCiudadano(),
+            ));
         }
 
         return response()->json([
@@ -238,6 +282,29 @@ class EnlaceController extends Controller
             'success' => true,
             'message' => 'Solicitud rechazada correctamente.',
         ]);
+    }
+
+    /**
+     * URL de "Mis trámites" del ciudadano en el portal de la Ventanilla Única.
+     */
+    private function urlPortalCiudadano(): string
+    {
+        return $this->urlCiudadano('/tramites/mis-tramites');
+    }
+
+    /**
+     * Construye una URL absoluta hacia el portal ciudadano garantizando que
+     * incluya el esquema http(s).
+     */
+    private function urlCiudadano(string $ruta): string
+    {
+        $base = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/');
+
+        if (! preg_match('~^https?://~i', $base)) {
+            $base = 'http://'.$base;
+        }
+
+        return $base.$ruta;
     }
 
     /**

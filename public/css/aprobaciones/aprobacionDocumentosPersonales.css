@@ -306,6 +306,30 @@ body {
     color: var(--accent);
 }
 
+.auto-refresh-info {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.auto-refresh-info i {
+    color: var(--primary);
+    animation: auto-refresh-pulse 2s ease-in-out infinite;
+}
+
+@keyframes auto-refresh-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.35;
+    }
+}
+
 #pendientes-resultado,
 #sin-pendientes-resultado {
     transition: opacity 0.15s ease;

@@ -63,8 +63,11 @@ $(document).ready(function () {
             {
                 data: "precio_tramite",
                 className: "w-precio text-end",
-                render: function (data, type) {
+                render: function (data, type, row) {
                     if (type === "display") {
+                        if (row.cobra_por_m2) {
+                            return '<span class="badge badge-por-m2"><i class="fas fa-ruler-combined me-1"></i>Por m²</span>';
+                        }
                         var numero = parseFloat(data) || 0;
                         return (
                             "$" +
@@ -131,8 +134,11 @@ $(document).ready(function () {
             {
                 data: "precio_tramite",
                 className: "w-precio text-end",
-                render: function (data, type) {
+                render: function (data, type, row) {
                     if (type === "display") {
+                        if (row.cobra_por_m2) {
+                            return '<span class="badge badge-por-m2"><i class="fas fa-ruler-combined me-1"></i>Por m²</span>';
+                        }
                         var numero = parseFloat(data) || 0;
                         return (
                             "$" +

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\DocumentoRechazado;
 use App\Mail\PredioRevisado;
 use App\Models\DocumentoPredio;
 use App\Models\Predio;
@@ -102,11 +103,24 @@ class AprobacionesController extends Controller
         return response()->json(['message' => 'Documento aprobado correctamente.']);
     }
 
-    public function rechazarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): JsonResponse
+    public function rechazarDocumentoPersonal(Request $request, tblDocumentoPersonal $documentoPersonal): JsonResponse
     {
-        $documentoPersonal->update(['estatus_documento' => tblDocumentoPersonal::ESTATUS_RECHAZADO]);
+        $motivo = $request->validate([
+            'motivo' => ['required', 'string', 'max:500'],
+        ])['motivo'];
 
-        return response()->json(['message' => 'Documento rechazado correctamente.']);
+        $documentoPersonal->update([
+            'estatus_documento' => tblDocumentoPersonal::ESTATUS_RECHAZADO,
+            'motivo_rechazo' => $motivo,
+        ]);
+
+        $this->notificarRechazoDocumento(
+            $documentoPersonal->usuario,
+            $documentoPersonal->catalogoDocumento->nombre_documento,
+            $motivo,
+        );
+
+        return response()->json(['message' => 'Documento rechazado y notificado correctamente.']);
     }
 
     public function indexPredios(): View
@@ -114,21 +128,8 @@ class AprobacionesController extends Controller
         $sinPendientesQuery = request()->query('sinPendientesQ');
         $pendientesQuery = request()->query('pendientesQ');
 
+        $pendientes = $this->pendientesPrediosPaginator($pendientesQuery);
         $sinPendientes = $this->sinPendientesPrediosPaginator($sinPendientesQuery);
-
-        $pendientes = User::whereHas('predios', function ($query) {
-            $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
-                ->orWhereHas('documentos', function ($q) {
-                    $q->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
-                });
-        })
-            ->when($pendientesQuery, function ($query, $busqueda) {
-                $query->where('name', 'like', "%{$busqueda}%");
-            })
-            ->with(['predios.documentos.catalogoDocumento'])
-            ->orderBy('name')
-            ->paginate(6, ['*'], 'pendientesPage')
-            ->withQueryString();
 
         return view('aprobaciones.aprobacionPredios', compact('pendientes', 'sinPendientes', 'pendientesQuery', 'sinPendientesQuery'));
     }
@@ -159,23 +160,28 @@ class AprobacionesController extends Controller
         return response()->json(['html' => $html]);
     }
 
-    private function pendientesPrediosPaginator(?string $search)
+    /**
+     * Condiciones para considerar un predio pendiente de revisión: está "en
+     * revisión", "por revisar" (pendiente de validar) o tiene algún documento
+     * en revisión.
+     */
+    private function scopePredioPendiente(Builder $query): void
     {
-        return User::whereHas('predios', function (Builder $query) {
-            $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)->orWhere('estatus_predio', Predio::ESTATUS_POR_REVISAR)
+        $query->where(function (Builder $query) {
+            $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
+                ->orWhere('estatus_predio', Predio::ESTATUS_POR_REVISAR)
                 ->orWhereHas('documentos', function (Builder $query) {
                     $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
                 });
-        })
+        });
+    }
+
+    private function pendientesPrediosPaginator(?string $search)
+    {
+        return User::whereHas('predios', fn (Builder $query) => $this->scopePredioPendiente($query))
             ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
             ->with(['predios' => function ($query) {
-                $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
-                    ->orWhere('estatus_predio', Predio::ESTATUS_POR_REVISAR)
-                    ->orWhereHas('documentos', function (Builder $query) {
-                        $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
-                    })
-                    ->with('documentos.catalogoDocumento')
-                    ->orderBy('clave_predio');
+                $query->with('documentos.catalogoDocumento')->orderBy('clave_predio');
             }])
             ->orderBy('name')
             ->paginate(6, ['*'], 'pendientesPage')
@@ -185,12 +191,7 @@ class AprobacionesController extends Controller
     private function sinPendientesPrediosPaginator(?string $search)
     {
         return User::whereHas('predios')
-            ->whereDoesntHave('predios', function (Builder $query) {
-                $query->where('estatus_predio', Predio::ESTATUS_EN_REVISION)
-                    ->orWhereHas('documentos', function (Builder $query) {
-                        $query->where('estatus_documento', DocumentoPredio::ESTATUS_EN_REVISION);
-                    });
-            })
+            ->whereDoesntHave('predios', fn (Builder $query) => $this->scopePredioPendiente($query))
             ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
             ->with(['predios' => function ($query) {
                 $query->with('documentos.catalogoDocumento')->orderBy('clave_predio');
@@ -209,13 +210,20 @@ class AprobacionesController extends Controller
         return response()->json(['message' => 'Predio aprobado correctamente.']);
     }
 
-    public function rechazarPredio(Predio $predio): JsonResponse
+    public function rechazarPredio(Request $request, Predio $predio): JsonResponse
     {
-        $predio->update(['estatus_predio' => Predio::ESTATUS_RECHAZADO]);
+        $motivo = $request->validate([
+            'motivo' => ['required', 'string', 'max:500'],
+        ])['motivo'];
 
-        Mail::to($predio->usuario->email)->send(new PredioRevisado($predio));
+        $predio->update([
+            'estatus_predio' => Predio::ESTATUS_RECHAZADO,
+            'motivo_rechazo' => $motivo,
+        ]);
 
-        return response()->json(['message' => 'Predio rechazado correctamente.']);
+        Mail::to($predio->usuario->email)->send(new PredioRevisado($predio, $motivo));
+
+        return response()->json(['message' => 'Predio rechazado y notificado correctamente.']);
     }
 
     public function aprobarDocumentoPredio(DocumentoPredio $documentoPredio): JsonResponse
@@ -225,11 +233,62 @@ class AprobacionesController extends Controller
         return response()->json(['message' => 'Documento de predio aprobado correctamente.']);
     }
 
-    public function rechazarDocumentoPredio(DocumentoPredio $documentoPredio): JsonResponse
+    public function rechazarDocumentoPredio(Request $request, DocumentoPredio $documentoPredio): JsonResponse
     {
-        $documentoPredio->update(['estatus_documento' => DocumentoPredio::ESTATUS_RECHAZADO]);
+        $motivo = $request->validate([
+            'motivo' => ['required', 'string', 'max:500'],
+        ])['motivo'];
 
-        return response()->json(['message' => 'Documento de predio rechazado correctamente.']);
+        $documentoPredio->update([
+            'estatus_documento' => DocumentoPredio::ESTATUS_RECHAZADO,
+            'motivo_rechazo' => $motivo,
+        ]);
+
+        $this->notificarRechazoDocumento(
+            $documentoPredio->predio->usuario,
+            $documentoPredio->catalogoDocumento->nombre_documento,
+            $motivo,
+        );
+
+        return response()->json(['message' => 'Documento rechazado y notificado correctamente.']);
+    }
+
+    /**
+     * Envía al ciudadano el correo de notificación de rechazo de un documento
+     * (personal o de predio) con el motivo indicado.
+     */
+    private function notificarRechazoDocumento(User $usuario, string $nombreDocumento, string $motivo): void
+    {
+        Mail::to($usuario->email)->send(new DocumentoRechazado(
+            nombreUsuario: $usuario->name,
+            nombreDocumento: $nombreDocumento,
+            motivoRechazo: $motivo,
+            urlPortal: $this->urlPortalCiudadano(),
+        ));
+    }
+
+    /**
+     * URL del perfil del ciudadano en el portal de la Ventanilla Única.
+     */
+    private function urlPortalCiudadano(): string
+    {
+        return $this->urlCiudadano('/perfiles/mi-perfil');
+    }
+
+    /**
+     * Construye una URL absoluta hacia el portal ciudadano garantizando que
+     * incluya el esquema http(s), aunque la variable de entorno solo defina
+     * el host y el puerto (p. ej. localhost:8001).
+     */
+    private function urlCiudadano(string $ruta): string
+    {
+        $base = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/');
+
+        if (! preg_match('~^https?://~i', $base)) {
+            $base = 'http://'.$base;
+        }
+
+        return $base.$ruta;
     }
 
     /**
@@ -262,7 +321,7 @@ class AprobacionesController extends Controller
 
     private function visualizarDocumentoCiudadano(string $rutaApi, string $nombreDocumento): Response
     {
-        $url = rtrim((string) config('services.ventanilla_ciudadano.base_url'), '/').$rutaApi;
+        $url = $this->urlCiudadano($rutaApi);
 
         try {
             $respuesta = Http::withHeaders([

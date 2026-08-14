@@ -6,7 +6,6 @@ use App\Models\catDocumentoPersonal;
 use App\Models\catDocumentoPredio;
 use App\Models\Requisito;
 use App\Models\Tramite;
-use App\Models\RequisitoTramite;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,7 +27,7 @@ class TramitesController extends Controller
     public function getTramitesActivos(): JsonResponse
     {
         $tramites = Tramite::where('estatus_tramite', true)
-            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite')
+            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2')
             ->orderBy('nombre_tramite')
             ->get();
 
@@ -37,11 +36,12 @@ class TramitesController extends Controller
 
     public function registrarTramite(Request $request): RedirectResponse
     {
+        $cobraPorM2 = $request->boolean('cobra_por_m2');
+
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite',
             'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
-            'precio' => 'required|numeric|min:0|max:99999999.99',
             'fk_cri' => 'required|numeric|min:1',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
@@ -50,10 +50,6 @@ class TramitesController extends Controller
             'descripcion.required' => 'La descripción del trámite es obligatoria.',
             'fk_dependencia.required' => 'La dependencia es obligatoria.',
             'fk_dependencia.exists' => 'La dependencia seleccionada no es válida.',
-            'precio.required' => 'El precio del trámite es obligatorio.',
-            'precio.numeric' => 'El precio debe ser un número válido.',
-            'precio.min' => 'El precio no puede ser negativo.',
-            'precio.max' => 'El precio excede el monto máximo permitido.',
             'fk_cri.required' => 'El campo CRI es obligatorio.',
             'fk_cri.numeric' => 'El campo CRI debe ser un número válido.',
             'fk_cri.min' => 'El campo CRI debe ser mayor o igual a 1.',
@@ -64,8 +60,9 @@ class TramitesController extends Controller
             'descripcion_tramite' => $validated['descripcion'],
             'estatus_tramite' => true,
             'fk_dependencia' => $validated['fk_dependencia'],
-            'precio_tramite' => $validated['precio'],
+            'precio_tramite' => 0,
             'tramite_cri' => $validated['fk_cri'],
+            'cobra_por_m2' => $cobraPorM2,
         ]);
 
         return redirect()->route('indexTramites')->with('success', 'Trámite registrado correctamente.');
@@ -74,7 +71,7 @@ class TramitesController extends Controller
     public function getTramitesInactivos(): JsonResponse
     {
         $tramites = Tramite::where('estatus_tramite', false)
-            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite')
+            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2')
             ->orderBy('nombre_tramite')
             ->get();
 
@@ -88,11 +85,12 @@ class TramitesController extends Controller
 
     public function actualizarTramite(Request $request, Tramite $tramite): RedirectResponse
     {
+        $cobraPorM2 = $request->boolean('cobra_por_m2');
+
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite,'.$tramite->id_tramite.',id_tramite',
             'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
-            'precio' => 'required|numeric|min:0|max:99999999.99',
             'fk_cri' => 'required|numeric|min:1',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
@@ -101,10 +99,6 @@ class TramitesController extends Controller
             'descripcion.required' => 'La descripción del trámite es obligatoria.',
             'fk_dependencia.required' => 'La dependencia es obligatoria.',
             'fk_dependencia.exists' => 'La dependencia seleccionada no es válida.',
-            'precio.required' => 'El precio del trámite es obligatorio.',
-            'precio.numeric' => 'El precio debe ser un número válido.',
-            'precio.min' => 'El precio no puede ser negativo.',
-            'precio.max' => 'El precio excede el monto máximo permitido.',
             'fk_cri.required' => 'El campo CRI es obligatorio.',
             'fk_cri.numeric' => 'El campo CRI debe ser un número válido.',
             'fk_cri.min' => 'El campo CRI debe ser mayor o igual a 1.',
@@ -114,8 +108,9 @@ class TramitesController extends Controller
             'nombre_tramite' => $validated['nombre'],
             'descripcion_tramite' => $validated['descripcion'],
             'fk_dependencia' => $validated['fk_dependencia'],
-            'precio_tramite' => $validated['precio'],
+            'precio_tramite' => 0,
             'tramite_cri' => $validated['fk_cri'],
+            'cobra_por_m2' => $cobraPorM2,
         ]);
 
         return redirect()->route('indexTramites')->with('success', 'Trámite actualizado correctamente.');

@@ -3,11 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class OrdesPagoControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_it_proxies_the_cuentas_cri_request_to_the_internal_api(): void
     {
         Http::fake([

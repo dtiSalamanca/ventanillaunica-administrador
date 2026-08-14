@@ -32,6 +32,8 @@
     const $btnChangeFile = document.getElementById("btnChangeFile");
     const $btnRemoveFile = document.getElementById("btnRemoveFile");
     const $fileError = document.getElementById("fileError");
+    const $precioM2 = document.getElementById("precioM2");
+    const $precioM2Error = document.getElementById("precioM2Error");
 
     let selectedFile = null;
 
@@ -73,6 +75,8 @@
         selectedFile = null;
         $fileInput.value = "";
         resetUploadZone();
+        if ($precioM2) $precioM2.value = "";
+        if ($precioM2Error) $precioM2Error.style.display = "none";
         if ($btnAprobar) $btnAprobar.disabled = false;
         if ($btnRechazar) $btnRechazar.disabled = false;
     }
@@ -184,6 +188,18 @@
         $btnConfirmarAprobar.addEventListener("click", function () {
             const nota = $resolucionNota ? $resolucionNota.value.trim() : "";
 
+            // Validar precio del trámite (siempre lo captura el enlace)
+            const precio = $precioM2.value.trim();
+            const precioNum = Number(precio);
+            if (!precio || !Number.isInteger(precioNum) || precioNum < 1) {
+                $precioM2Error.textContent =
+                    "Captura el precio total del trámite en pesos enteros (mayor a 0).";
+                $precioM2Error.style.display = "block";
+                $precioM2.focus();
+                return;
+            }
+            $precioM2Error.style.display = "none";
+
             Swal.fire({
                 title: "Aprobar y pagar?",
                 text: selectedFile
@@ -202,6 +218,7 @@
 
                 const formData = new FormData();
                 formData.append("resolucion_solicitud", nota || "Atendido");
+                formData.append("precio_tramite", $precioM2.value.trim());
                 if (selectedFile) {
                     formData.append("documento_resolucion", selectedFile);
                 }

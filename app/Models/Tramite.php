@@ -19,6 +19,11 @@ class Tramite extends Model
         'fk_dependencia',
         'precio_tramite',
         'tramite_cri',
+        'cobra_por_m2',
+    ];
+
+    protected $casts = [
+        'cobra_por_m2' => 'boolean',
     ];
 
     public function dependencia(): BelongsTo

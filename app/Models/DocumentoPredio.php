@@ -22,6 +22,7 @@ class DocumentoPredio extends Model
         'fk_predio',
         'fk_cat_documento_predio',
         'estatus_documento',
+        'motivo_rechazo',
     ];
 
     public function predio(): BelongsTo
