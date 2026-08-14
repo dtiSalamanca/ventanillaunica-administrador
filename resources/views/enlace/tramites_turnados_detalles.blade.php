@@ -123,7 +123,7 @@
         .upload-zone-browse {
             color: #1e5c50;
             font-weight: 700;
-            text-decoration: underline;
+            text-decoration: none;
             cursor: pointer;
         }
 
@@ -181,6 +181,29 @@
             justify-content: flex-end;
             flex-wrap: wrap;
         }
+
+        /* Precio por m² */
+        .m2-alert {
+            border-left-width: 4px;
+        }
+
+        .precio-m2-input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: "Montserrat", sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            background: var(--bg-surface);
+        }
+
+        .precio-m2-input:focus {
+            outline: none;
+            border-color: #1e5c50;
+            box-shadow: 0 0 0 3px rgba(30, 92, 80, 0.12);
+        }
     </style>
 @endsection
 
@@ -216,7 +239,13 @@
                     <div class="info-item">
                         <span class="info-label"><i class="fas fa-calendar-alt me-1"></i> Fecha de solicitud</span>
                         <span
-                            class="info-value">{{ $solicitud->fecha_solicitud ? \Carbon\Carbon::parse($solicitud->fecha_solicitud)->format('d-m-Y H:i:s') : 'Sin fecha' }}</span>
+                            class="info-value">{{ $solicitud->fecha_solicitud
+                                ? str_replace(
+                                    ['AM', 'PM'],
+                                    ['a. m.', 'p. m.'],
+                                    \Carbon\Carbon::parse($solicitud->fecha_solicitud)->format('d-m-Y h:i A'),
+                                )
+                                : 'Sin fecha' }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label"><i class="fas fa-briefcase me-1"></i> Trámite solicitado</span>
@@ -349,6 +378,13 @@
                     <i class="fas fa-gavel"></i> Resolver solicitud
                 </div>
                 <div class="detalles-card-body">
+                    @if ($solicitud->tramite?->cobra_por_m2)
+                        <div class="alert alert-info m2-alert">
+                            <i class="fas fa-ruler-combined me-2"></i>
+                            <strong>Este trámite se cobra por metro cuadrado (m²).</strong>
+                            Deberás capturar el precio al aprobar la solicitud.
+                        </div>
+                    @endif
                     <div class="acciones-container">
                         <button type="button" class="btn-accion btn-aprobar" id="btnAprobar">
                             <i class="fas fa-check-circle"></i> Aprobar y pagar
@@ -367,6 +403,20 @@
                             <i class="fas fa-file-circle-check me-1"></i> Aprobar trámite — Documento de resolución
                         </div>
                         <div class="aprobacion-body">
+                            {{-- Precio del trámite (siempre lo captura el enlace) --}}
+                            <div class="mb-3">
+                                <label for="precioM2" class="form-label fw-bold"
+                                    style="font-size:0.82rem;color:#1e5c50;">
+                                    <i class="fas fa-dollar-sign me-1"></i> Precio total del trámite — sin centavos
+                                </label>
+                                <input type="number" id="precioM2" class="precio-m2-input" min="1"
+                                    step="1" placeholder="Ej. 15000">
+                                <div class="text-muted mt-1" style="font-size:0.78rem;">
+                                    Este monto se guardará como el total en la orden de pago.
+                                </div>
+                                <div id="precioM2Error" class="text-danger mt-1" style="font-size:0.8rem;display:none;">
+                                </div>
+                            </div>
                             {{-- Nota opcional --}}
                             <div class="mb-3">
                                 <label for="resolucionNota" class="form-label fw-bold"
@@ -387,7 +437,7 @@
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
                                 </div>
                                 <div class="upload-zone-text" id="uploadText">
-                                    <span class="upload-zone-browse">Browse File to upload!</span>
+                                    <span class="upload-zone-browse">Seleccionar archivo para subir</span>
                                 </div>
                                 <div class="upload-file-info" id="uploadFileInfo" style="display:none;">
                                     <span class="upload-file-name" id="fileNameDisplay">

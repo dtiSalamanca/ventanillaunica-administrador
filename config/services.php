@@ -33,6 +33,12 @@ return [
         'api_token' => env('VENTANILLA_CIUDADANO_API_TOKEN'),
     ],
 
+    'recibo_predial' => [
+        // Servicio de consulta de cuentas prediales; se le concatena la cuenta:
+        // {base_url}/{clave_predio} -> {"respuesta": true|false}
+        'base_url' => env('RECIBO_PREDIAL_URL', 'https://recibopredial.salamanca.gob.mx/api/consulta/predio'),
+    ],
+
     'active_directory' => [
         'url' => env('AD_AUTH_URL', 'http://172.17.5.112:8080/api-ad-auth/index.php/login'),
         'users_url' => env('AD_USERS_URL', 'http://172.17.5.112:8080/api-ad-auth/index.php/usersApp'),

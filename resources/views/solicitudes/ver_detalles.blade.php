@@ -37,7 +37,7 @@
                     <div class="info-item">
                         <span class="info-label"><i class="fas fa-calendar-alt me-1"></i> Fecha de solicitud</span>
                         <span
-                            class="info-value">{{ $solicitud->fecha_solicitud ? \Carbon\Carbon::parse($solicitud->fecha_solicitud)->format('d-m-Y H:i:s') : 'Sin fecha' }}</span>
+                            class="info-value">{{ $solicitud->fecha_solicitud ? \Carbon\Carbon::parse($solicitud->fecha_solicitud)->format('d-m-Y h:i A') : 'Sin fecha' }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label"><i class="fas fa-briefcase me-1"></i> Trámite solicitado</span>

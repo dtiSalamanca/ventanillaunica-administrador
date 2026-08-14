@@ -15,7 +15,6 @@ class ResolucionSolicitud extends Model
         'fk_turnado',
         'resolucion_solicitud',
         'documento_resolucion',
-        'numero_folio',
     ];
 
     public function turnado(): BelongsTo

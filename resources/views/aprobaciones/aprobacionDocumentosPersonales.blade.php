@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 
 @section('content')
-
     <link rel="stylesheet" href="{{ asset('css/aprobaciones/aprobacionDocumentosPersonales.css') }}">
     <!-- Fuentes y librerías -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +16,8 @@
 
                 <div class="header-main">
                     <h1 class="page-title">Aprobación de documentos personales</h1>
-                    <p class="page-subtitle">Revisa, aprueba o rechaza los documentos personales cargados por los usuarios</p>
+                    <p class="page-subtitle">Revisa, aprueba o rechaza los documentos personales cargados por los usuarios
+                    </p>
                 </div>
             </div>
         </div>
@@ -51,24 +51,37 @@
         <div class="card">
             <div class="card-body">
                 <!-- Tabs -->
+                @php
+                    $tabActivo = request('tab', 'pendientes') === 'sin-pendientes' ? 'sin-pendientes' : 'pendientes';
+                @endphp
+
+                <div class="auto-refresh-info" id="auto-refresh-info">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>La página se actualiza automáticamente cada 30 segundos</span>
+                </div>
+
                 <ul class="nav nav-tabs mb-3" id="tabs-aprobaciones" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="pendientes-tab" data-bs-toggle="tab" data-bs-target="#pendientes"
-                            type="button" role="tab" aria-controls="pendientes" aria-selected="true">
+                        <button class="nav-link {{ $tabActivo === 'pendientes' ? 'active' : '' }}" id="pendientes-tab"
+                            data-bs-toggle="tab" data-bs-target="#pendientes" type="button" role="tab"
+                            aria-controls="pendientes" aria-selected="{{ $tabActivo === 'pendientes' ? 'true' : 'false' }}">
                             <i class="fa-solid fa-clock me-1"></i> Pendientes de revisión
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="sin-pendientes-tab" data-bs-toggle="tab" data-bs-target="#sin-pendientes"
-                            type="button" role="tab" aria-controls="sin-pendientes" aria-selected="false">
+                        <button class="nav-link {{ $tabActivo === 'sin-pendientes' ? 'active' : '' }}"
+                            id="sin-pendientes-tab" data-bs-toggle="tab" data-bs-target="#sin-pendientes" type="button"
+                            role="tab" aria-controls="sin-pendientes"
+                            aria-selected="{{ $tabActivo === 'sin-pendientes' ? 'true' : 'false' }}">
                             <i class="fa-solid fa-check-double me-1"></i> Sin pendientes
                         </button>
                     </li>
                 </ul>
 
                 <div class="tab-content" id="tabs-aprobaciones-content">
-                    <div class="tab-pane fade show active" id="pendientes" role="tabpanel" aria-labelledby="pendientes-tab">
+                    <div class="tab-pane fade {{ $tabActivo === 'pendientes' ? 'show active' : '' }}" id="pendientes"
+                        role="tabpanel" aria-labelledby="pendientes-tab">
                         <div class="aprobaciones-search">
                             <div class="search-bar">
                                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -82,11 +95,17 @@
                         </div>
 
                         <div id="pendientes-resultado">
-                            @include('aprobaciones.partials.gridUsuarios', ['usuarios' => $pendientes, 'pendiente' => true, 'prefijo' => 'pendiente', 'query' => $pendientesQuery])
+                            @include('aprobaciones.partials.gridUsuarios', [
+                                'usuarios' => $pendientes,
+                                'pendiente' => true,
+                                'prefijo' => 'pendiente',
+                                'query' => $pendientesQuery,
+                            ])
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="sin-pendientes" role="tabpanel" aria-labelledby="sin-pendientes-tab">
+                    <div class="tab-pane fade {{ $tabActivo === 'sin-pendientes' ? 'show active' : '' }}"
+                        id="sin-pendientes" role="tabpanel" aria-labelledby="sin-pendientes-tab">
                         <div class="aprobaciones-search">
                             <div class="search-bar">
                                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -100,7 +119,12 @@
                         </div>
 
                         <div id="sin-pendientes-resultado">
-                            @include('aprobaciones.partials.gridUsuarios', ['usuarios' => $sinPendientes, 'pendiente' => false, 'prefijo' => 'revisado', 'query' => $sinPendientesQuery])
+                            @include('aprobaciones.partials.gridUsuarios', [
+                                'usuarios' => $sinPendientes,
+                                'pendiente' => false,
+                                'prefijo' => 'revisado',
+                                'query' => $sinPendientesQuery,
+                            ])
                         </div>
                     </div>
                 </div>

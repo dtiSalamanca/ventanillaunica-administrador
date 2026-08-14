@@ -1,7 +1,13 @@
 @php
     $estatusInfo = [
-        \App\Models\tblDocumentoPersonal::ESTATUS_APROBADO => ['label' => 'Aprobado', 'class' => 'badge-estatus-aprobado'],
-        \App\Models\tblDocumentoPersonal::ESTATUS_RECHAZADO => ['label' => 'Rechazado', 'class' => 'badge-estatus-rechazado'],
+        \App\Models\tblDocumentoPersonal::ESTATUS_APROBADO => [
+            'label' => 'Aprobado',
+            'class' => 'badge-estatus-aprobado',
+        ],
+        \App\Models\tblDocumentoPersonal::ESTATUS_RECHAZADO => [
+            'label' => 'Rechazado',
+            'class' => 'badge-estatus-rechazado',
+        ],
     ];
 @endphp
 
@@ -37,8 +43,15 @@
                     @foreach ($usuario->documentosPersonales as $documento)
                         <div class="documento-item">
                             <div class="documento-info">
-                                <div class="documento-nombre">{{ $documento->catalogoDocumento->nombre_documento }}</div>
+                                <div class="documento-nombre">{{ $documento->catalogoDocumento->nombre_documento }}
+                                </div>
                                 <div class="documento-fecha">{{ $documento->fecha_registro->format('d/m/Y') }}</div>
+                                @if ($documento->estatus_documento === \App\Models\tblDocumentoPersonal::ESTATUS_RECHAZADO && $documento->motivo_rechazo)
+                                    <div class="documento-motivo-rechazo" title="{{ $documento->motivo_rechazo }}">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        {{ $documento->motivo_rechazo }}
+                                    </div>
+                                @endif
                             </div>
                             @if ($pendiente)
                                 <div class="documento-acciones">
@@ -52,7 +65,9 @@
                                         <i class="fas fa-check"></i>
                                     </button>
                                     <button type="button" class="btn-rechazar btn-rechazar-documento"
-                                        data-id="{{ $documento->id_documento }}" title="Rechazar">
+                                        data-id="{{ $documento->id_documento }}"
+                                        data-documento="{{ $documento->catalogoDocumento->nombre_documento }}"
+                                        data-nombre-usuario="{{ $usuario->name }}" title="Rechazar">
                                         <i class="fas fa-xmark"></i>
                                     </button>
                                 </div>
@@ -63,7 +78,8 @@
                                         title="Visualizar documento">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <span class="badge-estatus {{ $estatusInfo[$documento->estatus_documento]['class'] }}">
+                                    <span
+                                        class="badge-estatus {{ $estatusInfo[$documento->estatus_documento]['class'] }}">
                                         {{ $estatusInfo[$documento->estatus_documento]['label'] }}
                                     </span>
                                 </div>
