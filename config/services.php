@@ -33,11 +33,6 @@ return [
         'api_token' => env('VENTANILLA_CIUDADANO_API_TOKEN'),
     ],
 
-    'sistema_pagos' => [
-        // Token compartido con el sistema externo de pagos; se envía en el header X-API-Key.
-        'api_token' => env('SISTEMA_PAGOS_API_TOKEN'),
-    ],
-
     'recibo_predial' => [
         // Servicio de consulta de cuentas prediales; se le concatena la cuenta:
         // {base_url}/{clave_predio} -> {"respuesta": true|false}

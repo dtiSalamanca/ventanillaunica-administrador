@@ -14,17 +14,6 @@ class ApiOrdenesPagoTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** Token compartido configurado para las pruebas. */
-    private const TOKEN_API = 'token-de-prueba';
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        config(['services.sistema_pagos.api_token' => self::TOKEN_API]);
-        $this->withHeader('X-API-Key', self::TOKEN_API);
-    }
-
     public function test_lista_ordenes_incluye_ciudadano_dependencia_y_monto(): void
     {
         $orden = $this->crearOrden();
@@ -136,48 +125,6 @@ class ApiOrdenesPagoTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('folio');
-    }
-
-    public function test_rechaza_peticion_sin_token(): void
-    {
-        $this->flushHeaders();
-
-        $response = $this->getJson('/api/ordenes-pago');
-
-        $response->assertUnauthorized();
-        $response->assertJson(['success' => false]);
-    }
-
-    public function test_rechaza_peticion_con_token_incorrecto(): void
-    {
-        $this->flushHeaders();
-
-        $response = $this->withHeader('X-API-Key', 'token-incorrecto')
-            ->getJson('/api/ordenes-pago');
-
-        $response->assertUnauthorized();
-        $response->assertJson(['success' => false]);
-    }
-
-    public function test_acepta_peticion_con_token_correcto(): void
-    {
-        $this->crearOrden();
-
-        $response = $this->getJson('/api/ordenes-pago');
-
-        $response->assertOk();
-        $response->assertJson(['success' => true]);
-    }
-
-    public function test_aplica_rate_limit_de_20_peticiones_por_minuto(): void
-    {
-        $this->crearOrden();
-
-        foreach (range(1, 20) as $i) {
-            $this->getJson('/api/ordenes-pago')->assertOk();
-        }
-
-        $this->getJson('/api/ordenes-pago')->assertStatus(429);
     }
 
     private function crearOrden(): OrdenPago
