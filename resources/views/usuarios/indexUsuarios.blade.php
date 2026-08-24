@@ -86,12 +86,24 @@
 
                 <div class="tab-content" id="tabs-usuarios-content">
                     <div class="tab-pane fade show active" id="activos" role="tabpanel" aria-labelledby="activos-tab">
+                        <div class="action-bar">
+                            <div class="action-bar-left">
+                                <span id="selection-count">0 usuario(s) seleccionado(s)</span>
+                            </div>
+                            <div class="action-bar-right">
+                                <button type="button" class="action-bar-btn btn-asignar-dependencia"
+                                    id="btn-asignar-dependencia" disabled>
+                                    <i class="fas fa-building me-1"></i> Asignar dependencia
+                                </button>
+                            </div>
+                        </div>
                         <div class="table-container">
                             <div class="table-responsive">
                                 <table id="tabla-usuarios-activos" class="table table-striped align-middle"
                                     style="width:100%">
                                     <thead>
                                         <tr>
+                                            <th class="w-checkbox">SEL.</th>
                                             <th class="w-usuario"><i class="fas fa-user me-2"></i>Usuario</th>
                                             <th class="w-nombre"><i class="fas fa-id-card me-2"></i>Nombre completo</th>
                                             <th class="w-rol"><i class="fas fa-user-shield me-2"></i>Rol</th>
@@ -112,6 +124,7 @@
                                     style="width:100%">
                                     <thead>
                                         <tr>
+                                            <th class="w-checkbox">SEL.</th>
                                             <th class="w-usuario"><i class="fas fa-user me-2"></i>Usuario</th>
                                             <th class="w-nombre"><i class="fas fa-id-card me-2"></i>Nombre completo</th>
                                             <th class="w-rol"><i class="fas fa-user-shield me-2"></i>Rol</th>
@@ -128,6 +141,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Asignar Dependencia -->
+    <div class="modal fade" id="modalAsignarDependencia" tabindex="-1" aria-labelledby="modalAsignarDependenciaLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAsignarDependenciaLabel">
+                        <i class="fas fa-building me-2"></i>Asignar dependencia
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form id="form-asignar-dependencia">
+                    @csrf
+                    <div class="modal-body">
+                        <p class="text-muted mb-3" id="modal-selection-info">
+                            Se asignará dependencia a <strong id="modal-user-count">0</strong> usuario(s).
+                        </p>
+                        <div class="mb-3">
+                            <label for="select-dependencia" class="form-label">Dependencia</label>
+                            <select class="form-select" id="select-dependencia" name="fk_dependencia" required>
+                                <option value="">Selecciona una dependencia</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="btn-guardar-dependencia">
+                            <i class="fas fa-save me-1"></i>Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -139,6 +187,8 @@
     <script>
         window.usuariosRoutes = {
             index: "{{ route('getUsuariosAd') }}",
+            asignarDependencia: "{{ route('asignarDependencia') }}",
+            dependenciasActivas: "{{ route('getDependenciasActivas') }}",
         };
     </script>
     <script src="{{ asset('js/usuarios/indexUsuarios.js') }}"></script>

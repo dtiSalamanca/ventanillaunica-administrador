@@ -157,6 +157,16 @@
                         </a>
 
                         <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-check-circle me-2"></i>Solicitudes de trámites
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('solicitudes.index') ? 'active-current' : '' }}"
+                            href="{{ route('solicitudes.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+                            Nuevas solicitudes
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">
                             <i class="fas fa-check-circle me-2"></i>Aprobaciones
                         </div>
 
@@ -188,12 +198,12 @@
                             Trámites
                         </a>
 
-
+                        {{-- 
                         <a class="nav-link active {{ request()->routeIs('indexRequisitos') ? 'active-current' : '' }}"
                             href="{{ route('indexRequisitos') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-clipboard-list"></i></div>
                             Requisitos
-                        </a>
+                        </a> --}}
 
                         <a class="nav-link active {{ request()->routeIs('indexDocumentosPersonales') ? 'active-current' : '' }}"
                             href="{{ route('indexDocumentosPersonales') }}">
@@ -214,7 +224,13 @@
                         <a class="nav-link active {{ request()->routeIs('indexUsuarios') ? 'active-current' : '' }}"
                             href="{{ route('indexUsuarios') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-                            Usuarios
+                            Personal administrativo
+                        </a>
+
+                        <a class="nav-link active {{ request()->routeIs('indexCiudadanos') ? 'active-current' : '' }}"
+                            href="{{ route('indexCiudadanos') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-person"></i></div>
+                            Ciudadanos
                         </a>
 
 

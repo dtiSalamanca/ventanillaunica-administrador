@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ResolucionSolicitud extends Model
 {
@@ -15,4 +16,9 @@ class ResolucionSolicitud extends Model
         'resolucion_solicitud',
         'documento_resolucion',
     ];
+
+    public function turnado(): BelongsTo
+    {
+        return $this->belongsTo(TurnadoSolicitud::class, 'fk_turnado', 'id_turnado');
+    }
 }

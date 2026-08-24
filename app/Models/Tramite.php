@@ -18,6 +18,12 @@ class Tramite extends Model
         'estatus_tramite',
         'fk_dependencia',
         'precio_tramite',
+        'tramite_cri',
+        'cobra_por_m2',
+    ];
+
+    protected $casts = [
+        'cobra_por_m2' => 'boolean',
     ];
 
     public function dependencia(): BelongsTo
@@ -28,5 +34,35 @@ class Tramite extends Model
     public function requisitos(): BelongsToMany
     {
         return $this->belongsToMany(Requisito::class, 'tbl_requisitos_tramites', 'fk_tramite', 'fk_requisito', 'id_tramite', 'id_requisito');
+    }
+
+    /**
+     * Trámites que este trámite requiere como prerequisito.
+     */
+    public function tramitesRequeridos(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Tramite::class,
+            'tbl_tramites_prerequisitos',
+            'fk_tramite',
+            'fk_tramite_requerido',
+            'id_tramite',
+            'id_tramite'
+        )->withTimestamps();
+    }
+
+    /**
+     * Trámites que requieren este trámite como prerequisito.
+     */
+    public function tramitesQueLoRequieren(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Tramite::class,
+            'tbl_tramites_prerequisitos',
+            'fk_tramite_requerido',
+            'fk_tramite',
+            'id_tramite',
+            'id_tramite'
+        );
     }
 }

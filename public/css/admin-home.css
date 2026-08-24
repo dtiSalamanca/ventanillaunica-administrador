@@ -1,0 +1,568 @@
+/* ==========================================================================
+   Admin Home / Dashboard - Ventanilla Única Administrador
+   Diseño limpio forzado (ignora el tema oscuro del layout)
+   ========================================================================== */
+
+.admin-home-container {
+    max-width: 1200px;
+    margin: 1.5rem auto;
+    padding: 0 1.5rem;
+}
+
+.admin-home-container,
+.admin-home-container *,
+.admin-home-container *::before,
+.admin-home-container *::after {
+    box-sizing: border-box;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════════════════ */
+.admin-hero-section {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 1.75rem;
+}
+
+.admin-hero-header {
+    background: linear-gradient(135deg, #1e5c50 0%, #15443a 50%, #0f332b 100%);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.admin-hero-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #a62346, #1e5c50, #a62346);
+    background-size: 200% 100%;
+    animation: ah-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes ah-shimmer {
+    0%,
+    100% {
+        background-position: 0% 0;
+    }
+    50% {
+        background-position: 100% 0;
+    }
+}
+
+.admin-hero-bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.admin-hero-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+    position: relative;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+}
+
+.admin-hero-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    font-weight: 400;
+    max-width: 650px;
+    margin: 0 auto;
+    position: relative;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.admin-hero-body {
+    padding: 1.5rem 2.5rem 1.75rem;
+    text-align: center;
+    background: #ffffff;
+}
+
+.admin-hero-welcome {
+    font-size: 1.1rem;
+    color: #1f2937;
+    margin: 0 0 0.35rem;
+    font-weight: 500;
+}
+
+.admin-hero-welcome strong {
+    color: #1e5c50;
+    font-weight: 700;
+}
+
+.admin-hero-description {
+    font-size: 0.88rem;
+    color: #6b7280;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STATS CARDS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.admin-stat-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 1.35rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    opacity: 0;
+    transition: all 0.25s ease;
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: transparent;
+}
+
+.admin-stat-card:hover::before {
+    opacity: 1;
+}
+
+.admin-stat-card:nth-child(1)::before {
+    background: linear-gradient(90deg, #1e5c50, #2d8a78);
+}
+.admin-stat-card:nth-child(2)::before {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+.admin-stat-card:nth-child(3)::before {
+    background: linear-gradient(90deg, #a62346, #d94a6e);
+}
+.admin-stat-card:nth-child(4)::before {
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+
+.admin-stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.admin-stat-card:hover .admin-stat-icon {
+    transform: scale(1.08);
+}
+
+.admin-stat-icon--secondary {
+    background: linear-gradient(135deg, #edf7f4, #d1ede6);
+    color: #1e5c50;
+}
+
+.admin-stat-icon--warning {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+}
+
+.admin-stat-icon--primary {
+    background: linear-gradient(135deg, #fdf2f5, #f8d7e0);
+    color: #a62346;
+}
+
+.admin-stat-icon--info {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+}
+
+.admin-stat-icon svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+.admin-stat-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-stat-number {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #1f2937;
+    line-height: 1.1;
+    margin: 0 0 0.1rem;
+    letter-spacing: -0.02em;
+}
+
+.admin-stat-label {
+    font-size: 0.78rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin: 0 0 0.15rem;
+}
+
+.admin-stat-link {
+    font-size: 0.72rem;
+    color: #1e5c50;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    transition: all 0.25s ease;
+}
+
+.admin-stat-link:hover {
+    color: #15443a;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECTION TITLE
+   ═══════════════════════════════════════════════════════════════════════════ */
+.admin-section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 1rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 2px solid #edf7f4;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.admin-section-title svg {
+    flex-shrink: 0;
+    width: 1.15rem;
+    height: 1.15rem;
+    color: #1e5c50;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   QUICK ACCESS CARDS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.admin-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.admin-feature-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 1.35rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-feature-card::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: #1e5c50;
+    border-radius: 3px 3px 0 0;
+    transition: all 0.25s ease;
+}
+
+.admin-feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(30, 92, 80, 0.12);
+    border-color: transparent;
+    text-decoration: none;
+}
+
+.admin-feature-card:hover::after {
+    width: 80%;
+}
+
+.admin-feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    margin-bottom: 0.85rem;
+    background: #edf7f4;
+    color: #1e5c50;
+    transition: all 0.25s ease;
+}
+
+.admin-feature-card:hover .admin-feature-icon {
+    background: #1e5c50;
+    color: #ffffff;
+}
+
+.admin-feature-icon svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.admin-feature-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+    color: #1f2937;
+    transition: all 0.25s ease;
+}
+
+.admin-feature-card:hover .admin-feature-title {
+    color: #1e5c50;
+}
+
+.admin-feature-text {
+    color: #6b7280;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PENDING / INFO SECTIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.admin-pending-section {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 1.35rem 1.75rem 1.5rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+}
+
+.admin-pending-header {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.85rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 2px solid #edf7f4;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.admin-pending-header svg {
+    flex-shrink: 0;
+    width: 1.05rem;
+    height: 1.05rem;
+    color: #1e5c50;
+    display: block;
+}
+
+.admin-pending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-pending-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #1e5c50;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.admin-pending-item:hover {
+    background: #edf7f4;
+    border-left-color: #15443a;
+    text-decoration: none;
+    padding-left: 1rem;
+}
+
+.admin-pending-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.admin-pending-dot--warning {
+    background: #f59e0b;
+}
+.admin-pending-dot--danger {
+    background: #dc2626;
+}
+.admin-pending-dot--info {
+    background: #3b82f6;
+}
+
+.admin-pending-text {
+    flex: 1;
+    font-size: 0.85rem;
+    color: #1f2937;
+    min-width: 0;
+}
+
+.admin-pending-text strong {
+    color: #1e5c50;
+}
+
+.admin-pending-meta {
+    font-size: 0.73rem;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+.admin-pending-empty {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    color: #6b7280;
+    font-size: 0.88rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CTA SECTION
+   ═══════════════════════════════════════════════════════════════════════════ */
+.admin-cta-section {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2.25rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.admin-cta-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1e5c50, #a62346, #1e5c50);
+    background-size: 200% 100%;
+    animation: ah-shimmer 3s ease-in-out infinite;
+}
+
+.admin-cta-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.5rem;
+}
+
+.admin-cta-section p {
+    color: #6b7280;
+    margin: 0;
+    font-size: 0.88rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 992px) {
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-home-container {
+        padding: 0 0.85rem;
+        margin: 1rem auto;
+    }
+
+    .admin-hero-header {
+        padding: 1.75rem 1.25rem 1.5rem;
+    }
+
+    .admin-hero-title {
+        font-size: 1.35rem;
+    }
+
+    .admin-hero-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .admin-hero-body {
+        padding: 1.1rem 1.25rem;
+    }
+
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .admin-stat-card {
+        padding: 1rem;
+    }
+
+    .admin-stat-number {
+        font-size: 1.3rem;
+    }
+
+    .admin-features-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .admin-pending-section {
+        padding: 1rem 1.15rem;
+    }
+
+    .admin-cta-section {
+        padding: 1.5rem 1.15rem;
+    }
+
+    .admin-cta-title {
+        font-size: 1.1rem;
+    }
+}

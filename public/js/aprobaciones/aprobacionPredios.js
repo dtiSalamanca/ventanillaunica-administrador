@@ -132,7 +132,9 @@ $(document).ready(function () {
 
             event.preventDefault();
 
-            var tab = anchor.closest("#pendientes-resultado") ? "pendientes" : "sin-pendientes";
+            var tab = anchor.closest("#pendientes-resultado")
+                ? "pendientes"
+                : "sin-pendientes";
             var config = tabs[tab];
             var url = new URL(anchor.href, window.location.origin);
             var page = url.searchParams.get(config.pageParam) || 1;
@@ -199,13 +201,21 @@ $(document).ready(function () {
                 return;
             }
 
-            enviarRevision(options.url, options.successTitle, options.errorText, options.loadingText);
+            enviarRevision(
+                options.url,
+                options.successTitle,
+                options.errorText,
+                options.loadingText,
+            );
         });
     }
 
     $(document).on("click", ".btn-aprobar-predio", function () {
         var id = $(this).data("id");
-        var url = window.aprobacionPrediosRoutes.aprobarPredio.replace("__ID__", id);
+        var url = window.aprobacionPrediosRoutes.aprobarPredio.replace(
+            "__ID__",
+            id,
+        );
 
         confirmarRevision({
             url: url,
@@ -219,25 +229,98 @@ $(document).ready(function () {
         });
     });
 
+    function rechazarConMotivo(opciones) {
+        Swal.fire({
+            title: "Motivo del rechazo",
+            html: opciones.html,
+            icon: "warning",
+            input: "textarea",
+            inputLabel: "Motivo del rechazo:",
+            inputPlaceholder: "Escribe aquí el motivo...",
+            inputAttributes: {
+                "aria-label": "Motivo del rechazo",
+                maxlength: "500",
+            },
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Confirmar rechazo",
+            cancelButtonText: "Cancelar",
+            inputValidator: function (value) {
+                if (!value || !value.trim()) {
+                    return "Debes escribir el motivo del rechazo.";
+                }
+            },
+            preConfirm: function (motivo) {
+                return fetch(opciones.url, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content",
+                        ),
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify({ motivo: motivo }),
+                })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error("error");
+                        }
+                        return response.json();
+                    })
+                    .catch(function () {
+                        Swal.showValidationMessage(
+                            "No se pudo procesar la solicitud. Inténtalo nuevamente.",
+                        );
+                    });
+            },
+        }).then(function (result) {
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            Swal.fire({
+                icon: "success",
+                title: "Rechazado",
+                text: result.value.message,
+                timer: 1500,
+                showConfirmButton: false,
+            }).then(function () {
+                cargarGrid("pendientes", tabs.pendientes.page);
+                cargarGrid("sin-pendientes", tabs["sin-pendientes"].page);
+            });
+        });
+    }
+
     $(document).on("click", ".btn-rechazar-predio", function () {
         var id = $(this).data("id");
-        var url = window.aprobacionPrediosRoutes.rechazarPredio.replace("__ID__", id);
+        var clavePredio = $(this).data("clave") || "el predio";
+        var nombreUsuario = $(this).data("nombre-usuario") || "el ciudadano";
+        var url = window.aprobacionPrediosRoutes.rechazarPredio.replace(
+            "__ID__",
+            id,
+        );
 
-        confirmarRevision({
+        rechazarConMotivo({
             url: url,
-            text: "El predio seleccionado será rechazado.",
-            icon: "warning",
-            confirmButtonColor: "#d33",
-            confirmButtonText: "Sí, rechazar",
-            successTitle: "Rechazado",
-            errorText: "Ocurrió un error al procesar el predio.",
-            loadingText: "Rechazando predio y enviando notificación por correo…",
+            html:
+                "El predio <strong>" +
+                clavePredio +
+                "</strong> será rechazado para <strong>" +
+                nombreUsuario +
+                "</strong>.<br><br>" +
+                "Indica por qué se rechaza el predio y qué debe corregir el ciudadano.<br><br>" +
+                "Esta información se enviará al ciudadano por correo electrónico y también podrá consultarla nuevamente dentro del sistema.",
         });
     });
 
     $(document).on("click", ".btn-aprobar-documento-predio", function () {
         var id = $(this).data("id");
-        var url = window.aprobacionPrediosRoutes.aprobarDocumento.replace("__ID__", id);
+        var url = window.aprobacionPrediosRoutes.aprobarDocumento.replace(
+            "__ID__",
+            id,
+        );
 
         confirmarRevision({
             url: url,
@@ -253,17 +336,83 @@ $(document).ready(function () {
 
     $(document).on("click", ".btn-rechazar-documento-predio", function () {
         var id = $(this).data("id");
-        var url = window.aprobacionPrediosRoutes.rechazarDocumento.replace("__ID__", id);
+        var nombreDocumento = $(this).data("documento") || "documento";
+        var nombreUsuario = $(this).data("nombre-usuario") || "el ciudadano";
+        var url = window.aprobacionPrediosRoutes.rechazarDocumento.replace(
+            "__ID__",
+            id,
+        );
 
-        confirmarRevision({
+        rechazarConMotivo({
             url: url,
-            text: "El documento de predio seleccionado será rechazado.",
-            icon: "warning",
-            confirmButtonColor: "#d33",
-            confirmButtonText: "Sí, rechazar",
-            successTitle: "Rechazado",
-            errorText: "Ocurrió un error al procesar el documento de predio.",
-            loadingText: "Procesando documento…",
+            html:
+                "El documento <strong>" +
+                nombreDocumento +
+                "</strong> será rechazado para <strong>" +
+                nombreUsuario +
+                "</strong>.<br><br>" +
+                "Indica por qué se rechaza el documento y qué debe corregir el ciudadano.<br><br>" +
+                "Esta información se enviará al ciudadano por correo electrónico y también podrá consultarla nuevamente dentro del sistema.",
         });
     });
+
+    // --- Recarga automática de la página cada 30 segundos ---
+    // Si un ciudadano sube un predio o documento nuevo, la página se recarga
+    // sola para mostrarlo, sin necesidad de refrescar el navegador.
+    var INTERVALO_AUTO_REFRESH = 30000;
+
+    function puedeAutoRefrescarPagina() {
+        // No recargar si la pestaña del navegador no está visible.
+        if (typeof document.hidden !== "undefined" && document.hidden) {
+            return false;
+        }
+
+        // No recargar si hay un modal de SweetAlert abierto (p. ej. al aprobar
+        // o rechazar), para no perder lo que el usuario está haciendo.
+        if (typeof Swal !== "undefined" && Swal.isVisible()) {
+            return false;
+        }
+
+        // No recargar si el usuario está escribiendo en algún buscador.
+        if (
+            $("#pendientes-search-input").is(":focus") ||
+            $("#sin-pendientes-search-input").is(":focus")
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function refrescarPaginaAutomaticamente() {
+        if (!puedeAutoRefrescarPagina()) {
+            return;
+        }
+
+        // Conserva la pestaña activa y las búsquedas al recargar.
+        var params = new URLSearchParams(window.location.search);
+        var tabActiva = $("#sin-pendientes-tab").hasClass("active")
+            ? "sin-pendientes"
+            : "pendientes";
+        params.set("tab", tabActiva);
+
+        var pendientesQ = $("#pendientes-search-input").val() || "";
+        var sinPendientesQ = $("#sin-pendientes-search-input").val() || "";
+
+        if (pendientesQ) {
+            params.set("pendientesQ", pendientesQ);
+        } else {
+            params.delete("pendientesQ");
+        }
+        if (sinPendientesQ) {
+            params.set("sinPendientesQ", sinPendientesQ);
+        } else {
+            params.delete("sinPendientesQ");
+        }
+
+        var qs = params.toString();
+        window.location.href = window.location.pathname + (qs ? "?" + qs : "");
+    }
+
+    setInterval(refrescarPaginaAutomaticamente, INTERVALO_AUTO_REFRESH);
 });

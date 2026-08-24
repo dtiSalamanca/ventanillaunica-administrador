@@ -410,3 +410,35 @@ body {
         padding: 1rem;
     }
 }
+
+/* ── Banner prerequisitos ── */
+.info-banner-prerequisitos {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-left: 4px solid #3b82f6;
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+    font-size: 0.88rem;
+    color: #1e3a5f;
+    line-height: 1.5;
+}
+
+/* ── Badge trámite ── */
+.badge-tramite-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+.badge-tramite-tag i {
+    font-size: 0.6rem;
+}

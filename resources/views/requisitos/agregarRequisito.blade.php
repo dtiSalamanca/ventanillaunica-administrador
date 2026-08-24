@@ -47,13 +47,13 @@
                                 <i class="fas fa-font me-1"></i>Nombre del requisito
                             </label>
                             <input type="text" name="nombre" id="nombre"
-                                class="form-control @error('nombre') is-invalid @enderror"
-                                value="{{ old('nombre') }}" maxlength="255" required
-                                autocomplete="off" placeholder="Ej. Acta de nacimiento">
+                                class="form-control @error('nombre') is-invalid @enderror" value="{{ old('nombre') }}"
+                                maxlength="255" required autocomplete="off" placeholder="Ej. Acta de nacimiento">
                             <div class="field-footer">
                                 <span class="field-message">
                                     @if ($errors->has('nombre'))
-                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('nombre') }}</span>
+                                        <span class="field-error"><i
+                                                class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('nombre') }}</span>
                                     @else
                                         <span class="field-hint">Debe ser un nombre único</span>
                                     @endif
@@ -67,13 +67,13 @@
                                 <i class="fas fa-align-left me-1"></i>Descripción del requisito
                             </label>
                             <textarea name="descripcion" id="descripcion" rows="4"
-                                class="form-control @error('descripcion') is-invalid @enderror"
-                                required autocomplete="off"
-                                placeholder="Describe brevemente en qué consiste el requisito">{{ old('descripcion') }}</textarea>
+                                class="form-control @error('descripcion') is-invalid @enderror" autocomplete="off"
+                                placeholder="Describe brevemente en qué consiste el requisito (opcional)">{{ old('descripcion') }}</textarea>
                             <div class="field-footer">
                                 <span class="field-message">
                                     @if ($errors->has('descripcion'))
-                                        <span class="field-error"><i class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('descripcion') }}</span>
+                                        <span class="field-error"><i
+                                                class="fas fa-circle-exclamation me-1"></i>{{ $errors->first('descripcion') }}</span>
                                     @else
                                         <span class="field-hint">Explica brevemente el propósito del requisito</span>
                                     @endif

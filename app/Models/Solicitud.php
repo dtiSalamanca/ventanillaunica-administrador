@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Solicitud extends Model
 {
@@ -26,4 +27,14 @@ class Solicitud extends Model
         'validez_solicitud' => 'date',
         'estatus_solicitud' => 'integer',
     ];
+
+    public function tramite(): BelongsTo
+    {
+        return $this->belongsTo(Tramite::class, 'fk_tramite', 'id_tramite');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'fk_usuario', 'id');
+    }
 }

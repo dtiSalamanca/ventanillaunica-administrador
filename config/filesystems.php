@@ -47,6 +47,13 @@ return [
             'report' => false,
         ],
 
+        'documentos_ciudadano' => [
+            'driver' => 'local',
+            'root' => 'C:\xampp\htdocs\ventanillaunica-ciudadano\storage\app\private',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

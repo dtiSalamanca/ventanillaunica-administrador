@@ -18,10 +18,11 @@ class DocumentoPredio extends Model
     protected $primaryKey = 'id_documento_predio';
 
     protected $fillable = [
-        'fk_cat_documento_predio',
         'ruta_documento',
         'fk_predio',
+        'fk_cat_documento_predio',
         'estatus_documento',
+        'motivo_rechazo',
     ];
 
     public function predio(): BelongsTo
@@ -32,5 +33,11 @@ class DocumentoPredio extends Model
     public function catalogoDocumento(): BelongsTo
     {
         return $this->belongsTo(catDocumentoPredio::class, 'fk_cat_documento_predio', 'id_documento_predio');
+    }
+
+    // En DocumentoPredio.php
+    public function catRequisitos(): BelongsTo
+    {
+        return $this->belongsTo(Requisito::class, 'fk_cat_requisito', 'id'); // Ajusta los nombres de las columnas
     }
 }

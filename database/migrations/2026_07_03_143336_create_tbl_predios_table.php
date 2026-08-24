@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tbl_predios', function (Blueprint $table) {
             $table->bigIncrements('id_predio');
             $table->string('clave_predio');
-            $table->integer('estatus_predio')->default(1);
+            $table->integer('estatus_predio')->default(-1);
             $table->unsignedBigInteger('fk_user');
             $table->timestamps();
 

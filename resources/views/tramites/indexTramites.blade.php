@@ -90,16 +90,20 @@
                         <!-- Barra de acciones -->
                         <div class="action-bar">
                             <div class="action-bar-right" style="margin-left: auto;">
-                                <button type="button" class="action-bar-btn btn-edit-top"
-                                    id="btn-editar-tramite-activos" disabled>
+                                <button type="button" class="action-bar-btn btn-edit-top" id="btn-editar-tramite-activos"
+                                    disabled>
                                     <i class="fas fa-pen-to-square"></i> Modificar trámite
                                 </button>
-                                <button type="button" class="action-bar-btn btn-review-top"
-                                    id="btn-revisar-requisitos" disabled>
+                                <button type="button" class="action-bar-btn btn-review-top" id="btn-revisar-requisitos"
+                                    disabled>
                                     <i class="fas fa-list-check"></i> Revisar requisitos
                                 </button>
-                                <button type="button" class="action-bar-btn btn-delete-top"
-                                    id="btn-deshabilitar-tramite" disabled>
+                                <button type="button" class="action-bar-btn btn-review-top" id="btn-revisar-prerequisitos"
+                                    disabled>
+                                    <i class="fas fa-link"></i> Prerequisitos
+                                </button>
+                                <button type="button" class="action-bar-btn btn-delete-top" id="btn-deshabilitar-tramite"
+                                    disabled>
                                     <i class="fas fa-ban"></i> Deshabilitar
                                 </button>
                             </div>
@@ -113,7 +117,8 @@
                                             <th class="w-checkbox"></th>
                                             <th class="w-tramite"><i class="fas fa-building me-2"></i>Nombre del
                                                 trámite</th>
-                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción
+                                            </th>
                                             <th class="w-precio"><i class="fas fa-dollar-sign me-2"></i>Precio</th>
                                         </tr>
                                     </thead>
@@ -128,8 +133,8 @@
                         <!-- Barra de acciones -->
                         <div class="action-bar">
                             <div class="action-bar-right" style="margin-left: auto;">
-                                <button type="button" class="action-bar-btn btn-activate-top"
-                                    id="btn-habilitar-tramite" disabled>
+                                <button type="button" class="action-bar-btn btn-activate-top" id="btn-habilitar-tramite"
+                                    disabled>
                                     <i class="fas fa-check"></i> Habilitar
                                 </button>
                             </div>
@@ -143,7 +148,8 @@
                                             <th class="w-checkbox"></th>
                                             <th class="w-tramite"><i class="fas fa-building me-2"></i>Nombre del
                                                 trámite</th>
-                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción
+                                            </th>
                                             <th class="w-precio"><i class="fas fa-dollar-sign me-2"></i>Precio</th>
                                         </tr>
                                     </thead>
@@ -175,6 +181,7 @@
             deshabilitar: "{{ route('deshabilitarTramite', ['tramite' => '__ID__']) }}",
             habilitar: "{{ route('habilitarTramite', ['tramite' => '__ID__']) }}",
             requisitos: "{{ route('revisarRequisitos', ['tramite' => '__ID__']) }}",
+            prerequisitos: "{{ route('revisarPrerequisitos', ['tramite' => '__ID__']) }}",
         };
     </script>
     <script src="{{ asset('js/tramites/indexTramites.js') }}"></script>

@@ -222,6 +222,9 @@ body {
 }
 
 .badge-estatus {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
     flex-shrink: 0;
     font-weight: 700;
     font-size: 0.76rem;
@@ -231,7 +234,7 @@ body {
 
 .badge-estatus-revision {
     background: #fff4de;
-    color: #b8860b;
+    color: #b45309;
 }
 
 .badge-estatus-aprobado {
@@ -311,6 +314,30 @@ body {
     color: var(--accent);
 }
 
+.auto-refresh-info {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.auto-refresh-info i {
+    color: var(--primary);
+    animation: auto-refresh-pulse 2s ease-in-out infinite;
+}
+
+@keyframes auto-refresh-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.35;
+    }
+}
+
 #pendientes-resultado,
 #sin-pendientes-resultado {
     transition: opacity 0.15s ease;
@@ -345,6 +372,7 @@ body {
     align-items: center;
     gap: 0.5rem;
     background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
 }
 
 .predio-header .accordion-button {
@@ -428,10 +456,102 @@ body {
     color: var(--text-secondary);
 }
 
+/* Predio con pendientes: la línea izquierda indica que necesita revisión */
+.predio-item.predio-pendiente {
+    border-left: 4px solid #d97706;
+    background: rgba(217, 119, 6, 0.06);
+}
+
+.predio-motivo-rechazo {
+    margin-bottom: 0.75rem;
+}
+
+.documento-motivo-rechazo {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: #b91c1c;
+    background: #fdeceb;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-sm);
+}
+
+.documento-motivo-rechazo i {
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+}
+
 .documento-acciones {
     display: flex;
     gap: 0.35rem;
     flex-shrink: 0;
+}
+
+.btn-validar {
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    line-height: 1;
+    transition: var(--transition);
+    color: orange;
+}
+
+/* Consulta de existencia del predio (icono en la cabecera) */
+.btn-consultar {
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    line-height: 1;
+    transition: var(--transition);
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.btn-consultar:hover {
+    background: var(--primary-dark);
+    color: #fff;
+}
+
+/* Botón etiquetado de consulta dentro del cuerpo del predio */
+.predio-consulta {
+    margin-bottom: 0.75rem;
+}
+
+.btn-consultar-predio {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.55rem 0.9rem;
+    border: 1.5px dashed var(--primary-light);
+    border-radius: var(--radius-sm);
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-consultar-predio:hover {
+    border-color: var(--primary-dark);
+    background: #d9efea;
 }
 
 .btn-aprobar,

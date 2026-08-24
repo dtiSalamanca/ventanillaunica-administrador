@@ -22,6 +22,7 @@ class tblDocumentoPersonal extends Model
         'fk_documento_personal',
         'fecha_registro',
         'estatus_documento',
+        'motivo_rechazo',
         'ruta_archivo',
     ];
 
