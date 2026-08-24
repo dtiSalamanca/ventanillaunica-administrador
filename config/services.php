@@ -44,6 +44,13 @@ return [
         'base_url' => env('RECIBO_PREDIAL_URL', 'https://recibopredial.salamanca.gob.mx/api/consulta/predio'),
     ],
 
+    'carta_compromiso' => [
+        'url' => env('CARTA_FIRMANTE_URL'),
+        'token' => env('CARTA_FIRMANTE_TOKEN'),
+        'timeout' => (int) env('CARTA_FIRMANTE_TIMEOUT', 10),
+        'fail_open' => env('CARTA_FIRMANTE_FAIL_OPEN', false),
+    ],
+
     'active_directory' => [
         'url' => env('AD_AUTH_URL', 'http://172.17.5.112:8080/api-ad-auth/index.php/login'),
         'users_url' => env('AD_USERS_URL', 'http://172.17.5.112:8080/api-ad-auth/index.php/usersApp'),

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\FirmaCompromisoService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -18,7 +19,7 @@ class LoginController extends Controller
 
     protected $redirectTo = '/home';
 
-    public function __construct()
+    public function __construct(private readonly FirmaCompromisoService $firmaCompromiso)
     {
         $this->middleware('guest:ad')->except('logout');
         $this->middleware('auth:ad')->only('logout');
@@ -27,6 +28,29 @@ class LoginController extends Controller
     public function username(): string
     {
         return 'username';
+    }
+
+    protected function attemptLogin(Request $request): bool
+    {
+        $credentials = $this->credentials($request);
+
+        $user = $this->guard()->getProvider()->retrieveByCredentials($credentials);
+
+        if (! $user) {
+            return false;
+        }
+
+        $idAplicacion = (int) config('services.active_directory.aplicativo');
+
+        if (! $this->firmaCompromiso->haFirmado($credentials[$this->username()], $idAplicacion)) {
+            throw ValidationException::withMessages([
+                'carta_compromiso' => 'Debes firmar la carta compromiso antes de iniciar sesión.',
+            ]);
+        }
+
+        $this->guard()->login($user, $request->boolean('remember'));
+
+        return true;
     }
 
     protected function validateLogin(Request $request)
