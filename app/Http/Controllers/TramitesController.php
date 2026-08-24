@@ -26,7 +26,7 @@ class TramitesController extends Controller
     public function getTramitesActivos(): JsonResponse
     {
         $tramites = Tramite::where('estatus_tramite', true)
-            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2', 'vigencia_dias')
+            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2', 'sin_costo', 'vigencia_dias')
             ->orderBy('nombre_tramite')
             ->get();
 
@@ -37,6 +37,7 @@ class TramitesController extends Controller
     {
         $cobraPorM2 = $request->boolean('cobra_por_m2');
         $cuentaPredial = $request->boolean('cuenta_predial');
+        $sinCosto = $request->boolean('sin_costo');
 
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite',
@@ -67,6 +68,7 @@ class TramitesController extends Controller
             'tramite_cri' => $validated['fk_cri'],
             'cobra_por_m2' => $cobraPorM2,
             'cuenta_predial' => $cuentaPredial,
+            'sin_costo' => $sinCosto,
             'vigencia_dias' => $validated['vigencia_dias'] ?? 0,
         ]);
 
@@ -76,7 +78,7 @@ class TramitesController extends Controller
     public function getTramitesInactivos(): JsonResponse
     {
         $tramites = Tramite::where('estatus_tramite', false)
-            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2', 'vigencia_dias')
+            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2', 'sin_costo', 'vigencia_dias')
             ->orderBy('nombre_tramite')
             ->get();
 
@@ -92,6 +94,7 @@ class TramitesController extends Controller
     {
         $cobraPorM2 = $request->boolean('cobra_por_m2');
         $cuentaPredial = $request->boolean('cuenta_predial');
+        $sinCosto = $request->boolean('sin_costo');
 
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite,'.$tramite->id_tramite.',id_tramite',
@@ -121,6 +124,7 @@ class TramitesController extends Controller
             'tramite_cri' => $validated['fk_cri'],
             'cobra_por_m2' => $cobraPorM2,
             'cuenta_predial' => $cuentaPredial,
+            'sin_costo' => $sinCosto,
             'vigencia_dias' => $validated['vigencia_dias'] ?? 0,
         ]);
 

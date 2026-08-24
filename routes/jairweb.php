@@ -6,6 +6,7 @@ use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\DocumentosPersonalesController;
 use App\Http\Controllers\EnlaceController;
 use App\Http\Controllers\PrediosController;
+use App\Http\Controllers\ReporteadorController;
 use App\Http\Controllers\RequisitosController;
 use App\Http\Controllers\SolicitudesController;
 use App\Http\Controllers\TramitesController;
@@ -129,4 +130,13 @@ Route::middleware('auth')->prefix('enlace')->name('enlace.')->controller(EnlaceC
     Route::get('/tramites-turnados/{id}/detalles', 'verDetalles')->name('tramitesTurnadosDetalles');
     Route::post('/tramites-turnados/{id}/aprobar', 'aprobarSolicitud')->name('tramitesTurnadosAprobar');
     Route::post('/tramites-turnados/{id}/rechazar', 'rechazarSolicitud')->name('tramitesTurnadosRechazar');
+});
+
+// =========================================================================
+// Reporteador
+// =========================================================================
+Route::middleware('auth')->controller(ReporteadorController::class)->group(function () {
+    Route::get('/reporteador', 'indexReporteador')->name('indexReporteador');
+    Route::get('/reporteador/solicitudes', 'getReporteadorSolicitudes')->name('reporteador.solicitudes');
+    Route::get('/reporteador/excel', 'generarReporteExcel')->name('reporteador.excel');
 });

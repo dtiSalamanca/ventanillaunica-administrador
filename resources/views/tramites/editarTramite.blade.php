@@ -167,6 +167,27 @@
                         </div>
                     </div>
 
+                    <!-- Toggle: sin costo -->
+                    <div class="form-group form-group-toggle" id="form-group-sin-costo">
+                        <div class="form-check form-check-custom">
+                            <input type="checkbox" class="form-check-input" id="sin_costo" name="sin_costo"
+                                value="1" {{ old('sin_costo', $tramite->sin_costo) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="sin_costo">
+                                <i class="fas fa-hand-holding-dollar me-1"></i>Sin costo
+                            </label>
+                        </div>
+                        <div class="field-footer">
+                            <span class="field-message">
+                                <span class="field-hint">Si está activado, el trámite es gratuito: no se genera orden de
+                                    pago y el enlace no podrá capturar un precio.</span>
+                            </span>
+                        </div>
+                        <div class="alert alert-info mt-2 mb-0 d-none" id="nota-sin-costo">
+                            <i class="fas fa-info-circle me-2"></i>Este trámite es sin costo. Al aprobar la solicitud no se
+                            generará una orden de pago.
+                        </div>
+                    </div>
+
                     <!-- Toggle: requiere cuenta predial -->
                     <div class="form-group form-group-toggle" id="form-group-cuenta-predial">
                         <div class="form-check form-check-custom">

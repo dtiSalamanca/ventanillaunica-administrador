@@ -249,15 +249,16 @@
         var solicitudesEndpoint = "{{ route('ajax.solicitudes.completas') }}";
 
         function renderEstatus(row) {
-            if (row.estatus_solicitud === 0) {
+            var estatus = row.estatus_mostrado !== undefined ? row.estatus_mostrado : row.estatus_solicitud;
+            if (estatus === 0) {
                 return '<span class="badge bg-warning text-dark">Pendiente</span>';
-            } else if (row.estatus_solicitud === 1) {
+            } else if (estatus === 1) {
                 return '<span class="badge bg-success">Turnada</span>';
-            } else if (row.estatus_solicitud === 2) {
+            } else if (estatus === 2) {
                 return '<span class="badge bg-danger">Rechazada</span>';
-            } else if (row.estatus_solicitud === 3) {
+            } else if (estatus === 3) {
                 return '<span class="badge bg-info text-dark">Por pagar</span>';
-            } else if (row.estatus_solicitud === 4) {
+            } else if (estatus === 4) {
                 return '<span class="badge bg-primary">Completado</span>';
             }
             return '<span class="badge bg-secondary">Desconocido</span>';
@@ -281,7 +282,8 @@
             }
 
             var row = settings.aoData[dataIndex]._aData;
-            return String(row.estatus_solicitud) === String(filtroEstatusTurnadas);
+            var estatus = row.estatus_mostrado !== undefined ? row.estatus_mostrado : row.estatus_solicitud;
+            return String(estatus) === String(filtroEstatusTurnadas);
         });
 
         function initSolicitudesDataTable(tableId, filterFn, onData) {
@@ -387,8 +389,10 @@
                 };
 
                 rows.forEach(function(item) {
-                    if (Object.prototype.hasOwnProperty.call(conteos, item.estatus_solicitud)) {
-                        conteos[item.estatus_solicitud]++;
+                    var estatus = item.estatus_mostrado !== undefined ? item.estatus_mostrado : item
+                        .estatus_solicitud;
+                    if (Object.prototype.hasOwnProperty.call(conteos, estatus)) {
+                        conteos[estatus]++;
                     }
                 });
 

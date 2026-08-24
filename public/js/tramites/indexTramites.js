@@ -61,6 +61,17 @@ $(document).ready(function () {
         return;
     }
 
+    // Columna Cobro: badge por m², sin costo o vacío (precio fijo)
+    function renderCobro(data, type, row) {
+        if (row.cobra_por_m2) {
+            return '<span class="badge badge-por-m2"><i class="fas fa-ruler-combined me-1"></i>Por m²</span>';
+        }
+        if (row.sin_costo) {
+            return '<span class="badge badge-sin-costo"><i class="fas fa-hand-holding-dollar me-1"></i>Sin costo</span>';
+        }
+        return "";
+    }
+
     tablaActivos.DataTable({
         processing: true,
         responsive: true,
@@ -114,12 +125,7 @@ $(document).ready(function () {
                 className: "w-cobro",
                 orderable: false,
                 searchable: false,
-                render: function (data, type, row) {
-                    if (row.cobra_por_m2) {
-                        return '<span class="badge badge-por-m2"><i class="fas fa-ruler-combined me-1"></i>Por m²</span>';
-                    }
-                    return "";
-                },
+                render: renderCobro,
             },
             {
                 data: "vigencia_dias",
@@ -189,12 +195,7 @@ $(document).ready(function () {
                 className: "w-cobro",
                 orderable: false,
                 searchable: false,
-                render: function (data, type, row) {
-                    if (row.cobra_por_m2) {
-                        return '<span class="badge badge-por-m2"><i class="fas fa-ruler-combined me-1"></i>Por m²</span>';
-                    }
-                    return "";
-                },
+                render: renderCobro,
             },
             {
                 data: "vigencia_dias",

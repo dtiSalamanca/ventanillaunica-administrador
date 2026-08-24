@@ -256,6 +256,21 @@ body {
     white-space: nowrap;
 }
 
+/* ── Badge: sin costo ── */
+.badge-sin-costo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #b7dfb9;
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .tramites-note {
     border-left-width: 4px;
     font-size: 0.92rem;

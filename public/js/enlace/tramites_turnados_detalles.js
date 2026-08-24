@@ -188,20 +188,26 @@
         $btnConfirmarAprobar.addEventListener("click", function () {
             const nota = $resolucionNota ? $resolucionNota.value.trim() : "";
 
-            // Validar precio del trámite (siempre lo captura el enlace)
-            const precio = $precioM2.value.trim();
-            const precioNum = Number(precio);
-            if (!precio || !Number.isInteger(precioNum) || precioNum < 1) {
-                $precioM2Error.textContent =
-                    "Captura el precio total del trámite en pesos enteros (mayor a 0).";
-                $precioM2Error.style.display = "block";
-                $precioM2.focus();
-                return;
+            // Trámite sin costo: no se captura precio ni se genera orden de pago
+            const esSinCosto =
+                routes.sinCosto === true || routes.sinCosto === "1";
+
+            // Validar precio del trámite (solo si no es sin costo)
+            if (!esSinCosto) {
+                const precio = $precioM2.value.trim();
+                const precioNum = Number(precio);
+                if (!precio || !Number.isInteger(precioNum) || precioNum < 1) {
+                    $precioM2Error.textContent =
+                        "Captura el precio total del trámite en pesos enteros (mayor a 0).";
+                    $precioM2Error.style.display = "block";
+                    $precioM2.focus();
+                    return;
+                }
+                $precioM2Error.style.display = "none";
             }
-            $precioM2Error.style.display = "none";
 
             Swal.fire({
-                title: "Aprobar y pagar?",
+                title: "Aprobar?",
                 text: selectedFile
                     ? "Se marcara como atendida y se adjuntara el documento de resolucion."
                     : "Se marcara como atendida. No se adjunto documento de resolucion.",
@@ -218,7 +224,9 @@
 
                 const formData = new FormData();
                 formData.append("resolucion_solicitud", nota || "Atendido");
-                formData.append("precio_tramite", $precioM2.value.trim());
+                if (!esSinCosto) {
+                    formData.append("precio_tramite", $precioM2.value.trim());
+                }
                 if (selectedFile) {
                     formData.append("documento_resolucion", selectedFile);
                 }

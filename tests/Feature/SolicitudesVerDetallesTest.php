@@ -9,8 +9,10 @@ use App\Models\DocumentoPredio;
 use App\Models\DocumentoTramite;
 use App\Models\OrdenPago;
 use App\Models\Predio;
+use App\Models\ResolucionSolicitud;
 use App\Models\Solicitud;
 use App\Models\Tramite;
+use App\Models\TurnadoSolicitud;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -199,6 +201,114 @@ class SolicitudesVerDetallesTest extends TestCase
         $response->assertSee('Completados', false);
     }
 
+    public function test_ver_detalles_muestra_completado_cuando_tramite_sin_costo_ya_resuelto(): void
+    {
+        $this->authenticateAdUser();
+
+        $usuario = User::factory()->create();
+        $tramite = $this->crearTramiteSinCosto();
+        $solicitud = Solicitud::create([
+            'fk_usuario' => $usuario->id,
+            'fk_tramite' => $tramite->id_tramite,
+            'fecha_solicitud' => now(),
+            'estatus_solicitud' => 3, // Atendida por el enlace (sin orden de pago)
+        ]);
+
+        $turnado = TurnadoSolicitud::create([
+            'fk_usuario_ad' => 1,
+            'fk_solicitud' => $solicitud->id_solicitud,
+            'estatus_turnado' => true,
+        ]);
+
+        ResolucionSolicitud::create([
+            'fk_turnado' => $turnado->id_turnado,
+            'resolucion_solicitud' => 'Atendido',
+            'documento_resolucion' => 'doc_resolutivos/DIG-01-2026-08-24.pdf',
+        ]);
+
+        $response = $this->get(route('solicitudes.verDetalles', $solicitud->id_solicitud));
+
+        $response->assertOk();
+        $response->assertSee('Completado', false);
+        $response->assertDontSee('Por pagar', false);
+    }
+
+    public function test_ver_detalles_muestra_por_pagar_cuando_tramite_sin_costo_sin_resolucion(): void
+    {
+        $this->authenticateAdUser();
+
+        $usuario = User::factory()->create();
+        $tramite = $this->crearTramiteSinCosto();
+        $solicitud = Solicitud::create([
+            'fk_usuario' => $usuario->id,
+            'fk_tramite' => $tramite->id_tramite,
+            'fecha_solicitud' => now(),
+            'estatus_solicitud' => 3,
+        ]);
+
+        $response = $this->get(route('solicitudes.verDetalles', $solicitud->id_solicitud));
+
+        $response->assertOk();
+        $response->assertSee('Por pagar', false);
+        $response->assertDontSee('Completado', false);
+    }
+
+    public function test_ajax_solicitudes_marca_completado_para_tramite_sin_costo_resuelto(): void
+    {
+        $this->authenticateAdUser();
+
+        $usuario = User::factory()->create();
+        $tramite = $this->crearTramiteSinCosto();
+        $solicitud = Solicitud::create([
+            'fk_usuario' => $usuario->id,
+            'fk_tramite' => $tramite->id_tramite,
+            'fecha_solicitud' => now(),
+            'estatus_solicitud' => 3,
+        ]);
+
+        $turnado = TurnadoSolicitud::create([
+            'fk_usuario_ad' => 1,
+            'fk_solicitud' => $solicitud->id_solicitud,
+            'estatus_turnado' => true,
+        ]);
+
+        ResolucionSolicitud::create([
+            'fk_turnado' => $turnado->id_turnado,
+            'resolucion_solicitud' => 'Atendido',
+            'documento_resolucion' => 'doc_resolutivos/DIG-01-2026-08-24.pdf',
+        ]);
+
+        $response = $this->getJson(route('ajax.solicitudes.completas'));
+
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'id_solicitud' => $solicitud->id_solicitud,
+            'estatus_mostrado' => 4,
+        ]);
+    }
+
+    public function test_ajax_solicitudes_marca_por_pagar_para_tramite_sin_costo_sin_resolucion(): void
+    {
+        $this->authenticateAdUser();
+
+        $usuario = User::factory()->create();
+        $tramite = $this->crearTramiteSinCosto();
+        $solicitud = Solicitud::create([
+            'fk_usuario' => $usuario->id,
+            'fk_tramite' => $tramite->id_tramite,
+            'fecha_solicitud' => now(),
+            'estatus_solicitud' => 3,
+        ]);
+
+        $response = $this->getJson(route('ajax.solicitudes.completas'));
+
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'id_solicitud' => $solicitud->id_solicitud,
+            'estatus_mostrado' => 3,
+        ]);
+    }
+
     private function crearTramite(): Tramite
     {
         $dependencia = Dependencia::create([
@@ -213,6 +323,24 @@ class SolicitudesVerDetallesTest extends TestCase
             'fk_dependencia' => $dependencia->id_dependencia,
             'precio_tramite' => 0,
             'tramite_cri' => 0,
+        ]);
+    }
+
+    private function crearTramiteSinCosto(): Tramite
+    {
+        $dependencia = Dependencia::create([
+            'nombre_dependencia' => 'Desarrollo Urbano',
+            'estatus_dependencia' => true,
+        ]);
+
+        return Tramite::create([
+            'nombre_tramite' => 'Acta de Nacimiento',
+            'descripcion_tramite' => null,
+            'estatus_tramite' => true,
+            'fk_dependencia' => $dependencia->id_dependencia,
+            'precio_tramite' => 0,
+            'tramite_cri' => 0,
+            'sin_costo' => true,
         ]);
     }
 

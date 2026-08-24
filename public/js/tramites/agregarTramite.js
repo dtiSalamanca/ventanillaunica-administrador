@@ -253,17 +253,48 @@ document.addEventListener("DOMContentLoaded", function () {
     var checkCobraM2 = document.getElementById("cobra_por_m2");
     var notaPrecioPorM2 = document.getElementById("nota-precio-por-m2");
 
+    // Toggle: sin costo
+    var checkSinCosto = document.getElementById("sin_costo");
+    var notaSinCosto = document.getElementById("nota-sin-costo");
+
     function toggleNotaPorM2() {
         var esPorM2 = checkCobraM2 && checkCobraM2.checked;
 
+        if (esPorM2 && checkSinCosto) {
+            checkSinCosto.checked = false;
+        }
+
         if (notaPrecioPorM2) {
             notaPrecioPorM2.classList.toggle("d-none", !esPorM2);
+        }
+        if (notaSinCosto) {
+            notaSinCosto.classList.add("d-none");
+        }
+    }
+
+    function toggleNotaSinCosto() {
+        var esSinCosto = checkSinCosto && checkSinCosto.checked;
+
+        if (esSinCosto && checkCobraM2) {
+            checkCobraM2.checked = false;
+        }
+
+        if (notaSinCosto) {
+            notaSinCosto.classList.toggle("d-none", !esSinCosto);
+        }
+        if (notaPrecioPorM2) {
+            notaPrecioPorM2.classList.add("d-none");
         }
     }
 
     if (checkCobraM2) {
         checkCobraM2.addEventListener("change", toggleNotaPorM2);
         toggleNotaPorM2();
+    }
+
+    if (checkSinCosto) {
+        checkSinCosto.addEventListener("change", toggleNotaSinCosto);
+        toggleNotaSinCosto();
     }
 
     // Validación del campo de vigencia: solo números y máximo 3 dígitos

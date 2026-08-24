@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('cat_tramites') || Schema::hasColumn('cat_tramites', 'sin_costo')) {
+            return;
+        }
+
         Schema::table('cat_tramites', function (Blueprint $table) {
-            //
+            $table->boolean('sin_costo')->default(false)->after('cuenta_predial');
         });
     }
 
@@ -21,8 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('cat_tramites', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasTable('cat_tramites') && Schema::hasColumn('cat_tramites', 'sin_costo')) {
+            Schema::table('cat_tramites', function (Blueprint $table) {
+                $table->dropColumn('sin_costo');
+            });
+        }
     }
 };

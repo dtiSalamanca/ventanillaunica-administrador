@@ -30,10 +30,22 @@ class SolicitudesController extends Controller
             ->select(
                 'tbl_solicitudes.*',
                 'cat_tramites.nombre_tramite',
+                'cat_tramites.sin_costo',
                 'users.name as nombre_usuario',
-                DB::raw('(SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM tbl_turnados_solicitudes WHERE fk_solicitud = tbl_solicitudes.id_solicitud) as has_turnado')
+                DB::raw('(SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM tbl_turnados_solicitudes WHERE fk_solicitud = tbl_solicitudes.id_solicitud) as has_turnado'),
+                DB::raw('(SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM tbl_turnados_solicitudes ts INNER JOIN tbl_resoluciones_solicitudes rs ON rs.fk_turnado = ts.id_turnado WHERE ts.fk_solicitud = tbl_solicitudes.id_solicitud) as has_resolucion')
             )
             ->get();
+
+        // Trámite sin costo ya resuelto (con resolutivo): no genera orden de pago ni
+        // folio, por lo que se muestra como Completado (4) igual que el portal ciudadano.
+        $solicitudes = $solicitudes->map(function ($solicitud) {
+            $solicitud->estatus_mostrado = (int) $solicitud->sin_costo === 1 && (int) $solicitud->has_resolucion === 1
+                ? 4
+                : (int) $solicitud->estatus_solicitud;
+
+            return $solicitud;
+        });
 
         return response()->json($solicitudes);
     }

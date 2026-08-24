@@ -96,6 +96,7 @@ class TramitesCuentaPredialTest extends TestCase
         $response->assertOk();
         $response->assertSee('Requiere cuenta predial', false);
         $response->assertSee('id="cuenta_predial"', false);
+        $response->assertDontSee('checked', false);
     }
 
     public function test_vista_editar_tramite_muestra_checkbox_marcado_cuando_requiere_cuenta_predial(): void

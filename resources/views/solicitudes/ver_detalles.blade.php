@@ -7,6 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    @php
+        // Trámite sin costo ya resuelto por el enlace: no genera orden de pago, por lo
+        // que se muestra como Completado (igual que en el portal ciudadano).
+        $sinCostoResuelto = ($solicitud->tramite?->sin_costo ?? false) && $resolucion !== null;
+    @endphp
+
     <div class="detalles-container">
         {{-- Header --}}
         <div class="detalles-header">
@@ -55,6 +61,9 @@
                             @elseif ($solicitud->estatus_solicitud === 2)
                                 <span class="estado-badge estado-rechazada"><i
                                         class="fas fa-times-circle me-1"></i>Rechazada</span>
+                            @elseif ($solicitud->estatus_solicitud === 3 && $sinCostoResuelto)
+                                <span class="estado-badge estado-completada"><i
+                                        class="fas fa-check-double me-1"></i>Completado</span>
                             @elseif ($solicitud->estatus_solicitud === 3)
                                 <span class="estado-badge estado-pago"><i class="fas fa-credit-card me-1"></i>Por
                                     pagar</span>

@@ -218,6 +218,16 @@
                         </a>
 
                         <div class="sb-sidenav-menu-heading">
+                            <i class="fas fa-chart-line me-2"></i>Reportes
+                        </div>
+
+                        <a class="nav-link active {{ request()->routeIs('indexReporteador') ? 'active-current' : '' }}"
+                            href="{{ route('indexReporteador') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-column"></i></div>
+                            Reporteador
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">
                             <i class="fas fa-list-check me-2"></i>Configuración
                         </div>
 

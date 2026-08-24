@@ -7,17 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * La columna puede existir ya en la BD compartida, pues la agrega el
-     * proyecto ciudadano; por eso se protege con hasColumn.
+     * La cuenta predial ya no se exige por defecto: los trámites nuevos
+     * deben quedar sin requerir cuenta predial a menos que el admin lo marque.
      */
     public function up(): void
     {
-        if (! Schema::hasTable('cat_tramites') || Schema::hasColumn('cat_tramites', 'cuenta_predial')) {
+        if (! Schema::hasTable('cat_tramites') || ! Schema::hasColumn('cat_tramites', 'cuenta_predial')) {
             return;
         }
 
         Schema::table('cat_tramites', function (Blueprint $table) {
-            $table->integer('cuenta_predial')->default(0)->after('precio_tramite');
+            $table->integer('cuenta_predial')->default(0)->change();
         });
     }
 
@@ -25,7 +25,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('cat_tramites') && Schema::hasColumn('cat_tramites', 'cuenta_predial')) {
             Schema::table('cat_tramites', function (Blueprint $table) {
-                $table->dropColumn('cuenta_predial');
+                $table->integer('cuenta_predial')->default(1)->change();
             });
         }
     }
