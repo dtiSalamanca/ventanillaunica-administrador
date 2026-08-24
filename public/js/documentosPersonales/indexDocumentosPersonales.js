@@ -5,6 +5,55 @@ $(document).ready(function () {
         },
     });
 
+    function autoCerrarAlerta($alerta, ms) {
+        setTimeout(function () {
+            $alerta.fadeOut(300, function () {
+                $(this).remove();
+            });
+        }, ms || 5000);
+    }
+
+    function mostrarAlerta(mensaje, tipo) {
+        tipo = tipo || "success";
+        var iconos = {
+            success: "fa-check-circle",
+            warning: "fa-exclamation-triangle",
+            error: "fa-times-circle",
+            info: "fa-info-circle",
+        };
+        var icono = iconos[tipo] || "fa-check-circle";
+        var $alerta = $(
+            '<div class="alert alert-' +
+                tipo +
+                ' alert-dismissible fade show" role="alert"></div>',
+        );
+        $alerta.append('<i class="fas ' + icono + ' me-2"></i>');
+        $alerta.append($("<span>").text(mensaje));
+        $alerta.append(
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        );
+
+        var $contenedor = $("#alertas-dinamicas");
+        if (!$contenedor.length) {
+            $contenedor = $(".main-container");
+        }
+        $contenedor.prepend($alerta);
+        autoCerrarAlerta($alerta);
+    }
+
+    // Cerrar alerta con el botón ×
+    $(document).on("click", ".alert-dismissible .btn-close", function () {
+        var $alerta = $(this).closest(".alert-dismissible");
+        $alerta.fadeOut(300, function () {
+            $(this).remove();
+        });
+    });
+
+    // Las alertas de sesión (crear/actualizar) también se cierran solas a los 5s
+    $(".alert-dismissible").each(function () {
+        autoCerrarAlerta($(this));
+    });
+
     const tablaActivos = $("#tabla-documentos-personales-activos");
     const tablaInactivos = $("#tabla-documentos-personales-inactivos");
 
@@ -161,7 +210,9 @@ $(document).ready(function () {
                 return;
             }
 
-            $(".documento-checkbox-activos").not(checkbox).prop("checked", false);
+            $(".documento-checkbox-activos")
+                .not(checkbox)
+                .prop("checked", false);
             checkbox.prop("checked", true);
             updateActionButtonsActivos();
         },
@@ -174,7 +225,10 @@ $(document).ready(function () {
     $("#btn-editar-documento-activos").on("click", function () {
         var ids = getSelectedIds(".documento-checkbox-activos");
         if (ids.length === 1) {
-            var url = window.documentosPersonalesRoutes.editar.replace("__ID__", ids[0]);
+            var url = window.documentosPersonalesRoutes.editar.replace(
+                "__ID__",
+                ids[0],
+            );
             window.location.href = url;
         }
     });
@@ -218,13 +272,7 @@ $(document).ready(function () {
                     return response.json();
                 })
                 .then(function (data) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Deshabilitado",
-                        text: data.message,
-                        timer: 2000,
-                        showConfirmButton: false,
-                    });
+                    mostrarAlerta(data.message, "success");
                     tablaActivos.DataTable().ajax.reload(null, false);
                     tablaInactivos.DataTable().ajax.reload(null, false);
                 })
@@ -327,13 +375,7 @@ $(document).ready(function () {
                     return response.json();
                 })
                 .then(function (data) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Habilitado",
-                        text: data.message,
-                        timer: 2000,
-                        showConfirmButton: false,
-                    });
+                    mostrarAlerta(data.message, "success");
                     tablaActivos.DataTable().ajax.reload(null, false);
                     tablaInactivos.DataTable().ajax.reload(null, false);
                 })

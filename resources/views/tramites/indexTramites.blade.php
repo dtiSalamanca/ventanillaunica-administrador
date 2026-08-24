@@ -30,6 +30,8 @@
             </div>
         </div>
 
+        <div id="alertas-dinamicas"></div>
+
         <!-- Alertas -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -119,7 +121,9 @@
                                                 trámite</th>
                                             <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción
                                             </th>
-                                            <th class="w-precio"><i class="fas fa-dollar-sign me-2"></i>Precio</th>
+                                            <th class="w-cobro"><i class="fas fa-ruler-combined me-2"></i>Cobro</th>
+                                            <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia
+                                                (días)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -150,7 +154,9 @@
                                                 trámite</th>
                                             <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción
                                             </th>
-                                            <th class="w-precio"><i class="fas fa-dollar-sign me-2"></i>Precio</th>
+                                            <th class="w-cobro"><i class="fas fa-ruler-combined me-2"></i>Cobro</th>
+                                            <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia
+                                                (días)</th>
                                         </tr>
                                     </thead>
                                     <tbody>

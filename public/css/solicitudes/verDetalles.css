@@ -172,6 +172,25 @@
     border: 1px solid #f7b5bb;
 }
 
+.estado-pago {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+
+.estado-completada {
+    background: #e8eaf6;
+    color: #283593;
+    border: 1px solid #c5cae9;
+}
+
+/* Precio asignado por el enlace */
+.precio-valor {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
 /* Requisitos table */
 .requisitos-table-wrapper {
     overflow-x: auto;
@@ -264,6 +283,26 @@
 .doc-no-subido i {
     color: #ef4444;
     font-size: 0.85rem;
+}
+
+/* Estado de vigencia del documento adjuntado */
+.doc-vigencia {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.doc-vigencia--vigente {
+    color: #0d7d3d;
+}
+
+.doc-vigencia--por-vencer {
+    color: #b8860b;
+}
+
+.doc-vigencia--vencido {
+    color: #c62828;
 }
 
 .btn-ver-archivo {

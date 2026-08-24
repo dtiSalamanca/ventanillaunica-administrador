@@ -28,6 +28,8 @@
             </div>
         </div>
 
+        <div id="alertas-dinamicas"></div>
+
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle me-2"></i>
@@ -101,9 +103,12 @@
                                     <thead>
                                         <tr>
                                             <th class="w-checkbox"></th>
-                                            <th class="w-documento"><i class="fas fa-file me-2"></i>Nombre del documento</th>
-                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
-                                            <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia (meses)</th>
+                                            <th class="w-documento"><i class="fas fa-file me-2"></i>Nombre del documento
+                                            </th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción
+                                            </th>
+                                            <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia
+                                                (meses)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -115,8 +120,8 @@
                     <div class="tab-pane fade" id="inactivos" role="tabpanel" aria-labelledby="inactivos-tab">
                         <div class="action-bar">
                             <div class="action-bar-right" style="margin-left: auto;">
-                                <button type="button" class="action-bar-btn btn-activate-top" id="btn-habilitar-documento"
-                                    disabled>
+                                <button type="button" class="action-bar-btn btn-activate-top"
+                                    id="btn-habilitar-documento" disabled>
                                     <i class="fas fa-check"></i> Habilitar
                                 </button>
                             </div>
@@ -128,9 +133,12 @@
                                     <thead>
                                         <tr>
                                             <th class="w-checkbox"></th>
-                                            <th class="w-documento"><i class="fas fa-file me-2"></i>Nombre del documento</th>
-                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción</th>
-                                            <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia (meses)</th>
+                                            <th class="w-documento"><i class="fas fa-file me-2"></i>Nombre del documento
+                                            </th>
+                                            <th class="w-descripcion"><i class="fas fa-align-left me-2"></i>Descripción
+                                            </th>
+                                            <th class="w-vigencia"><i class="fas fa-calendar-alt me-2"></i>Vigencia
+                                                (meses)</th>
                                         </tr>
                                     </thead>
                                     <tbody>

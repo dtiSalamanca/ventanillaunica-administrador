@@ -76,22 +76,27 @@ class UsuariosController extends Controller
             ], 502);
         }
 
+        $asignaciones = UsuarioAD::query()
+            ->join('cat_dependencias', 'cat_dependencias.id_dependencia', '=', 'tbl_usuarios_ad.fk_dependencia')
+            ->pluck('cat_dependencias.nombre_dependencia', 'tbl_usuarios_ad.nombre_usuario');
+
         $usuarios = collect($payload)
             ->filter(fn (mixed $item): bool => is_array($item)
                 && ($item['success'] ?? false) === true
                 && isset($item['permisos'])
                 && is_array($item['permisos']))
-            ->map(function (array $item): array {
+            ->map(function (array $item) use ($asignaciones): array {
                 $permisos = $item['permisos'];
                 $nombreCompleto = collect([
                     $permisos['nombre'] ?? null,
                     $permisos['apaterno'] ?? null,
                     $permisos['amaterno'] ?? null,
                 ])->filter()->implode(' ');
+                $username = $permisos['username'] ?? '';
 
                 return [
                     'id_usuario' => $permisos['id_usuario'] ?? null,
-                    'username' => $permisos['username'] ?? '',
+                    'username' => $username,
                     'nombre' => $permisos['nombre'] ?? '',
                     'apaterno' => $permisos['apaterno'] ?? '',
                     'amaterno' => $permisos['amaterno'] ?? '',
@@ -100,6 +105,7 @@ class UsuariosController extends Controller
                     'rol_id' => $permisos['rol_id'] ?? null,
                     'id_area' => $permisos['id_area'] ?? null,
                     'rol' => $permisos['rol'] ?? '',
+                    'dependencia' => $asignaciones[$username] ?? null,
                     'activo' => (bool) ($permisos['activo'] ?? false),
                 ];
             })

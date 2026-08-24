@@ -20,10 +20,13 @@ class Tramite extends Model
         'precio_tramite',
         'tramite_cri',
         'cobra_por_m2',
+        'cuenta_predial',
+        'vigencia_dias',
     ];
 
     protected $casts = [
         'cobra_por_m2' => 'boolean',
+        'cuenta_predial' => 'boolean',
     ];
 
     public function dependencia(): BelongsTo

@@ -3,6 +3,59 @@
 @section('content')
 
     <link rel="stylesheet" href="{{ asset('css/predios/indexPredios.css') }}">
+    <style>
+        .filter-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .pill-estatus-turnadas {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 999px;
+            padding: 0.35rem 0.9rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pill-estatus-turnadas:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .pill-estatus-turnadas.active {
+            background: #6b2a2a;
+            border-color: #6b2a2a;
+            color: #fff;
+        }
+
+        .pill-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .pill-count {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 999px;
+            padding: 0.05rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .pill-estatus-turnadas.active .pill-count {
+            background: rgba(255, 255, 255, 0.25);
+        }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -113,6 +166,29 @@
                     </div>
 
                     <div class="tab-pane fade" id="aprobadas" role="tabpanel" aria-labelledby="aprobadas-tab">
+                        <!-- Filtros por estatus -->
+                        <div class="filter-pills mb-3" id="filtros-estatus-turnadas">
+                            <button type="button" class="pill-estatus-turnadas active" data-estatus="todos">
+                                <span class="pill-dot" style="background:#6c757d"></span>Todos
+                                <span class="pill-count" id="count-todos">0</span>
+                            </button>
+                            <button type="button" class="pill-estatus-turnadas" data-estatus="1">
+                                <span class="pill-dot" style="background:#10b981"></span>Turnados
+                                <span class="pill-count" id="count-1">0</span>
+                            </button>
+                            <button type="button" class="pill-estatus-turnadas" data-estatus="2">
+                                <span class="pill-dot" style="background:#ef4444"></span>Rechazados
+                                <span class="pill-count" id="count-2">0</span>
+                            </button>
+                            <button type="button" class="pill-estatus-turnadas" data-estatus="3">
+                                <span class="pill-dot" style="background:#0ea5e9"></span>Por pagar
+                                <span class="pill-count" id="count-3">0</span>
+                            </button>
+                            <button type="button" class="pill-estatus-turnadas" data-estatus="4">
+                                <span class="pill-dot" style="background:#3b82f6"></span>Completados
+                                <span class="pill-count" id="count-4">0</span>
+                            </button>
+                        </div>
                         <div class="table-container">
                             <div class="table-responsive">
                                 <table id="tabla-solicitudes-aprobadas" class="table table-striped align-middle"
@@ -192,13 +268,51 @@
             return '<a href="' + url + '" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Ver</a>';
         }
 
-        function initSolicitudesDataTable(tableId, filterFn) {
+        var filtroEstatusTurnadas = 'todos';
+        var conteosTurnadasCalculados = false;
+
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            if (settings.nTable.id !== 'tabla-solicitudes-aprobadas') {
+                return true;
+            }
+
+            if (filtroEstatusTurnadas === 'todos') {
+                return true;
+            }
+
+            var row = settings.aoData[dataIndex]._aData;
+            return String(row.estatus_solicitud) === String(filtroEstatusTurnadas);
+        });
+
+        function initSolicitudesDataTable(tableId, filterFn, onData) {
             return $('#' + tableId).DataTable({
                 responsive: true,
+                language: {
+                    processing: "Procesando...",
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    zeroRecords: "No se encontraron resultados",
+                    emptyTable: "Ninguna solicitud disponible en esta tabla",
+                    info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    infoFiltered: "(filtrado de un total de _MAX_ registros)",
+                    search: "Buscar:",
+                    infoThousands: ",",
+                    loadingRecords: "Cargando...",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    }
+                },
                 ajax: {
                     url: solicitudesEndpoint,
                     dataSrc: function(json) {
-                        return json.filter(filterFn);
+                        var rows = json.filter(filterFn);
+                        if (onData) {
+                            onData(rows);
+                        }
+                        return rows;
                     }
                 },
                 columns: [{
@@ -259,11 +373,46 @@
             // Turnadas (estatus >= 1 con turnado): todas las que el admin turnó
             initSolicitudesDataTable('tabla-solicitudes-aprobadas', function(item) {
                 return item.has_turnado == 1;
+            }, function(rows) {
+                if (conteosTurnadasCalculados) {
+                    return;
+                }
+
+                var conteos = {
+                    todos: rows.length,
+                    1: 0,
+                    2: 0,
+                    3: 0,
+                    4: 0
+                };
+
+                rows.forEach(function(item) {
+                    if (Object.prototype.hasOwnProperty.call(conteos, item.estatus_solicitud)) {
+                        conteos[item.estatus_solicitud]++;
+                    }
+                });
+
+                Object.keys(conteos).forEach(function(estatus) {
+                    var contador = document.getElementById('count-' + estatus);
+                    if (contador) {
+                        contador.textContent = conteos[estatus];
+                    }
+                });
+
+                conteosTurnadasCalculados = true;
             });
 
             // Rechazadas: solo las que el admin rechazó directamente (sin turnado)
             initSolicitudesDataTable('tabla-solicitudes-inactivas', function(item) {
                 return item.estatus_solicitud === 2 && item.has_turnado == 0;
+            });
+
+            // Filtros de estatus en el tab de turnadas
+            $(document).on('click', '.pill-estatus-turnadas', function() {
+                filtroEstatusTurnadas = $(this).data('estatus');
+                $('.pill-estatus-turnadas').removeClass('active');
+                $(this).addClass('active');
+                $('#tabla-solicitudes-aprobadas').DataTable().draw();
             });
         });
 

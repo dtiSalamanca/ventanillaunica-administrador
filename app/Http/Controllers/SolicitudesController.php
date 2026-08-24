@@ -6,12 +6,15 @@ use App\Models\Dependencia;
 use App\Models\DocumentoPredio;
 use App\Models\DocumentoSolicitud;
 use App\Models\DocumentoTramite;
+use App\Models\OrdenPago;
 use App\Models\ResolucionSolicitud;
 use App\Models\Solicitud;
 use App\Models\TurnadoSolicitud;
 use App\Models\UsuarioAD;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class SolicitudesController extends Controller
@@ -67,6 +70,15 @@ class SolicitudesController extends Controller
             $resolucion = ResolucionSolicitud::where('fk_turnado', $turnado->id_turnado)->first();
         }
 
+        // Orden de pago generada por el enlace (contiene el precio designado)
+        $ordenPago = OrdenPago::where('fk_solicitud', $solicitud->id_solicitud)->latest('id_orden_pago')->first();
+
+        // Nombre del registro CRI (mismo catálogo con el que se asigna el CRI al crear el trámite)
+        $nombreCri = null;
+        if ($ordenPago && $ordenPago->numero_cri) {
+            $nombreCri = $this->resolverNombreCri((int) $ordenPago->numero_cri);
+        }
+
         return view('solicitudes.ver_detalles', compact(
             'solicitud',
             'documentosSolicitud',
@@ -74,7 +86,65 @@ class SolicitudesController extends Controller
             'dependencias',
             'predioDocs',
             'resolucion',
+            'ordenPago',
+            'nombreCri',
         ));
+    }
+
+    /**
+     * Resuelve el nombre del registro CRI usando el mismo catálogo con el que se
+     * asigna el CRI a los trámites al crearlos (consultaCuentasCri). El catálogo
+     * se cachea una hora para no consultar la API interna en cada petición; si la
+     * API no responde, devuelve null y se muestra solo el número.
+     */
+    private function resolverNombreCri(int $numeroCri): ?string
+    {
+        $catalogo = Cache::remember('catalogo_cri', now()->addHour(), function () {
+            try {
+                $response = Http::timeout(5)
+                    ->connectTimeout(3)
+                    ->get('http://172.17.5.214/sisalamanca/public/api/consultaCuentasCri');
+
+                if (! $response->successful()) {
+                    return [];
+                }
+
+                $payload = $response->json();
+
+                if (is_array($payload) && isset($payload['data']) && is_array($payload['data'])) {
+                    return $payload['data'];
+                }
+
+                return is_array($payload) ? $payload : [];
+            } catch (\Throwable $exception) {
+                return [];
+            }
+        });
+
+        foreach ($catalogo as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+
+            $valor = $item['id'] ?? $item['id_cri'] ?? $item['value'] ?? $item['cri'] ?? null;
+
+            if ((int) $valor !== $numeroCri) {
+                continue;
+            }
+
+            // Mismo formato que el select "Elegir cuenta contable" al crear trámites:
+            // "código de cuenta - nombre" (p. ej. "4111010001 - Juegos y Apuestas Permitidas")
+            $codigo = $item['account_code'] ?? $item['codigo'] ?? $item['codigo_cuenta'] ?? null;
+            $nombre = $item['account_name'] ?? $item['nombre'] ?? $item['descripcion'] ?? null;
+
+            if (is_string($codigo) && $codigo !== '' && is_string($nombre) && $nombre !== '') {
+                return "{$codigo} - {$nombre}";
+            }
+
+            return is_string($nombre) && $nombre !== '' ? $nombre : null;
+        }
+
+        return null;
     }
 
     public function getUsuariosPorDependencia(Request $request)

@@ -5,9 +5,58 @@ $(document).ready(function () {
         },
     });
 
+    function autoCerrarAlerta($alerta, ms) {
+        setTimeout(function () {
+            $alerta.fadeOut(300, function () {
+                $(this).remove();
+            });
+        }, ms || 5000);
+    }
+
+    function mostrarAlerta(mensaje, tipo) {
+        tipo = tipo || "success";
+        var iconos = {
+            success: "fa-check-circle",
+            warning: "fa-exclamation-triangle",
+            error: "fa-times-circle",
+            info: "fa-info-circle",
+        };
+        var icono = iconos[tipo] || "fa-check-circle";
+        var $alerta = $(
+            '<div class="alert alert-' +
+                tipo +
+                ' alert-dismissible fade show" role="alert"></div>',
+        );
+        $alerta.append('<i class="fas ' + icono + ' me-2"></i>');
+        $alerta.append($("<span>").text(mensaje));
+        $alerta.append(
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        );
+
+        var $contenedor = $("#alertas-dinamicas");
+        if (!$contenedor.length) {
+            $contenedor = $(".main-container");
+        }
+        $contenedor.prepend($alerta);
+        autoCerrarAlerta($alerta);
+    }
+
+    // Cerrar alerta con el botón ×
+    $(document).on("click", ".alert-dismissible .btn-close", function () {
+        var $alerta = $(this).closest(".alert-dismissible");
+        $alerta.fadeOut(300, function () {
+            $(this).remove();
+        });
+    });
+
+    // Las alertas de sesión (crear/actualizar) también se cierran solas a los 5s
+    $(".alert-dismissible").each(function () {
+        autoCerrarAlerta($(this));
+    });
+
     // ---- Elementos DOM ----
     const tablaActivos = $("#tabla-usuarios-activos");
-    const tablaInactivos = $("#tabla-usuarios-inactivos");
+    // const tablaInactivos = $("#tabla-usuarios-inactivos"); // tab inactivos comentado
     const botonRecargar = $("#btn-recargar-usuarios");
     const selectionCount = $("#selection-count");
     const btnAsignarDependencia = $("#btn-asignar-dependencia");
@@ -17,12 +66,15 @@ $(document).ready(function () {
     const modalUserCount = $("#modal-user-count");
     const btnGuardar = $("#btn-guardar-dependencia");
 
-    if (!tablaActivos.length || !tablaInactivos.length) {
+    if (!tablaActivos.length) {
         return;
     }
 
     // ---- Estado de selección ----
     const usuariosSeleccionados = new Set();
+
+    // Cache de usuarios cargados para mostrar nombres en el mensaje de asignación
+    const usuariosCache = {};
 
     // ---- Utilerías ----
     function escapeHtml(value) {
@@ -49,6 +101,13 @@ $(document).ready(function () {
         },
     };
 
+    // Solo los usuarios con rol Enlace pueden tener dependencia asignada.
+    // Se compara por el texto del rol (la API de usuarios puede devolver un
+    // rol_id distinto al del login, así que el rol es la fuente confiable).
+    function esEnlace(row) {
+        return String(row.rol || "").toLowerCase() === "enlace";
+    }
+
     // ---- Columnas con checkbox ----
     const checkboxColumn = {
         data: null,
@@ -60,11 +119,15 @@ $(document).ready(function () {
                 const checked = usuariosSeleccionados.has(row.username)
                     ? "checked"
                     : "";
+                const bloqueado = esEnlace(row)
+                    ? ""
+                    : ' disabled title="Solo usuarios con rol Enlace"';
                 return (
                     '<input type="checkbox" class="usuario-checkbox" value="' +
                     escapeHtml(row.username) +
                     '" ' +
                     checked +
+                    bloqueado +
                     ">"
                 );
             }
@@ -94,10 +157,28 @@ $(document).ready(function () {
                 );
             },
         },
+        {
+            data: "dependencia",
+            className: "w-dependencia",
+            render: function (data) {
+                if (!data) {
+                    return (
+                        '<span class="usuario-sin-dependencia">' +
+                        '<i class="fas fa-building-circle-exclamation me-1"></i>Sin asignar</span>'
+                    );
+                }
+                return (
+                    '<span class="usuario-badge usuario-badge-dependencia">' +
+                    '<i class="fas fa-building me-1"></i>' +
+                    escapeHtml(data) +
+                    "</span>"
+                );
+            },
+        },
     ];
 
     const columnsActivos = [checkboxColumn].concat(dataColumns);
-    const columnsInactivos = [checkboxColumn].concat(dataColumns);
+    // const columnsInactivos = [checkboxColumn].concat(dataColumns); // tab inactivos comentado
 
     const dataTableOptions = {
         processing: true,
@@ -114,14 +195,15 @@ $(document).ready(function () {
         }),
     );
 
-    const dataTableInactivos = tablaInactivos.DataTable(
-        $.extend({}, dataTableOptions, {
-            columns: columnsInactivos,
-            language: $.extend({}, language, {
-                emptyTable: "Ningún usuario inactivo disponible",
-            }),
-        }),
-    );
+    // Tab de inactivos comentado temporalmente
+    // const dataTableInactivos = tablaInactivos.DataTable(
+    //     $.extend({}, dataTableOptions, {
+    //         columns: columnsInactivos,
+    //         language: $.extend({}, language, {
+    //             emptyTable: "Ningún usuario inactivo disponible",
+    //         }),
+    //     }),
+    // );
 
     // ---- Manejo de selección ----
     function actualizarSeleccion() {
@@ -161,9 +243,10 @@ $(document).ready(function () {
     tablaActivos.on("draw.dt", function () {
         sincronizarCheckboxes("tabla-usuarios-activos");
     });
-    tablaInactivos.on("draw.dt", function () {
-        sincronizarCheckboxes("tabla-usuarios-inactivos");
-    });
+    // Tab de inactivos comentado temporalmente
+    // tablaInactivos.on("draw.dt", function () {
+    //     sincronizarCheckboxes("tabla-usuarios-inactivos");
+    // });
 
     // ---- Carga de datos ----
     function setLoading(isLoading) {
@@ -176,15 +259,23 @@ $(document).ready(function () {
         const activos = usuarios.filter(function (usuario) {
             return usuario.activo === true;
         });
-        const inactivos = usuarios.filter(function (usuario) {
-            return usuario.activo !== true;
+        // const inactivos = usuarios.filter(function (usuario) {
+        //     return usuario.activo !== true;
+        // }); // tab inactivos comentado
+
+        // Actualizar caché de usuarios para el mensaje de asignación
+        Object.keys(usuariosCache).forEach(function (key) {
+            delete usuariosCache[key];
+        });
+        activos.forEach(function (usuario) {
+            usuariosCache[usuario.username] = usuario;
         });
 
         usuariosSeleccionados.clear();
         actualizarSeleccion();
 
         dataTableActivos.clear().rows.add(activos).draw();
-        dataTableInactivos.clear().rows.add(inactivos).draw();
+        // dataTableInactivos.clear().rows.add(inactivos).draw(); // tab inactivos comentado
     }
 
     function cargarUsuarios() {
@@ -275,6 +366,10 @@ $(document).ready(function () {
         }
 
         var usuarios = Array.from(usuariosSeleccionados);
+        var nombresUsuarios = usuarios.map(function (username) {
+            var usuario = usuariosCache[username];
+            return (usuario && usuario.nombre_completo) || username;
+        });
 
         btnGuardar.prop("disabled", true);
 
@@ -289,13 +384,12 @@ $(document).ready(function () {
         })
             .done(function (response) {
                 modalAsignar.modal("hide");
-                Swal.fire({
-                    icon: "success",
-                    title: "¡Asignado!",
-                    text: response.message,
-                    timer: 3000,
-                    timerProgressBar: true,
-                });
+                mostrarAlerta(
+                    "Dependencia asignada a: " + nombresUsuarios.join(", "),
+                    "success",
+                );
+                // Recargar usuarios para reflejar el cambio de dependencia sin refrescar
+                cargarUsuarios();
             })
             .fail(function (xhr) {
                 var message = "Ocurrió un error al asignar la dependencia.";

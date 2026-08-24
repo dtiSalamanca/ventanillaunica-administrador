@@ -186,6 +186,10 @@ body {
     min-width: 120px;
 }
 
+.w-dependencia {
+    min-width: 200px;
+}
+
 .usuario-badge {
     display: inline-flex;
     align-items: center;
@@ -200,6 +204,22 @@ body {
 .usuario-badge-rol {
     background: #eef2ff;
     color: #3730a3;
+}
+
+.usuario-badge-dependencia {
+    background: #e8f4f1;
+    color: #164a3f;
+}
+
+.usuario-sin-dependencia {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.usuario-checkbox:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
 }
 
 .dataTables_wrapper .dataTables_length,

@@ -266,6 +266,16 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleNotaPorM2();
     }
 
+    // Validación del campo de vigencia: solo números y máximo 3 dígitos
+    var inputVigencia = document.getElementById("vigencia_dias");
+
+    if (inputVigencia) {
+        inputVigencia.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "").slice(0, 3);
+            this.classList.remove("is-invalid");
+        });
+    }
+
     // Deshabilitar botón al enviar
     formulario.addEventListener("submit", function () {
         botonGuardar.disabled = true;

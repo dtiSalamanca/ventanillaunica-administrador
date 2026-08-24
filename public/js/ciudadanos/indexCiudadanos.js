@@ -5,6 +5,55 @@ $(document).ready(function () {
         },
     });
 
+    function autoCerrarAlerta($alerta, ms) {
+        setTimeout(function () {
+            $alerta.fadeOut(300, function () {
+                $(this).remove();
+            });
+        }, ms || 5000);
+    }
+
+    function mostrarAlerta(mensaje, tipo) {
+        tipo = tipo || "success";
+        var iconos = {
+            success: "fa-check-circle",
+            warning: "fa-exclamation-triangle",
+            error: "fa-times-circle",
+            info: "fa-info-circle",
+        };
+        var icono = iconos[tipo] || "fa-check-circle";
+        var $alerta = $(
+            '<div class="alert alert-' +
+                tipo +
+                ' alert-dismissible fade show" role="alert"></div>',
+        );
+        $alerta.append('<i class="fas ' + icono + ' me-2"></i>');
+        $alerta.append($("<span>").text(mensaje));
+        $alerta.append(
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        );
+
+        var $contenedor = $("#alertas-dinamicas");
+        if (!$contenedor.length) {
+            $contenedor = $(".main-container");
+        }
+        $contenedor.prepend($alerta);
+        autoCerrarAlerta($alerta);
+    }
+
+    // Cerrar alerta con el botón ×
+    $(document).on("click", ".alert-dismissible .btn-close", function () {
+        var $alerta = $(this).closest(".alert-dismissible");
+        $alerta.fadeOut(300, function () {
+            $(this).remove();
+        });
+    });
+
+    // Las alertas de sesión (crear/actualizar) también se cierran solas a los 5s
+    $(".alert-dismissible").each(function () {
+        autoCerrarAlerta($(this));
+    });
+
     // ---- Elementos DOM ----
     const tablaActivos = $("#tabla-ciudadanos-activos");
     const tablaSinVerificar = $("#tabla-ciudadanos-sin-verificar");
@@ -296,13 +345,7 @@ $(document).ready(function () {
                 },
             })
                 .done(function (response) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "¡Bloqueados!",
-                        text: response.message,
-                        timer: 3000,
-                        timerProgressBar: true,
-                    });
+                    mostrarAlerta(response.message, "success");
                     cargarCiudadanos();
                 })
                 .fail(function (xhr) {
@@ -359,13 +402,7 @@ $(document).ready(function () {
                 },
             })
                 .done(function (response) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "¡Desbloqueados!",
-                        text: response.message,
-                        timer: 3000,
-                        timerProgressBar: true,
-                    });
+                    mostrarAlerta(response.message, "success");
                     cargarCiudadanos();
                 })
                 .fail(function (xhr) {

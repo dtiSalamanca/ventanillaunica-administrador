@@ -7,6 +7,7 @@ use App\Models\catDocumentoPredio;
 use App\Models\Dependencia;
 use App\Models\DocumentoPredio;
 use App\Models\DocumentoTramite;
+use App\Models\OrdenPago;
 use App\Models\Predio;
 use App\Models\Solicitud;
 use App\Models\Tramite;
@@ -92,6 +93,110 @@ class SolicitudesVerDetallesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('No adjuntado', false);
+    }
+
+    public function test_ver_detalles_muestra_el_precio_designado_por_el_enlace_cuando_esta_por_pagar(): void
+    {
+        $this->authenticateAdUser();
+
+        $usuario = User::factory()->create();
+        $tramite = $this->crearTramite();
+
+        $solicitud = Solicitud::create([
+            'fk_usuario' => $usuario->id,
+            'fk_tramite' => $tramite->id_tramite,
+            'fecha_solicitud' => now(),
+            'estatus_solicitud' => 3, // Por pagar
+        ]);
+
+        OrdenPago::factory()->create([
+            'nombre_tramite' => $tramite->nombre_tramite,
+            'precio_tramite' => 250,
+            'numero_cri' => $tramite->tramite_cri,
+            'fk_tramite' => $tramite->id_tramite,
+            'fk_solicitud' => $solicitud->id_solicitud,
+        ]);
+
+        $response = $this->get(route('solicitudes.verDetalles', $solicitud->id_solicitud));
+
+        $response->assertOk();
+        $response->assertSee('Por pagar', false);
+        $response->assertSee('Orden de pago', false);
+        $response->assertSee('Precio asignado al trámite', false);
+        $response->assertSee('250.00', false);
+        $response->assertSee('MXN', false);
+    }
+
+    public function test_ver_detalles_muestra_el_nombre_del_registro_cri(): void
+    {
+        $this->authenticateAdUser();
+
+        // Simula el catálogo de cuentas CRI con el que se asigna el CRI al crear trámites
+        Cache::put('catalogo_cri', [
+            ['id' => 1, 'account_code' => '4101010001', 'account_name' => 'Ordenes y acuses'],
+        ]);
+
+        $usuario = User::factory()->create();
+        $tramite = $this->crearTramite();
+
+        $solicitud = Solicitud::create([
+            'fk_usuario' => $usuario->id,
+            'fk_tramite' => $tramite->id_tramite,
+            'fecha_solicitud' => now(),
+            'estatus_solicitud' => 3, // Por pagar
+        ]);
+
+        OrdenPago::factory()->create([
+            'nombre_tramite' => $tramite->nombre_tramite,
+            'precio_tramite' => 250,
+            'numero_cri' => 1,
+            'fk_tramite' => $tramite->id_tramite,
+            'fk_solicitud' => $solicitud->id_solicitud,
+        ]);
+
+        $response = $this->get(route('solicitudes.verDetalles', $solicitud->id_solicitud));
+
+        $response->assertOk();
+        $response->assertSee('4101010001', false);
+        $response->assertSee('Ordenes y acuses', false);
+        $response->assertDontSee('CRI 1', false);
+    }
+
+    public function test_ver_detalles_no_muestra_la_orden_de_pago_cuando_no_existe(): void
+    {
+        $this->authenticateAdUser();
+
+        $usuario = User::factory()->create();
+        $tramite = $this->crearTramite();
+
+        $solicitud = Solicitud::create([
+            'fk_usuario' => $usuario->id,
+            'fk_tramite' => $tramite->id_tramite,
+            'fecha_solicitud' => now(),
+            'estatus_solicitud' => 0,
+        ]);
+
+        $response = $this->get(route('solicitudes.verDetalles', $solicitud->id_solicitud));
+
+        $response->assertOk();
+        $response->assertDontSee('Orden de pago', false);
+        $response->assertDontSee('Precio asignado por el enlace', false);
+    }
+
+    public function test_index_solicitudes_muestra_filtros_de_estatus_en_turnadas(): void
+    {
+        $this->authenticateAdUser();
+
+        $response = $this->get(route('solicitudes.index'));
+
+        $response->assertOk();
+        $response->assertSee('id="filtros-estatus-turnadas"', false);
+        $response->assertSee('pill-estatus-turnadas', false);
+        $response->assertDontSee('data-estatus="0"', false);
+        $response->assertSee('Turnados', false);
+        $response->assertSee('Rechazados', false);
+        $response->assertSee('Por pagar', false);
+        $response->assertSee('Completados', false);
     }
 
     private function crearTramite(): Tramite

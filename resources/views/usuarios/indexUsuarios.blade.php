@@ -29,6 +29,8 @@
             </div>
         </div>
 
+        <div id="alertas-dinamicas"></div>
+
         <!-- Alertas -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -76,12 +78,14 @@
                         </button>
                     </li>
 
+                    {{-- Tab de inactivos comentado temporalmente
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="inactivos-tab" data-bs-toggle="tab" data-bs-target="#inactivos"
                             type="button" role="tab" aria-controls="inactivos" aria-selected="false">
                             <i class="fa-solid fa-ban me-1"></i> Usuarios inactivos
                         </button>
                     </li>
+                    --}}
                 </ul>
 
                 <div class="tab-content" id="tabs-usuarios-content">
@@ -107,6 +111,7 @@
                                             <th class="w-usuario"><i class="fas fa-user me-2"></i>Usuario</th>
                                             <th class="w-nombre"><i class="fas fa-id-card me-2"></i>Nombre completo</th>
                                             <th class="w-rol"><i class="fas fa-user-shield me-2"></i>Rol</th>
+                                            <th class="w-dependencia"><i class="fas fa-building me-2"></i>Dependencia</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -117,6 +122,7 @@
                         </div>
                     </div>
 
+                    {{-- Tab de inactivos comentado temporalmente
                     <div class="tab-pane fade" id="inactivos" role="tabpanel" aria-labelledby="inactivos-tab">
                         <div class="table-container">
                             <div class="table-responsive">
@@ -137,6 +143,7 @@
                             </div>
                         </div>
                     </div>
+                    --}}
                 </div>
             </div>
         </div>

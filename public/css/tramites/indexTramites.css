@@ -177,6 +177,10 @@ body {
     width: 140px;
 }
 
+.w-vigencia {
+    width: 120px;
+}
+
 .w-descripcion {
     min-width: 280px;
 }

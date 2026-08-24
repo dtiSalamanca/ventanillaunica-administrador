@@ -4,6 +4,9 @@ namespace Tests\Feature;
 
 use App\Auth\AdUser;
 use App\Auth\AdUserProvider;
+use App\Models\Dependencia;
+use App\Models\UsuarioAD;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
@@ -12,6 +15,8 @@ use Tests\TestCase;
 
 class UsuariosAdTest extends TestCase
 {
+    use RefreshDatabase;
+
     private string $authUrl = 'http://ad.test/login';
 
     private string $usersUrl = 'http://ad.test/usersApp';
@@ -118,6 +123,7 @@ class UsuariosAdTest extends TestCase
                     'rol_id' => 35,
                     'id_area' => 31,
                     'rol' => 'admin',
+                    'dependencia' => null,
                     'activo' => true,
                 ],
             ]);
@@ -126,6 +132,47 @@ class UsuariosAdTest extends TestCase
             && $request['usuario'] === 'desarrollo'
             && $request['password'] === 'secret-password'
             && $request['aplicativo'] === '24');
+    }
+
+    public function test_get_usuarios_ad_includes_asignada_dependencia(): void
+    {
+        $this->authenticateAdUser();
+
+        $dependencia = Dependencia::create([
+            'nombre_dependencia' => 'Dirección de Desarrollo Urbano',
+            'estatus_dependencia' => true,
+        ]);
+
+        UsuarioAD::create([
+            'nombre_usuario' => 'desarrollo',
+            'fk_dependencia' => $dependencia->id_dependencia,
+        ]);
+
+        Http::fake([
+            $this->usersUrl => Http::response([
+                [
+                    'success' => true,
+                    'permisos' => [
+                        'id_usuario' => 5,
+                        'username' => 'desarrollo',
+                        'nombre' => 'JEFATURA',
+                        'apaterno' => 'DE',
+                        'amaterno' => 'DESARROLLO',
+                        'app' => 'SIA',
+                        'rol_id' => 35,
+                        'id_area' => 31,
+                        'rol' => 'admin',
+                        'activo' => true,
+                    ],
+                ],
+            ]),
+        ]);
+
+        $response = $this->getJson(route('getUsuariosAd'));
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('0.dependencia', 'Dirección de Desarrollo Urbano');
     }
 
     public function test_get_usuarios_ad_returns_error_when_password_is_missing(): void

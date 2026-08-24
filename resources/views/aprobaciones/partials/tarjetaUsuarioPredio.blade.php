@@ -44,7 +44,10 @@
                     \App\Models\Predio::ESTATUS_EN_REVISION,
                     \App\Models\Predio::ESTATUS_POR_REVISAR,
                 ]);
-                $predioPendiente = $predioEnPendiente || $tieneDocumentoPendiente;
+                // La línea lateral (naranja) solo marca a los predios que tienen
+                // DOCUMENTOS pendientes de revisar, no a los que están pendientes
+                // de consulta/aprobación.
+                $predioPendiente = $tieneDocumentoPendiente;
             @endphp
             <div class="accordion-item predio-item @if ($predioPendiente) predio-pendiente @endif">
                 <h2 class="accordion-header predio-header">
@@ -72,13 +75,6 @@
                             <span class="badge-estatus {{ $estatusInfo[$predio->estatus_predio]['class'] }}">
                                 {{ $estatusInfo[$predio->estatus_predio]['label'] }}
                             </span>
-                        @else
-                            {{-- Pendiente: aún no se ha validado la existencia, solo se puede rechazar --}}
-                            <button type="button" class="btn-rechazar btn-rechazar-predio"
-                                data-id="{{ $predio->id_predio }}" data-clave="{{ $predio->clave_predio }}"
-                                data-nombre-usuario="{{ $usuario->name }}" title="Rechazar predio">
-                                <i class="fas fa-xmark"></i>
-                            </button>
                         @endif
                     </div>
                 </h2>
@@ -105,11 +101,40 @@
                             </div>
                         @endif
                         @forelse ($predio->documentos as $documento)
+                            @php
+                                $docPredioAprobado =
+                                    $documento->estatus_documento === \App\Models\DocumentoPredio::ESTATUS_APROBADO;
+                                $fechaVencimientoDoc = $docPredioAprobado ? $documento->fechaVencimiento() : null;
+                            @endphp
                             <div class="documento-item">
                                 <div class="documento-info">
                                     <div class="documento-nombre">{{ $documento->catalogoDocumento->nombre_documento }}
                                     </div>
-                                    <div class="documento-fecha">{{ $documento->created_at->format('d/m/Y') }}</div>
+                                    <div class="documento-fecha">
+                                        @if ($documento->fecha_aprobacion)
+                                            <i class="fa-solid fa-circle-check me-1"></i>Aprobado el
+                                            {{ $documento->fecha_aprobacion->format('d/m/Y') }}
+                                        @else
+                                            <i class="fa-regular fa-calendar me-1"></i>Cargado el
+                                            {{ $documento->created_at->format('d/m/Y') }}
+                                        @endif
+                                    </div>
+                                    @if ($docPredioAprobado && $fechaVencimientoDoc)
+                                        @if ($documento->estaExpirado())
+                                            <span class="doc-vigencia doc-vigencia--vencido"><i
+                                                    class="fa-solid fa-triangle-exclamation me-1"></i>Vencido
+                                                ({{ $fechaVencimientoDoc->format('d/m/Y') }})
+                                            </span>
+                                        @elseif ($documento->estaPorVencer())
+                                            <span class="doc-vigencia doc-vigencia--por-vencer"><i
+                                                    class="fa-solid fa-hourglass-half me-1"></i>Por vencer
+                                                ({{ $fechaVencimientoDoc->format('d/m/Y') }})</span>
+                                        @else
+                                            <span class="doc-vigencia doc-vigencia--vigente"><i
+                                                    class="fa-solid fa-check me-1"></i>Vence:
+                                                {{ $fechaVencimientoDoc->format('d/m/Y') }}</span>
+                                        @endif
+                                    @endif
                                     @if ($documento->estatus_documento === \App\Models\DocumentoPredio::ESTATUS_RECHAZADO && $documento->motivo_rechazo)
                                         <div class="documento-motivo-rechazo" title="{{ $documento->motivo_rechazo }}">
                                             <i class="fa-solid fa-circle-info"></i>
@@ -144,7 +169,12 @@
                                 </div>
                             </div>
                         @empty
-                            <p class="predio-sin-documentos">Este predio no tiene documentos cargados.</p>
+                            {{-- El aviso "sin documentos" solo aplica cuando el predio fue APROBADO:
+                                 ahí el ciudadano sí debía contar con documentos. En pendientes o
+                                 rechazados (por no existir en el predial) no aplica. --}}
+                            @if ($predio->estatus_predio === \App\Models\Predio::ESTATUS_APROBADO)
+                                <p class="predio-sin-documentos">Este predio no tiene documentos cargados.</p>
+                            @endif
                         @endforelse
                     </div>
                 </div>

@@ -98,7 +98,11 @@ class AprobacionesController extends Controller
 
     public function aprobarDocumentoPersonal(tblDocumentoPersonal $documentoPersonal): JsonResponse
     {
-        $documentoPersonal->update(['estatus_documento' => tblDocumentoPersonal::ESTATUS_APROBADO]);
+        $documentoPersonal->update([
+            'estatus_documento' => tblDocumentoPersonal::ESTATUS_APROBADO,
+            // La vigencia del documento corre a partir de la aprobación.
+            'fecha_aprobacion' => now(),
+        ]);
 
         return response()->json(['message' => 'Documento aprobado correctamente.']);
     }
@@ -176,12 +180,26 @@ class AprobacionesController extends Controller
         });
     }
 
+    /**
+     * Predios visibles en el admin: se ocultan (sin borrar) los que al ser
+     * consultados resultaron inexistentes en el sistema de predial.
+     */
+    private function scopePredioVisible(Builder $query): void
+    {
+        $query->where('consultado', '!=', Predio::CONSULTADO_NO_EXISTE);
+    }
+
     private function pendientesPrediosPaginator(?string $search)
     {
-        return User::whereHas('predios', fn (Builder $query) => $this->scopePredioPendiente($query))
+        return User::whereHas('predios', function (Builder $query) {
+            $this->scopePredioVisible($query);
+            $this->scopePredioPendiente($query);
+        })
             ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
             ->with(['predios' => function ($query) {
-                $query->with('documentos.catalogoDocumento')->orderBy('clave_predio');
+                $query->with('documentos.catalogoDocumento')
+                    ->where('consultado', '!=', Predio::CONSULTADO_NO_EXISTE)
+                    ->orderBy('clave_predio');
             }])
             ->orderBy('name')
             ->paginate(6, ['*'], 'pendientesPage')
@@ -190,11 +208,13 @@ class AprobacionesController extends Controller
 
     private function sinPendientesPrediosPaginator(?string $search)
     {
-        return User::whereHas('predios')
+        return User::whereHas('predios', fn (Builder $query) => $this->scopePredioVisible($query))
             ->whereDoesntHave('predios', fn (Builder $query) => $this->scopePredioPendiente($query))
             ->when($search, fn (Builder $query, string $search) => $this->filtrarPorNombreOCorreo($query, $search))
             ->with(['predios' => function ($query) {
-                $query->with('documentos.catalogoDocumento')->orderBy('clave_predio');
+                $query->with('documentos.catalogoDocumento')
+                    ->where('consultado', '!=', Predio::CONSULTADO_NO_EXISTE)
+                    ->orderBy('clave_predio');
             }])
             ->orderBy('name')
             ->paginate(6, ['*'], 'sinPendientesPage')
@@ -228,7 +248,11 @@ class AprobacionesController extends Controller
 
     public function aprobarDocumentoPredio(DocumentoPredio $documentoPredio): JsonResponse
     {
-        $documentoPredio->update(['estatus_documento' => DocumentoPredio::ESTATUS_APROBADO]);
+        $documentoPredio->update([
+            'estatus_documento' => DocumentoPredio::ESTATUS_APROBADO,
+            // La vigencia del documento corre a partir de la aprobación.
+            'fecha_aprobacion' => now(),
+        ]);
 
         return response()->json(['message' => 'Documento de predio aprobado correctamente.']);
     }
