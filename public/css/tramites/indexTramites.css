@@ -177,6 +177,10 @@ body {
     width: 140px;
 }
 
+.w-vigencia {
+    width: 120px;
+}
+
 .w-descripcion {
     min-width: 280px;
 }
@@ -245,6 +249,21 @@ body {
     background: var(--primary-light);
     color: var(--primary-dark);
     border: 1px solid #b2c9c5;
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ── Badge: sin costo ── */
+.badge-sin-costo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #b7dfb9;
     border-radius: 999px;
     padding: 0.3rem 0.7rem;
     font-size: 0.78rem;

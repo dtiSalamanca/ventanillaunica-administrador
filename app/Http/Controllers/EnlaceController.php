@@ -179,23 +179,26 @@ class EnlaceController extends Controller
 
         $solicitud = Solicitud::with('tramite')->findOrFail($turnado->fk_solicitud);
 
-        // El precio del trámite siempre lo captura el enlace al atender la solicitud
-        $request->validate([
-            'precio_tramite' => 'required|integer|min:1',
-        ], [
-            'precio_tramite.required' => 'Debes capturar el precio del trámite.',
-            'precio_tramite.integer' => 'El precio debe ser un número entero (sin centavos).',
-            'precio_tramite.min' => 'El precio debe ser mayor a 0.',
-        ]);
+        // Si el trámite es sin costo no se captura precio ni se genera orden de pago
+        if (! $solicitud->tramite->sin_costo) {
+            // El precio del trámite siempre lo captura el enlace al atender la solicitud
+            $request->validate([
+                'precio_tramite' => 'required|integer|min:1',
+            ], [
+                'precio_tramite.required' => 'Debes capturar el precio del trámite.',
+                'precio_tramite.integer' => 'El precio debe ser un número entero (sin centavos).',
+                'precio_tramite.min' => 'El precio debe ser mayor a 0.',
+            ]);
 
-        OrdenPago::create([
-            'nombre_tramite' => $solicitud->tramite->nombre_tramite,
-            'precio_tramite' => $request->input('precio_tramite'),
-            'numero_cri' => $solicitud->tramite->tramite_cri,
-            'orden_estatus' => 1, // Pendiente
-            'fk_tramite' => $solicitud->tramite->id_tramite,
-            'fk_solicitud' => $solicitud->id_solicitud,
-        ]);
+            OrdenPago::create([
+                'nombre_tramite' => $solicitud->tramite->nombre_tramite,
+                'precio_tramite' => $request->input('precio_tramite'),
+                'numero_cri' => $solicitud->tramite->tramite_cri,
+                'orden_estatus' => 1, // Pendiente
+                'fk_tramite' => $solicitud->tramite->id_tramite,
+                'fk_solicitud' => $solicitud->id_solicitud,
+            ]);
+        }
 
         $solicitud->estatus_solicitud = 3; // Atendido
         $solicitud->fecha_resolucion = now();

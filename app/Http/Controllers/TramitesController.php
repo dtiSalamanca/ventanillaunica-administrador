@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\catDocumentoPersonal;
 use App\Models\catDocumentoPredio;
-use App\Models\Requisito;
 use App\Models\Tramite;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -27,7 +26,7 @@ class TramitesController extends Controller
     public function getTramitesActivos(): JsonResponse
     {
         $tramites = Tramite::where('estatus_tramite', true)
-            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2')
+            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2', 'sin_costo', 'vigencia_dias')
             ->orderBy('nombre_tramite')
             ->get();
 
@@ -37,12 +36,15 @@ class TramitesController extends Controller
     public function registrarTramite(Request $request): RedirectResponse
     {
         $cobraPorM2 = $request->boolean('cobra_por_m2');
+        $cuentaPredial = $request->boolean('cuenta_predial');
+        $sinCosto = $request->boolean('sin_costo');
 
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite',
             'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
             'fk_cri' => 'required|numeric|min:1',
+            'vigencia_dias' => 'nullable|integer|max_digits:3',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
@@ -53,9 +55,11 @@ class TramitesController extends Controller
             'fk_cri.required' => 'El campo CRI es obligatorio.',
             'fk_cri.numeric' => 'El campo CRI debe ser un número válido.',
             'fk_cri.min' => 'El campo CRI debe ser mayor o igual a 1.',
+            'vigencia_dias.integer' => 'La vigencia debe contener solo números.',
+            'vigencia_dias.max_digits' => 'La vigencia debe tener como máximo 3 dígitos.',
         ]);
 
-        Tramite::create([
+        $tramite = Tramite::create([
             'nombre_tramite' => $validated['nombre'],
             'descripcion_tramite' => $validated['descripcion'],
             'estatus_tramite' => true,
@@ -63,15 +67,18 @@ class TramitesController extends Controller
             'precio_tramite' => 0,
             'tramite_cri' => $validated['fk_cri'],
             'cobra_por_m2' => $cobraPorM2,
+            'cuenta_predial' => $cuentaPredial,
+            'sin_costo' => $sinCosto,
+            'vigencia_dias' => $validated['vigencia_dias'] ?? 0,
         ]);
 
-        return redirect()->route('indexTramites')->with('success', 'Trámite registrado correctamente.');
+        return redirect()->route('indexTramites')->with('success', "Trámite '{$tramite->nombre_tramite}' registrado correctamente.");
     }
 
     public function getTramitesInactivos(): JsonResponse
     {
         $tramites = Tramite::where('estatus_tramite', false)
-            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2')
+            ->select('id_tramite', 'nombre_tramite', 'descripcion_tramite', 'precio_tramite', 'cobra_por_m2', 'sin_costo', 'vigencia_dias')
             ->orderBy('nombre_tramite')
             ->get();
 
@@ -86,12 +93,15 @@ class TramitesController extends Controller
     public function actualizarTramite(Request $request, Tramite $tramite): RedirectResponse
     {
         $cobraPorM2 = $request->boolean('cobra_por_m2');
+        $cuentaPredial = $request->boolean('cuenta_predial');
+        $sinCosto = $request->boolean('sin_costo');
 
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:cat_tramites,nombre_tramite,'.$tramite->id_tramite.',id_tramite',
             'descripcion' => 'required|string',
             'fk_dependencia' => 'required|exists:cat_dependencias,id_dependencia',
             'fk_cri' => 'required|numeric|min:1',
+            'vigencia_dias' => 'nullable|integer|max_digits:3',
         ], [
             'nombre.required' => 'El nombre del trámite es obligatorio.',
             'nombre.max' => 'El nombre no debe exceder los 255 caracteres.',
@@ -102,6 +112,8 @@ class TramitesController extends Controller
             'fk_cri.required' => 'El campo CRI es obligatorio.',
             'fk_cri.numeric' => 'El campo CRI debe ser un número válido.',
             'fk_cri.min' => 'El campo CRI debe ser mayor o igual a 1.',
+            'vigencia_dias.integer' => 'La vigencia debe contener solo números.',
+            'vigencia_dias.max_digits' => 'La vigencia debe tener como máximo 3 dígitos.',
         ]);
 
         $tramite->update([
@@ -111,23 +123,26 @@ class TramitesController extends Controller
             'precio_tramite' => 0,
             'tramite_cri' => $validated['fk_cri'],
             'cobra_por_m2' => $cobraPorM2,
+            'cuenta_predial' => $cuentaPredial,
+            'sin_costo' => $sinCosto,
+            'vigencia_dias' => $validated['vigencia_dias'] ?? 0,
         ]);
 
-        return redirect()->route('indexTramites')->with('success', 'Trámite actualizado correctamente.');
+        return redirect()->route('indexTramites')->with('success', "Trámite '{$tramite->nombre_tramite}' actualizado correctamente.");
     }
 
     public function deshabilitarTramite(Tramite $tramite): JsonResponse
     {
         $tramite->update(['estatus_tramite' => false]);
 
-        return response()->json(['message' => 'Trámite deshabilitado correctamente.']);
+        return response()->json(['message' => "Trámite '{$tramite->nombre_tramite}' deshabilitado correctamente."]);
     }
 
     public function habilitarTramite(Tramite $tramite): JsonResponse
     {
         $tramite->update(['estatus_tramite' => true]);
 
-        return response()->json(['message' => 'Trámite habilitado correctamente.']);
+        return response()->json(['message' => "Trámite '{$tramite->nombre_tramite}' habilitado correctamente."]);
     }
 
     public function revisarRequisitos(Tramite $tramite): View
@@ -221,9 +236,18 @@ class TramitesController extends Controller
         return response()->json(['message' => $message], 201);
     }
 
-    public function quitarRequisito(Tramite $tramite, Requisito $requisito): JsonResponse
+    public function quitarRequisito(Tramite $tramite, int $requisito): JsonResponse
     {
-        $tramite->requisitos()->detach($requisito->id_requisito);
+        $eliminado = DB::table('tbl_requisitos_tramites')
+            ->where('id_requisito', $requisito)
+            ->where('fk_tramite', $tramite->id_tramite)
+            ->delete();
+
+        if ($eliminado === 0) {
+            return response()->json([
+                'message' => 'El requisito ya no está asignado a este trámite.',
+            ], 404);
+        }
 
         return response()->json(['message' => 'Requisito quitado del trámite correctamente.']);
     }

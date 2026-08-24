@@ -25,6 +25,7 @@ class TramitesCobraPorM2Test extends TestCase
             'fk_dependencia' => $dependencia->id_dependencia,
             'fk_cri' => 1,
             'cobra_por_m2' => 1,
+            'vigencia_dias' => 365,
         ]);
 
         $response->assertRedirect(route('indexTramites'));
@@ -47,6 +48,7 @@ class TramitesCobraPorM2Test extends TestCase
             'descripcion' => 'Trámite de precio fijo.',
             'fk_dependencia' => $dependencia->id_dependencia,
             'fk_cri' => 1,
+            'vigencia_dias' => 180,
         ]);
 
         $response->assertRedirect(route('indexTramites'));
@@ -71,6 +73,7 @@ class TramitesCobraPorM2Test extends TestCase
             'fk_dependencia' => $dependencia->id_dependencia,
             'fk_cri' => $tramite->tramite_cri,
             'cobra_por_m2' => 1,
+            'vigencia_dias' => 365,
         ]);
 
         $response->assertRedirect(route('indexTramites'));

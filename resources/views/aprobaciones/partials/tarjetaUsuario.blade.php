@@ -41,11 +41,39 @@
                 data-bs-parent="#accordion-usuario-{{ $prefijo }}-{{ $usuario->id }}">
                 <div class="accordion-body">
                     @foreach ($usuario->documentosPersonales as $documento)
+                        @php
+                            $docPersonalAprobado =
+                                $documento->estatus_documento === \App\Models\tblDocumentoPersonal::ESTATUS_APROBADO;
+                            $fechaVencimientoDoc = $docPersonalAprobado ? $documento->fechaVencimiento() : null;
+                        @endphp
                         <div class="documento-item">
                             <div class="documento-info">
                                 <div class="documento-nombre">{{ $documento->catalogoDocumento->nombre_documento }}
                                 </div>
-                                <div class="documento-fecha">{{ $documento->fecha_registro->format('d/m/Y') }}</div>
+                                <div class="documento-fecha">
+                                    @if ($documento->fecha_aprobacion)
+                                        <i class="fa-solid fa-circle-check me-1"></i>Aprobado el
+                                        {{ $documento->fecha_aprobacion->format('d/m/Y') }}
+                                    @else
+                                        <i class="fa-regular fa-calendar me-1"></i>Cargado el
+                                        {{ $documento->fecha_registro->format('d/m/Y') }}
+                                    @endif
+                                </div>
+                                @if ($docPersonalAprobado && $fechaVencimientoDoc)
+                                    @if ($documento->estaExpirado())
+                                        <span class="doc-vigencia doc-vigencia--vencido"><i
+                                                class="fa-solid fa-triangle-exclamation me-1"></i>Vencido
+                                            ({{ $fechaVencimientoDoc->format('d/m/Y') }})</span>
+                                    @elseif ($documento->estaPorVencer())
+                                        <span class="doc-vigencia doc-vigencia--por-vencer"><i
+                                                class="fa-solid fa-hourglass-half me-1"></i>Por vencer
+                                            ({{ $fechaVencimientoDoc->format('d/m/Y') }})</span>
+                                    @else
+                                        <span class="doc-vigencia doc-vigencia--vigente"><i
+                                                class="fa-solid fa-check me-1"></i>Vence:
+                                            {{ $fechaVencimientoDoc->format('d/m/Y') }}</span>
+                                    @endif
+                                @endif
                                 @if ($documento->estatus_documento === \App\Models\tblDocumentoPersonal::ESTATUS_RECHAZADO && $documento->motivo_rechazo)
                                     <div class="documento-motivo-rechazo" title="{{ $documento->motivo_rechazo }}">
                                         <i class="fa-solid fa-circle-info"></i>

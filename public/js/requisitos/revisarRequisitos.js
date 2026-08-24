@@ -28,7 +28,8 @@ $(document).ready(function () {
             zeroRecords: "No se encontraron resultados",
             emptyTable: "Este trámite no tiene requisitos asignados",
             info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-            infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+            infoEmpty:
+                "Mostrando registros del 0 al 0 de un total de 0 registros",
             infoFiltered: "(filtrado de un total de _MAX_ registros)",
             search: "Buscar:",
             infoThousands: ",",
@@ -49,7 +50,7 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     return (
                         '<input type="checkbox" class="requisito-checkbox" value="' +
-                        row.id_requisito + '_' + row.tipo_documento +
+                        row.id_requisito +
                         '">'
                     );
                 },
@@ -57,19 +58,19 @@ $(document).ready(function () {
             { data: "nombre_documento" },
             {
                 data: "tipo_documento",
-    className: "w-tipo",
-    render: function (data) {
-        switch (data) {
-            case "d":
-                return '<span class="badge bg-primary">Documento personal</span>';
+                className: "w-tipo",
+                render: function (data) {
+                    switch (data) {
+                        case "d":
+                            return '<span class="badge bg-primary">Documento personal</span>';
 
-            case "p":
-                return '<span class="badge bg-success">Documento del predio</span>';
+                        case "p":
+                            return '<span class="badge bg-success">Documento del predio</span>';
 
-            default:
-                return '<span class="badge bg-secondary">Desconocido</span>';
-        }
-    },
+                        default:
+                            return '<span class="badge bg-secondary">Desconocido</span>';
+                    }
+                },
             },
         ],
     });
@@ -95,23 +96,30 @@ $(document).ready(function () {
         updateActionButtons();
     });
 
-    $(document).on("click", "#tabla-requisitos-asignados tbody tr", function (event) {
-        var target = $(event.target);
-        if (target.closest("input, button, a, label, select, textarea").length) {
-            return;
-        }
-        var selectedRow = $(this);
-        if (selectedRow.hasClass("child")) {
-            selectedRow = selectedRow.prev();
-        }
-        var checkbox = selectedRow.find(".requisito-checkbox").first();
-        if (!checkbox.length) {
-            return;
-        }
-        $(".requisito-checkbox").not(checkbox).prop("checked", false);
-        checkbox.prop("checked", true);
-        updateActionButtons();
-    });
+    $(document).on(
+        "click",
+        "#tabla-requisitos-asignados tbody tr",
+        function (event) {
+            var target = $(event.target);
+            if (
+                target.closest("input, button, a, label, select, textarea")
+                    .length
+            ) {
+                return;
+            }
+            var selectedRow = $(this);
+            if (selectedRow.hasClass("child")) {
+                selectedRow = selectedRow.prev();
+            }
+            var checkbox = selectedRow.find(".requisito-checkbox").first();
+            if (!checkbox.length) {
+                return;
+            }
+            $(".requisito-checkbox").not(checkbox).prop("checked", false);
+            checkbox.prop("checked", true);
+            updateActionButtons();
+        },
+    );
 
     tablaAsignados.on("draw.dt", function () {
         updateActionButtons();
@@ -145,7 +153,9 @@ $(document).ready(function () {
             fetch(url, {
                 method: "POST",
                 headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },
@@ -218,66 +228,68 @@ $(document).ready(function () {
     const $selectPersonales = $("#select-personal");
     const $selectPredio = $("#select-requisitos");
 
-$modal.on("show.bs.modal", function () {
-    $modalAlert.addClass("d-none").text("");
+    $modal.on("show.bs.modal", function () {
+        $modalAlert.addClass("d-none").text("");
 
-    // Destruir instancias previas
-    [$selectPersonales, $selectPredio].forEach(function ($select) {
-        if ($select.hasClass("select2-hidden-accessible")) {
-            $select.select2("destroy");
-        }
-        $select.empty();
+        // Destruir instancias previas
+        [$selectPersonales, $selectPredio].forEach(function ($select) {
+            if ($select.hasClass("select2-hidden-accessible")) {
+                $select.select2("destroy");
+            }
+            $select.empty();
+        });
+
+        $.ajax({
+            url: window.requisitosRoutes.catalogo,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // ===========================
+                // Documentos personales
+                // ===========================
+                response.docsPersonales.forEach(function (item) {
+                    $selectPersonales.append(
+                        new Option(item.nombre_documento, item.id_documento),
+                    );
+                });
+
+                $selectPersonales.select2({
+                    theme: "bootstrap-5",
+                    language: "es",
+                    placeholder: "Seleccione documentos personales...",
+                    allowClear: true,
+                    width: "100%",
+                    dropdownParent: $modal,
+                });
+
+                // ===========================
+                // Documentos del predio
+                // ===========================
+                response.docsPredio.forEach(function (item) {
+                    $selectPredio.append(
+                        new Option(
+                            item.nombre_documento,
+                            item.id_documento_predio,
+                        ),
+                    );
+                });
+
+                $selectPredio.select2({
+                    theme: "bootstrap-5",
+                    language: "es",
+                    placeholder: "Seleccione documentos del predio...",
+                    allowClear: true,
+                    width: "100%",
+                    dropdownParent: $modal,
+                });
+            },
+            error: function () {
+                $modalAlert
+                    .removeClass("d-none")
+                    .text("No fue posible cargar el catálogo de documentos.");
+            },
+        });
     });
-
-    $.ajax({
-        url: window.requisitosRoutes.catalogo,
-        type: "GET",
-        dataType: "json",
-        success: function (response) {
-
-            // ===========================
-            // Documentos personales
-            // ===========================
-            response.docsPersonales.forEach(function (item) {
-                $selectPersonales.append(
-                    new Option(item.nombre_documento, item.id_documento)
-                );
-            });
-
-            $selectPersonales.select2({
-                theme: "bootstrap-5",
-                language: "es",
-                placeholder: "Seleccione documentos personales...",
-                allowClear: true,
-                width: "100%",
-                dropdownParent: $modal
-            });
-
-            // ===========================
-            // Documentos del predio
-            // ===========================
-            response.docsPredio.forEach(function (item) {
-                $selectPredio.append(
-                    new Option(item.nombre_documento, item.id_documento_predio)
-                );
-            });
-
-            $selectPredio.select2({
-                theme: "bootstrap-5",
-                language: "es",
-                placeholder: "Seleccione documentos del predio...",
-                allowClear: true,
-                width: "100%",
-                dropdownParent: $modal
-            });
-        },
-        error: function () {
-            $modalAlert
-                .removeClass("d-none")
-                .text("No fue posible cargar el catálogo de documentos.");
-        }
-    });
-});
 
     $modal.on("hidden.bs.modal", function () {
         if ($select.hasClass("select2-hidden-accessible")) {
@@ -291,17 +303,22 @@ $modal.on("show.bs.modal", function () {
     $("#btn-guardar-asignacion").on("click", function () {
         var seleccionadosPersonales = $selectPersonales.val();
         var seleccionadosPredio = $selectPredio.val();
-        
-        if ((!seleccionadosPersonales || seleccionadosPersonales.length === 0) &&
-            (!seleccionadosPredio || seleccionadosPredio.length === 0)) {
+
+        if (
+            (!seleccionadosPersonales ||
+                seleccionadosPersonales.length === 0) &&
+            (!seleccionadosPredio || seleccionadosPredio.length === 0)
+        ) {
             $modalAlert
                 .removeClass("d-none")
-                .text("Debe seleccionar al menos un documento personal o del predio.");
+                .text(
+                    "Debe seleccionar al menos un documento personal o del predio.",
+                );
             return;
         }
         console.log("Seleccionados personales:", seleccionadosPersonales);
         console.log("Seleccionados predio:", seleccionadosPredio);
-        
+
         $modalAlert.addClass("d-none").text("");
         fetch(window.requisitosRoutes.asignarE, {
             method: "POST",
@@ -310,42 +327,44 @@ $modal.on("show.bs.modal", function () {
                 "Content-Type": "application/json",
                 Accept: "application/json",
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 documentos_personales: seleccionadosPersonales,
-                documentos_predio: seleccionadosPredio
+                documentos_predio: seleccionadosPredio,
             }),
         })
-        .then(function (response) {
-            return response.json().then(function (data) {
-                return { status: response.status, data: data };
-            });
-        })
-        .then(function (result) {
-            if (result.status === 422) {
-                var errors = result.data.errors || {};
-                var firstError =
-                    errors.documentos_personales || errors.documentos_predio
-                        ? (errors.documentos_personales ? errors.documentos_personales[0] : errors.documentos_predio[0])
-                        : result.data.message || "Error de validación.";
-                $modalAlert.removeClass("d-none").text(firstError);
-                return;
-            }
+            .then(function (response) {
+                return response.json().then(function (data) {
+                    return { status: response.status, data: data };
+                });
+            })
+            .then(function (result) {
+                if (result.status === 422) {
+                    var errors = result.data.errors || {};
+                    var firstError =
+                        errors.documentos_personales || errors.documentos_predio
+                            ? errors.documentos_personales
+                                ? errors.documentos_personales[0]
+                                : errors.documentos_predio[0]
+                            : result.data.message || "Error de validación.";
+                    $modalAlert.removeClass("d-none").text(firstError);
+                    return;
+                }
 
-            $modal.modal("hide");
-            Swal.fire({
-                icon: "success",
-                title: "Asignado",
-                text: result.data.message,
-                timer: 2000,
-                showConfirmButton: false,
+                $modal.modal("hide");
+                Swal.fire({
+                    icon: "success",
+                    title: "Asignado",
+                    text: result.data.message,
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+                dt.ajax.reload(null, false);
+            })
+            .catch(function () {
+                $modalAlert
+                    .removeClass("d-none")
+                    .text("Ocurrió un error inesperado. Intente de nuevo.");
             });
-            dt.ajax.reload(null, false);
-        })
-        .catch(function () {
-            $modalAlert
-                .removeClass("d-none")
-                .text("Ocurrió un error inesperado. Intente de nuevo.");
-        });
         // var seleccionados = $select.val();
 
         // if (!seleccionados || seleccionados.length === 0) {

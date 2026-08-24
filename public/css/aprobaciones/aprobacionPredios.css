@@ -456,6 +456,25 @@ body {
     color: var(--text-secondary);
 }
 
+.doc-vigencia {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+.doc-vigencia--vigente {
+    color: #0d7d3d;
+}
+
+.doc-vigencia--por-vencer {
+    color: #b8860b;
+}
+
+.doc-vigencia--vencido {
+    color: #c62828;
+}
+
 /* Predio con pendientes: la línea izquierda indica que necesita revisión */
 .predio-item.predio-pendiente {
     border-left: 4px solid #d97706;

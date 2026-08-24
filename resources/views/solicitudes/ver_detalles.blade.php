@@ -7,6 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    @php
+        // Trámite sin costo ya resuelto por el enlace: no genera orden de pago, por lo
+        // que se muestra como Completado (igual que en el portal ciudadano).
+        $sinCostoResuelto = ($solicitud->tramite?->sin_costo ?? false) && $resolucion !== null;
+    @endphp
+
     <div class="detalles-container">
         {{-- Header --}}
         <div class="detalles-header">
@@ -55,6 +61,15 @@
                             @elseif ($solicitud->estatus_solicitud === 2)
                                 <span class="estado-badge estado-rechazada"><i
                                         class="fas fa-times-circle me-1"></i>Rechazada</span>
+                            @elseif ($solicitud->estatus_solicitud === 3 && $sinCostoResuelto)
+                                <span class="estado-badge estado-completada"><i
+                                        class="fas fa-check-double me-1"></i>Completado</span>
+                            @elseif ($solicitud->estatus_solicitud === 3)
+                                <span class="estado-badge estado-pago"><i class="fas fa-credit-card me-1"></i>Por
+                                    pagar</span>
+                            @elseif ($solicitud->estatus_solicitud === 4)
+                                <span class="estado-badge estado-completada"><i
+                                        class="fas fa-check-double me-1"></i>Completado</span>
                             @else
                                 <span class="estado-badge">Desconocido</span>
                             @endif
@@ -69,6 +84,35 @@
                 </div>
             </div>
         </div>
+
+        {{-- Card: Orden de pago (precio designado por el enlace) --}}
+        @if (isset($ordenPago) && $ordenPago)
+            <div class="detalles-card" id="orden-pago">
+                <div class="detalles-card-header">
+                    <i class="fas fa-money-bill-wave"></i> Orden de pago
+                </div>
+                <div class="detalles-card-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-tag me-1"></i> Precio asignado al trámite</span>
+                            <span class="info-value precio-valor">
+                                <i class="fas fa-dollar-sign me-2"></i>
+                                {{ number_format($ordenPago->precio_tramite, 2) }} MXN
+                            </span>
+                        </div>
+                        @if ($ordenPago->numero_cri && $nombreCri)
+                            <div class="info-item">
+                                <span class="info-label"><i class="fas fa-hashtag me-1"></i> CRI</span>
+                                <span class="info-value">
+                                    <i class="fas fa-hashtag me-2"></i>
+                                    {{ $nombreCri }}
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
 
         {{-- Card: Requisitos y documentos presentados --}}
         <div class="detalles-card">
@@ -116,6 +160,20 @@
                                                     $nombreRequisito;
                                             }
                                         }
+
+                                        // Estado de vigencia del documento adjuntado (si aplica).
+                                        $documentoConVigencia = null;
+                                        $fechaVencimiento = null;
+
+                                        if ($tipoDocumento === 'personal') {
+                                            $documentoConVigencia = $docTramite->documentoPersonal;
+                                        } elseif ($tipoDocumento === 'predio' && isset($predioDoc)) {
+                                            $documentoConVigencia = $predioDoc;
+                                        }
+
+                                        if ($documentoConVigencia) {
+                                            $fechaVencimiento = $documentoConVigencia->fechaVencimiento();
+                                        }
                                     @endphp
                                     <tr>
                                         <td class="req-num">{{ $index + 1 }}</td>
@@ -130,6 +188,24 @@
                                                     <i class="fas fa-file-pdf"></i>
                                                     {{ basename($archivo) }}
                                                 </span>
+                                                @if ($documentoConVigencia && $fechaVencimiento)
+                                                    @if ($documentoConVigencia->estaExpirado())
+                                                        <span class="doc-vigencia doc-vigencia--vencido">
+                                                            <i class="fas fa-triangle-exclamation me-1"></i>Vencido
+                                                            ({{ $fechaVencimiento->format('d/m/Y') }})
+                                                        </span>
+                                                    @elseif ($documentoConVigencia->estaPorVencer())
+                                                        <span class="doc-vigencia doc-vigencia--por-vencer">
+                                                            <i class="fas fa-hourglass-half me-1"></i>Por vencer
+                                                            ({{ $fechaVencimiento->format('d/m/Y') }})
+                                                        </span>
+                                                    @else
+                                                        <span class="doc-vigencia doc-vigencia--vigente">
+                                                            <i class="fas fa-check me-1"></i>Vence:
+                                                            {{ $fechaVencimiento->format('d/m/Y') }}
+                                                        </span>
+                                                    @endif
+                                                @endif
                                             @else
                                                 <span class="doc-no-subido">
                                                     <i class="fas fa-times-circle me-1"></i> No adjuntado

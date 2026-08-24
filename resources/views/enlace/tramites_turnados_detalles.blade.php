@@ -187,6 +187,11 @@
             border-left-width: 4px;
         }
 
+        /* Sin costo */
+        .sin-costo-alert {
+            border-left-width: 4px;
+        }
+
         .precio-m2-input {
             width: 100%;
             padding: 0.6rem 1rem;
@@ -327,6 +332,20 @@
                                                     $nombreRequisito;
                                             }
                                         }
+
+                                        // Estado de vigencia del documento adjuntado (si aplica).
+                                        $documentoConVigencia = null;
+                                        $fechaVencimiento = null;
+
+                                        if ($tipoDocumento === 'personal') {
+                                            $documentoConVigencia = $docTramite->documentoPersonal;
+                                        } elseif ($tipoDocumento === 'predio' && isset($predioDoc)) {
+                                            $documentoConVigencia = $predioDoc;
+                                        }
+
+                                        if ($documentoConVigencia) {
+                                            $fechaVencimiento = $documentoConVigencia->fechaVencimiento();
+                                        }
                                     @endphp
                                     <tr>
                                         <td class="req-num">{{ $index + 1 }}</td>
@@ -341,6 +360,24 @@
                                                     <i class="fas fa-file-pdf"></i>
                                                     {{ basename($archivo) }}
                                                 </span>
+                                                @if ($documentoConVigencia && $fechaVencimiento)
+                                                    @if ($documentoConVigencia->estaExpirado())
+                                                        <span class="doc-vigencia doc-vigencia--vencido">
+                                                            <i class="fas fa-triangle-exclamation me-1"></i>Vencido
+                                                            ({{ $fechaVencimiento->format('d/m/Y') }})
+                                                        </span>
+                                                    @elseif ($documentoConVigencia->estaPorVencer())
+                                                        <span class="doc-vigencia doc-vigencia--por-vencer">
+                                                            <i class="fas fa-hourglass-half me-1"></i>Por vencer
+                                                            ({{ $fechaVencimiento->format('d/m/Y') }})
+                                                        </span>
+                                                    @else
+                                                        <span class="doc-vigencia doc-vigencia--vigente">
+                                                            <i class="fas fa-check me-1"></i>Vence:
+                                                            {{ $fechaVencimiento->format('d/m/Y') }}
+                                                        </span>
+                                                    @endif
+                                                @endif
                                             @else
                                                 <span class="doc-no-subido">
                                                     <i class="fas fa-times-circle me-1"></i> No adjuntado
@@ -387,7 +424,7 @@
                     @endif
                     <div class="acciones-container">
                         <button type="button" class="btn-accion btn-aprobar" id="btnAprobar">
-                            <i class="fas fa-check-circle"></i> Aprobar y pagar
+                            <i class="fas fa-check-circle"></i> Aprobar
                         </button>
                         <button type="button" class="btn-accion btn-rechazar" id="btnRechazar">
                             <i class="fas fa-times-circle"></i> Rechazar
@@ -403,20 +440,29 @@
                             <i class="fas fa-file-circle-check me-1"></i> Aprobar trámite — Documento de resolución
                         </div>
                         <div class="aprobacion-body">
-                            {{-- Precio del trámite (siempre lo captura el enlace) --}}
-                            <div class="mb-3">
-                                <label for="precioM2" class="form-label fw-bold"
-                                    style="font-size:0.82rem;color:#1e5c50;">
-                                    <i class="fas fa-dollar-sign me-1"></i> Precio total del trámite — sin centavos
-                                </label>
-                                <input type="number" id="precioM2" class="precio-m2-input" min="1"
-                                    step="1" placeholder="Ej. 15000">
-                                <div class="text-muted mt-1" style="font-size:0.78rem;">
-                                    Este monto se guardará como el total en la orden de pago.
+                            @if ($solicitud->tramite?->sin_costo)
+                                <div class="alert alert-success sin-costo-alert">
+                                    <i class="fas fa-hand-holding-dollar me-2"></i>
+                                    <strong>Este trámite es sin costo.</strong>
+                                    No se capturará un precio ni se generará orden de pago al aprobar la solicitud.
                                 </div>
-                                <div id="precioM2Error" class="text-danger mt-1" style="font-size:0.8rem;display:none;">
+                            @else
+                                {{-- Precio del trámite (siempre lo captura el enlace) --}}
+                                <div class="mb-3">
+                                    <label for="precioM2" class="form-label fw-bold"
+                                        style="font-size:0.82rem;color:#1e5c50;">
+                                        <i class="fas fa-dollar-sign me-1"></i> Precio total del trámite — sin centavos
+                                    </label>
+                                    <input type="number" id="precioM2" class="precio-m2-input" min="1"
+                                        step="1" placeholder="Ej. 15000">
+                                    <div class="text-muted mt-1" style="font-size:0.78rem;">
+                                        Este monto se guardará como el total en la orden de pago.
+                                    </div>
+                                    <div id="precioM2Error" class="text-danger mt-1"
+                                        style="font-size:0.8rem;display:none;">
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                             {{-- Nota opcional --}}
                             <div class="mb-3">
                                 <label for="resolucionNota" class="form-label fw-bold"
@@ -545,6 +591,7 @@
             rechazar: "{{ route('enlace.tramitesTurnadosRechazar', ['id' => $turnado->id_turnado]) }}",
             verDocumento: "{{ route('documento.ver') }}",
             listado: "{{ route('enlace.tramitesTurnados') }}",
+            sinCosto: @json((bool) $solicitud->tramite?->sin_costo),
         };
 
         function verArchivo(ruta) {

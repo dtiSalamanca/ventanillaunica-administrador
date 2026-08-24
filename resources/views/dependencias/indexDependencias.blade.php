@@ -30,6 +30,8 @@
             </div>
         </div>
 
+        <div id="alertas-dinamicas"></div>
+
         <!-- Alertas -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -90,12 +92,12 @@
                         <!-- Barra de acciones -->
                         <div class="action-bar">
                             <div class="action-bar-right" style="margin-left: auto;">
-                                <button type="button" class="action-bar-btn btn-edit-top" id="btn-editar-dependencia-activos"
-                                    disabled>
+                                <button type="button" class="action-bar-btn btn-edit-top"
+                                    id="btn-editar-dependencia-activos" disabled>
                                     <i class="fas fa-pen-to-square"></i> Modificar dependencia
                                 </button>
-                                <button type="button" class="action-bar-btn btn-delete-top" id="btn-deshabilitar-dependencia"
-                                    disabled>
+                                <button type="button" class="action-bar-btn btn-delete-top"
+                                    id="btn-deshabilitar-dependencia" disabled>
                                     <i class="fas fa-ban"></i> Deshabilitar
                                 </button>
                             </div>
@@ -107,7 +109,8 @@
                                     <thead>
                                         <tr>
                                             <th class="w-checkbox"></th>
-                                            <th class="w-dependencia"><i class="fas fa-building me-2"></i>Nombre de la dependencia</th>
+                                            <th class="w-dependencia"><i class="fas fa-building me-2"></i>Nombre de la
+                                                dependencia</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -121,8 +124,8 @@
                         <!-- Barra de acciones -->
                         <div class="action-bar">
                             <div class="action-bar-right" style="margin-left: auto;">
-                                <button type="button" class="action-bar-btn btn-activate-top" id="btn-habilitar-dependencia"
-                                    disabled>
+                                <button type="button" class="action-bar-btn btn-activate-top"
+                                    id="btn-habilitar-dependencia" disabled>
                                     <i class="fas fa-check"></i> Habilitar
                                 </button>
                             </div>
@@ -134,7 +137,8 @@
                                     <thead>
                                         <tr>
                                             <th class="w-checkbox"></th>
-                                            <th class="w-dependencia"><i class="fas fa-building me-2"></i>Nombre de la dependencia</th>
+                                            <th class="w-dependencia"><i class="fas fa-building me-2"></i>Nombre de la
+                                                dependencia</th>
                                         </tr>
                                     </thead>
                                     <tbody>

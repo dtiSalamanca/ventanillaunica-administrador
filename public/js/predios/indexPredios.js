@@ -5,6 +5,55 @@ $(document).ready(function () {
         },
     });
 
+    function autoCerrarAlerta($alerta, ms) {
+        setTimeout(function () {
+            $alerta.fadeOut(300, function () {
+                $(this).remove();
+            });
+        }, ms || 5000);
+    }
+
+    function mostrarAlerta(mensaje, tipo) {
+        tipo = tipo || "success";
+        var iconos = {
+            success: "fa-check-circle",
+            warning: "fa-exclamation-triangle",
+            error: "fa-times-circle",
+            info: "fa-info-circle",
+        };
+        var icono = iconos[tipo] || "fa-check-circle";
+        var $alerta = $(
+            '<div class="alert alert-' +
+                tipo +
+                ' alert-dismissible fade show" role="alert"></div>',
+        );
+        $alerta.append('<i class="fas ' + icono + ' me-2"></i>');
+        $alerta.append($("<span>").text(mensaje));
+        $alerta.append(
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        );
+
+        var $contenedor = $("#alertas-dinamicas");
+        if (!$contenedor.length) {
+            $contenedor = $(".main-container");
+        }
+        $contenedor.prepend($alerta);
+        autoCerrarAlerta($alerta);
+    }
+
+    // Cerrar alerta con el botón ×
+    $(document).on("click", ".alert-dismissible .btn-close", function () {
+        var $alerta = $(this).closest(".alert-dismissible");
+        $alerta.fadeOut(300, function () {
+            $(this).remove();
+        });
+    });
+
+    // Las alertas de sesión (crear/actualizar) también se cierran solas a los 5s
+    $(".alert-dismissible").each(function () {
+        autoCerrarAlerta($(this));
+    });
+
     const tablaActivos = $("#tabla-documentos-predios-activos");
     const tablaInactivos = $("#tabla-documentos-predios-inactivos");
 
@@ -130,7 +179,9 @@ $(document).ready(function () {
 
     $(document).on("change", ".documentoPredio-checkbox-activos", function () {
         if ($(this).prop("checked")) {
-            $(".documentoPredio-checkbox-activos").not(this).prop("checked", false);
+            $(".documentoPredio-checkbox-activos")
+                .not(this)
+                .prop("checked", false);
         }
         updateActionButtonsActivos();
     });
@@ -159,7 +210,9 @@ $(document).ready(function () {
                 return;
             }
 
-            $(".documentoPredio-checkbox-activos").not(checkbox).prop("checked", false);
+            $(".documentoPredio-checkbox-activos")
+                .not(checkbox)
+                .prop("checked", false);
             checkbox.prop("checked", true);
             updateActionButtonsActivos();
         },
@@ -172,7 +225,10 @@ $(document).ready(function () {
     $("#btn-editar-documentoPredio-activos").on("click", function () {
         var ids = getSelectedIds(".documentoPredio-checkbox-activos");
         if (ids.length === 1) {
-            var url = window.documentosPrediosRoutes.editar.replace("__ID__", ids[0]);
+            var url = window.documentosPrediosRoutes.editar.replace(
+                "__ID__",
+                ids[0],
+            );
             window.location.href = url;
         }
     });
@@ -216,13 +272,7 @@ $(document).ready(function () {
                     return response.json();
                 })
                 .then(function (data) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Deshabilitado",
-                        text: data.message,
-                        timer: 2000,
-                        showConfirmButton: false,
-                    });
+                    mostrarAlerta(data.message, "success");
                     tablaActivos.DataTable().ajax.reload(null, false);
                     tablaInactivos.DataTable().ajax.reload(null, false);
                 })
@@ -239,16 +289,24 @@ $(document).ready(function () {
     updateActionButtonsActivos();
 
     function updateActionButtonsInactivos() {
-        var count = getSelectedIds(".documentoPredio-checkbox-inactivos").length;
+        var count = getSelectedIds(
+            ".documentoPredio-checkbox-inactivos",
+        ).length;
         $("#btn-habilitar-documentoPredio").prop("disabled", count === 0);
     }
 
-    $(document).on("change", ".documentoPredio-checkbox-inactivos", function () {
-        if ($(this).prop("checked")) {
-            $(".documentoPredio-checkbox-inactivos").not(this).prop("checked", false);
-        }
-        updateActionButtonsInactivos();
-    });
+    $(document).on(
+        "change",
+        ".documentoPredio-checkbox-inactivos",
+        function () {
+            if ($(this).prop("checked")) {
+                $(".documentoPredio-checkbox-inactivos")
+                    .not(this)
+                    .prop("checked", false);
+            }
+            updateActionButtonsInactivos();
+        },
+    );
 
     $(document).on(
         "click",
@@ -325,13 +383,7 @@ $(document).ready(function () {
                     return response.json();
                 })
                 .then(function (data) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Habilitado",
-                        text: data.message,
-                        timer: 2000,
-                        showConfirmButton: false,
-                    });
+                    mostrarAlerta(data.message, "success");
                     tablaActivos.DataTable().ajax.reload(null, false);
                     tablaInactivos.DataTable().ajax.reload(null, false);
                 })

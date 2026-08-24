@@ -21,7 +21,7 @@
 
                 <div class="header-main">
                     <h1 class="page-title">Requisitos del trámite</h1>
-                    <p class="page-subtitle">{{ $tramite->nombre }}</p>
+                    <p class="page-subtitle">{{ $tramite->nombre_tramite }}</p>
                 </div>
 
                 <div class="header-actions">
@@ -138,7 +138,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalAsignarRequisitosLabel">
-                        <i class="fas fa-file-lines me-2"></i>Asignar requisitos al trámite
+                        <i class="fas fa-file-lines me-2"></i>Asignar requisitos a: {{ $tramite->nombre_tramite }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -160,8 +160,7 @@
                         <label for="select-personal" class="form-label fw-semibold">
                             Seleccionar del catálogo de requisitos personales <span class="text-danger">*</span>
                         </label>
-                        <select id="select-personal" class="form-control" multiple="multiple"
-                            style="width:100%">
+                        <select id="select-personal" class="form-control" multiple="multiple" style="width:100%">
                         </select>
                         <div class="form-text mt-2">
                             <i class="fas fa-circle-info me-1 text-muted"></i>

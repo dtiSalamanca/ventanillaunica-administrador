@@ -5,11 +5,71 @@ $(document).ready(function () {
         },
     });
 
+    function autoCerrarAlerta($alerta, ms) {
+        setTimeout(function () {
+            $alerta.fadeOut(300, function () {
+                $(this).remove();
+            });
+        }, ms || 5000);
+    }
+
+    function mostrarAlerta(mensaje, tipo) {
+        tipo = tipo || "success";
+        var iconos = {
+            success: "fa-check-circle",
+            warning: "fa-exclamation-triangle",
+            error: "fa-times-circle",
+            info: "fa-info-circle",
+        };
+        var icono = iconos[tipo] || "fa-check-circle";
+        var $alerta = $(
+            '<div class="alert alert-' +
+                tipo +
+                ' alert-dismissible fade show" role="alert"></div>',
+        );
+        $alerta.append('<i class="fas ' + icono + ' me-2"></i>');
+        $alerta.append($("<span>").text(mensaje));
+        $alerta.append(
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        );
+
+        var $contenedor = $("#alertas-dinamicas");
+        if (!$contenedor.length) {
+            $contenedor = $(".main-container");
+        }
+        $contenedor.prepend($alerta);
+        autoCerrarAlerta($alerta);
+    }
+
+    // Cerrar alerta con el botón ×
+    $(document).on("click", ".alert-dismissible .btn-close", function () {
+        var $alerta = $(this).closest(".alert-dismissible");
+        $alerta.fadeOut(300, function () {
+            $(this).remove();
+        });
+    });
+
+    // Las alertas de sesión (crear/actualizar) también se cierran solas a los 5s
+    $(".alert-dismissible").each(function () {
+        autoCerrarAlerta($(this));
+    });
+
     const tablaActivos = $("#tabla-tramites-activos");
     const tablaInactivos = $("#tabla-tramites-inactivos");
 
     if (!tablaActivos.length || !tablaInactivos.length) {
         return;
+    }
+
+    // Columna Cobro: badge por m², sin costo o vacío (precio fijo)
+    function renderCobro(data, type, row) {
+        if (row.cobra_por_m2) {
+            return '<span class="badge badge-por-m2"><i class="fas fa-ruler-combined me-1"></i>Por m²</span>';
+        }
+        if (row.sin_costo) {
+            return '<span class="badge badge-sin-costo"><i class="fas fa-hand-holding-dollar me-1"></i>Sin costo</span>';
+        }
+        return "";
     }
 
     tablaActivos.DataTable({
@@ -61,23 +121,22 @@ $(document).ready(function () {
             { data: "nombre_tramite", className: "w-tramite" },
             { data: "descripcion_tramite", className: "w-descripcion" },
             {
-                data: "precio_tramite",
-                className: "w-precio text-end",
+                data: "cobra_por_m2",
+                className: "w-cobro",
+                orderable: false,
+                searchable: false,
+                render: renderCobro,
+            },
+            {
+                data: "vigencia_dias",
+                className: "w-vigencia",
+                orderable: false,
+                searchable: false,
                 render: function (data, type, row) {
-                    if (type === "display") {
-                        if (row.cobra_por_m2) {
-                            return '<span class="badge badge-por-m2"><i class="fas fa-ruler-combined me-1"></i>Por m²</span>';
-                        }
-                        var numero = parseFloat(data) || 0;
-                        return (
-                            "$" +
-                            numero.toLocaleString("es-MX", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                            })
-                        );
+                    if (row.vigencia_dias > 0) {
+                        return row.vigencia_dias + " días";
                     }
-                    return data;
+                    return '<span class="text-muted">—</span>';
                 },
             },
         ],
@@ -132,23 +191,22 @@ $(document).ready(function () {
             { data: "nombre_tramite", className: "w-tramite" },
             { data: "descripcion_tramite", className: "w-descripcion" },
             {
-                data: "precio_tramite",
-                className: "w-precio text-end",
+                data: "cobra_por_m2",
+                className: "w-cobro",
+                orderable: false,
+                searchable: false,
+                render: renderCobro,
+            },
+            {
+                data: "vigencia_dias",
+                className: "w-vigencia",
+                orderable: false,
+                searchable: false,
                 render: function (data, type, row) {
-                    if (type === "display") {
-                        if (row.cobra_por_m2) {
-                            return '<span class="badge badge-por-m2"><i class="fas fa-ruler-combined me-1"></i>Por m²</span>';
-                        }
-                        var numero = parseFloat(data) || 0;
-                        return (
-                            "$" +
-                            numero.toLocaleString("es-MX", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                            })
-                        );
+                    if (row.vigencia_dias > 0) {
+                        return row.vigencia_dias + " días";
                     }
-                    return data;
+                    return '<span class="text-muted">—</span>';
                 },
             },
         ],
@@ -281,13 +339,7 @@ $(document).ready(function () {
                     return response.json();
                 })
                 .then(function (data) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Deshabilitado",
-                        text: data.message,
-                        timer: 2000,
-                        showConfirmButton: false,
-                    });
+                    mostrarAlerta(data.message, "success");
                     tablaActivos.DataTable().ajax.reload(null, false);
                     tablaInactivos.DataTable().ajax.reload(null, false);
                 })
@@ -388,13 +440,7 @@ $(document).ready(function () {
                     return response.json();
                 })
                 .then(function (data) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Habilitado",
-                        text: data.message,
-                        timer: 2000,
-                        showConfirmButton: false,
-                    });
+                    mostrarAlerta(data.message, "success");
                     tablaActivos.DataTable().ajax.reload(null, false);
                     tablaInactivos.DataTable().ajax.reload(null, false);
                 })

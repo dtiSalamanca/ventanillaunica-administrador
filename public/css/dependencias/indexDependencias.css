@@ -147,6 +147,8 @@ body {
 .table {
     background: var(--bg-surface);
     margin-bottom: 0;
+    table-layout: fixed;
+    width: 100%;
 }
 
 .table thead th {
@@ -170,7 +172,16 @@ body {
 }
 
 .w-dependencia {
-    width: 220px;
+    width: auto;
+}
+
+/* ── Truncar nombres largos con elipsis ── */
+.w-dependencia .dependencia-nombre {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .w-descripcion {
@@ -312,7 +323,7 @@ body {
 
 /* ── Checkbox column ── */
 .w-checkbox {
-    width: 1px;
+    width: 44px;
     text-align: center;
     padding: 0.85rem 0.5rem !important;
 }
